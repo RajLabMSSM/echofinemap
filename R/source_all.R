@@ -1,12 +1,10 @@
-
-
 #' source_all
 #'
 #' Source all files in a directory at once. 
 #' Also loads selected libraries.
 #' 
 #' 
-#' @inheritParams list.files
+#' @inheritParams base::list.files
 #' @keywords internal
 source_all <- function(path="R/",
                        pattern="*.R$",

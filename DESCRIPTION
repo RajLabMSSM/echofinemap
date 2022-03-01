@@ -1,6 +1,6 @@
-Package: echoverseTemplate
+Package: echofinemap
 Type: Package
-Title: echoverse module: echoversePackageTitle
+Title: echoverse module: Fine-mapping functions
 Version: 0.99.0
 Authors@R: 
     c(person(given = "Brian",
@@ -19,9 +19,9 @@ Authors@R:
            email = "towfique.raj@mssm.edu",
            comment = c(ORCID = "0000-0002-9355-5704"))
            ) 
-Description: echoverse module: echoversePackageDescription.
-URL: https://github.com/RajLabMSSM/echoverseTemplate
-BugReports: https://github.com/RajLabMSSM/echoverseTemplate/issues
+Description: echoverse module: Statistical and functional fine-mapping functions.
+URL: https://github.com/RajLabMSSM/echofinemap
+BugReports: https://github.com/RajLabMSSM/echofinemap/issues
 Encoding: UTF-8
 LazyData: true
 Depends: R (>= 4.1)
