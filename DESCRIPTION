@@ -28,6 +28,13 @@ Depends: R (>= 4.1)
 biocViews:
     Genetics, FunctionalGenomics, SystemsBiology
 Imports:
+    echodata,
+    echoannot,
+    echoconda,
+    coloc,
+    tools,
+    Ckmeans.1d.dp,
+    susieR (>= 0.9.0)
 Suggests:
     markdown,
     rmarkdown,
@@ -40,6 +47,10 @@ Suggests:
     badger,
     hexSticker,
     utils
+Remotes:
+  github::RajLabMSSM/echodata,
+  github::RajLabMSSM/echoannot,
+  github::RajLabMSSM/echoconda
 RoxygenNote: 7.1.2
 VignetteBuilder: knitr
 License: GPL-3
