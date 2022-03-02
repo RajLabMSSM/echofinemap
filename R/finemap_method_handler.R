@@ -35,7 +35,7 @@ finemap_method_handler <- function(locus_dir,
     # INITIATE FINE-MAPPING
     if(finemap_method=="SUSIE"){
         #### SUSIE ####
-        finemap_dat <- SUSIE(dat = dat,
+        dat <- SUSIE(dat = dat,
                              dataset_type = dataset_type,
                              LD_matrix = LD_matrix,
                              max_causal = n_causal,
@@ -45,8 +45,8 @@ finemap_method_handler <- function(locus_dir,
         
     } else if(finemap_method=="POLYFUN_SUSIE"){
         #### PolyFun+SUSIE ####
-        finemap_dat <- POLYFUN_SUSIE(locus_dir = locus_dir,
-                                     finemap_dat = dat,
+        dat <- POLYFUN_SUSIE(locus_dir = locus_dir,
+                                     dat = dat,
                                      LD_matrix = LD_matrix,
                                      dataset_type = dataset_type,
                                      max_causal = n_causal,
@@ -57,7 +57,7 @@ finemap_method_handler <- function(locus_dir,
         
     }else if(finemap_method=="ABF"){
         #### ABF ####
-        finemap_dat <- ABF(dat = dat,
+        dat <- ABF(dat = dat,
                            PP_threshold = PP_threshold,
                            sample_size = sample_size,
                            case_control = case_control)
@@ -65,7 +65,7 @@ finemap_method_handler <- function(locus_dir,
         
     } else if(finemap_method=="FINEMAP"){
         #### FINEMAP ####
-        finemap_dat <- FINEMAP(dat = dat,
+        dat <- FINEMAP(dat = dat,
                                locus_dir = locus_dir,
                                LD_matrix = LD_matrix,
                                n_samples = sample_size,
@@ -77,7 +77,7 @@ finemap_method_handler <- function(locus_dir,
     } else if("COJO" %in% finemap_method){
         #### COJO ####
         conditioned_snps <- subset(dat, leadSNP==TRUE)$SNP
-        finemap_dat <- COJO(dat = dat,
+        dat <- COJO(dat = dat,
                             locus_dir = locus_dir,
                             fullSS_path = fullSS_path,
                             conditioned_snps = conditioned_snps,
@@ -95,7 +95,7 @@ finemap_method_handler <- function(locus_dir,
         
     } else if("PAINTOR" %in% finemap_method) {
         #### PAINTOR ####
-        finemap_dat <- PAINTOR(finemap_dat=dat,
+        dat <- PAINTOR(dat=dat,
                                GWAS_datasets=ifelse(dataset_type=="GWAS",
                                                     basename(dirname(locus_dir)),NULL),
                                QTL_datasets=NULL,
@@ -109,5 +109,5 @@ finemap_method_handler <- function(locus_dir,
     } else {
         stop("[::ERROR::] Enter valid finemap_method: 'SUSIE', 'ABF', 'FINEMAP', 'COJO', and 'PAINTOR' are currently available.")
     }
-    return(finemap_dat)
+    return(dat)
 }

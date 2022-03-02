@@ -74,12 +74,12 @@ FINEMAP <- function(dat,
      force_new==FALSE){
     messager("+ FINEMAP:: Importing pre-computed FINEMAP results files.",
              "Set force_new=TRUE to compute new results.",v=verbose)
-    finemap_dat <- FINEMAP_process_results(locus_dir = locus_dir,
+    dat <- FINEMAP_process_results(locus_dir = locus_dir,
                                            dat = dat,
                                            credset_thresh = credset_thresh,
                                            results_file = ".cred",
                                            finemap_version = finemap_version)
-    return(finemap_dat)
+    return(dat)
   }
   
   ####  Command line example  ####
@@ -137,7 +137,7 @@ FINEMAP <- function(dat,
     if(verbose) try({cat(paste(msg, collapse = "\n"))})
   }
   #### Process results #### 
-  finemap_dat <- FINEMAP_process_results(locus_dir = locus_dir,
+  dat <- FINEMAP_process_results(locus_dir = locus_dir,
                                          dat = dat,
                                          credset_thresh = credset_thresh,
                                          results_file = ".cred",
@@ -158,5 +158,5 @@ FINEMAP <- function(dat,
     tmp_bool <- suppressWarnings(file.remove(tmp_files))
     tmp_bool <- suppressWarnings(file.remove(file.path(locus_dir,"FINEMAP")))
   }
-  return(finemap_dat)
+  return(dat)
 }

@@ -49,18 +49,18 @@ ABF <- function(dat,
     if(!is.null(ss_df$N)) dataset$N <-  max(ss_df$N, na.rm = TRUE);
   } else {dataset$N <- sample_size}
   #### Run ABF ####
-  finemap_dat <- coloc::finemap.abf(dataset = dataset)
+  dat <- coloc::finemap.abf(dataset = dataset)
 
-  finemap_dat <- subset(finemap_dat, snp!="null") %>%
+  dat <- subset(dat, snp!="null") %>%
     dplyr::rename(SNP=snp, PP=SNP.PP) %>%
     dplyr::arrange(dplyr::desc(PP))
   # Any SNPs with a PP greater than the set threshold 
   # get included in the credible set
-  finemap_dat$CS <- ifelse(finemap_dat$PP >= PP_threshold, 1, 0)
-  finemap_dat <- data.table:::merge.data.table(
+  dat$CS <- ifelse(dat$PP >= PP_threshold, 1, 0)
+  dat <- data.table:::merge.data.table(
     x=data.table::data.table(dat),
-    y=data.table::data.table(subset(finemap_dat, select=c("SNP","PP","CS")) ),
+    y=data.table::data.table(subset(dat, select=c("SNP","PP","CS")) ),
     on="SNP")
-  finemap_dat <- finemap_dat %>% dplyr::arrange(dplyr::desc(PP))
-  return(finemap_dat)
+  dat <- dat %>% dplyr::arrange(dplyr::desc(PP))
+  return(dat)
 }

@@ -20,54 +20,16 @@
 
 
 
-#' Read parquet file as data.frame
-#'
-#' @param method Specify whether to use \code{\link{SparkR}} (R)
-#' or \code{pandas} (Python + \code{reticulate}).
-#' @keywords internal
-#' @family polyfun
-#' @examples
-#' \dontrun{
-#' parquet_path <- system.file("tools/polyfun/example_data/weights.10.l2.ldscore.parquet", package = "echolocatoR")
-#' # Using python (pandas) - default
-#' dat <- POLYFUN.read_parquet(parquet_path=parquet_path, method="pandas")
-#' # Using R (SparkR)
-#' dat <- POLYFUN.read_parquet(parquet_path=parquet_path, method="sparkR")
-#' }
-POLYFUN.read_parquet <- function(parquet_path,
-                                 conda_env="echoR",
-                                 method="pandas"){
-  if(method=="SparkR" & "SparkR" %in% rownames(utils::installed.packages())){
-    messager("+ Importing parquet file with `SparkR (R)`")
-    SparkR::sparkR.session()
-    parquor <- SparkR::read.parquet(parquet_path)
-    parquor <- SparkR::as.data.frame(parquor) %>%
-      data.table::data.table()
-  } else {
-    messager("+ Importing parquet file with `pandas (Python)`")
-    python <- echoconda::find_python_path(conda_env = conda_env)
-    Sys.setenv(RETICULATE_PYTHON=python)
-    reticulate::use_python(python = python)
-    echoconda::activate_env(conda_env = conda_env)
-    # pandas <- echoconda::find_package(package = "pandas", conda_env = conda_env)
-    pd <- reticulate::import("pandas")
-    parquor <- pd$read_parquet(parquet_path)
-    system(paste(python))
-  }
-  return(parquor)
-}
-
-
 
 
 #' Display PolyFun help
 #' @keywords internal
 #' @family polyfun
 #' @examples
-#' POLYFUN.help()
-POLYFUN.help <- function(polyfun=NULL,
+#' POLYFUN_help()
+POLYFUN_help <- function(polyfun=NULL,
                          conda_env="echoR"){
-  polyfun <- POLYFUN.find_polyfun_folder(polyfun_path = polyfun)
+  polyfun <- POLYFUN_find_polyfun_folder(polyfun_path = polyfun)
   python <- echoconda::find_python_path(conda_env = conda_env)
   cmd <- paste(python,
                file.path(polyfun,"polyfun.py"),
@@ -82,8 +44,8 @@ POLYFUN.help <- function(polyfun=NULL,
 #' @keywords internal
 #' @family polyfun
 #' @examples
-#' polyfun_path <- POLYFUN.find_polyfun_folder()
-POLYFUN.find_polyfun_folder <- function(polyfun_path=NULL){
+#' polyfun_path <- POLYFUN_find_polyfun_folder()
+POLYFUN_find_polyfun_folder <- function(polyfun_path=NULL){
   if(is.null(polyfun_path)){
     polyfun_path <- system.file("tools/polyfun","",package = "echolocatoR")
   }
@@ -104,9 +66,9 @@ POLYFUN.find_polyfun_folder <- function(polyfun_path=NULL){
 #' @family polyfun
 #' @examples
 #' BST1 <- echodata::BST1; locus_dir <- echodata::locus_dir;
-#' dat <- POLYFUN.initialize(locus_dir=locus_dir, finemap_dat=BST1)
-POLYFUN.initialize <- function(locus_dir,
-                               finemap_dat=NULL,
+#' dat <- POLYFUN_initialize(locus_dir=locus_dir, dat=BST1)
+POLYFUN_initialize <- function(locus_dir,
+                               dat=NULL,
                                nThread=1){
   dataset <- basename(dirname(locus_dir))
   locus <- basename(locus_dir)
@@ -114,16 +76,16 @@ POLYFUN.initialize <- function(locus_dir,
   PF.output.path <- file.path(locus_dir, "PolyFun")
   dir.create(PF.output.path, showWarnings = FALSE, recursive = TRUE)
   # Import SNPs
-  if(is.null(finemap_dat)){
+  if(is.null(dat)){
     if(is.null(locus)){
       messager("POLYFUN:: Importing summary stats from disk: genome-wide")
-      finemap_dat <- data.table::fread(Directory_info(dataset, "fullSS.local"), nThread = 4)
+      dat <- data.table::fread(Directory_info(dataset, "fullSS.local"), nThread = 4)
     }
     messager("POLYFUN:: Importing summary stats from disk:",locus)
-    finemap_dat <- data.table::fread(file.path(dirname(Directory_info(dataset, "fullSS.local")),locus,
+    dat <- data.table::fread(file.path(dirname(Directory_info(dataset, "fullSS.local")),locus,
                                               paste(locus,dataset,"subset.tsv.gz",sep="_")), nThread = nThread)
   }
-  return(finemap_dat)
+  return(dat)
 }
 
 
@@ -142,17 +104,17 @@ POLYFUN.initialize <- function(locus_dir,
 #' @family polyfun
 #' @examples
 #' BST1 <- echodata::BST1; locus_dir <- echodata::locus_dir;
-#' finemap_dat <- BST1
+#' dat <- BST1
 #' PF.output.path <- file.path(locus_dir, "PolyFun")
-#' POLYFUN.prepare_snp_input(PF.output.path=PF.output.path, locus_dir=locus_dir, finemap_dat=finemap_dat)
-POLYFUN.prepare_snp_input <- function(PF.output.path,
+#' POLYFUN_prepare_snp_input(PF.output.path=PF.output.path, locus_dir=locus_dir, dat=dat)
+POLYFUN_prepare_snp_input <- function(PF.output.path,
                                       locus_dir,
-                                      finemap_dat=NULL,
+                                      dat=NULL,
                                       nThread=1){
   messager("PolyFun:: Preparing SNP input file...")
-  if(!"A1" %in% colnames(finemap_dat)) A1 <- NULL;
-  if(!"A2" %in% colnames(finemap_dat)) A2 <- NULL;
-  PF.dat <- dplyr::select(finemap_dat,
+  if(!"A1" %in% colnames(dat)) A1 <- NULL;
+  if(!"A2" %in% colnames(dat)) A2 <- NULL;
+  PF.dat <- dplyr::select(dat,
                           SNP,
                           CHR,
                           BP=POS,
@@ -191,17 +153,17 @@ POLYFUN.prepare_snp_input <- function(PF.output.path,
 #' \dontrun{
 #'
 #' BST1 <- echodata::BST1; locus_dir <- echodata::locus_dir;
-#' priors <- POLYFUN.get_precomputed_priors(locus_dir=locus_dir, finemap_dat=BST1)
+#' priors <- POLYFUN_get_precomputed_priors(locus_dir=locus_dir, dat=BST1)
 #' }
-POLYFUN.get_precomputed_priors <- function(polyfun=NULL,
+POLYFUN_get_precomputed_priors <- function(polyfun=NULL,
                                            locus_dir,
-                                           finemap_dat=NULL,
+                                           dat=NULL,
                                            force_new_priors=TRUE,
                                            remove_tmps=FALSE,
                                            nThread=1,
                                            conda_env="echoR"){
   python <- echoconda::find_python_path(conda_env = conda_env)
-  polyfun <- POLYFUN.find_polyfun_folder(polyfun_path = polyfun)
+  polyfun <- POLYFUN_find_polyfun_folder(polyfun_path = polyfun)
   dataset <- basename(dirname(locus_dir))
   locus <- basename(locus_dir)
   PF.output.path <- file.path(locus_dir, "PolyFun")
@@ -213,13 +175,13 @@ POLYFUN.get_precomputed_priors <- function(polyfun=NULL,
       dplyr::rename(SNP=SNP_x) %>% dplyr::select(-SNP_y)
     return(priors)
   } else {
-    finemap_dat <- POLYFUN.initialize(finemap_dat=finemap_dat,
+    dat <- POLYFUN_initialize(dat=dat,
                                      locus_dir=locus_dir)
-    chrom <- finemap_dat$CHR[1]
+    chrom <- dat$CHR[1]
     # [1]. Prepare input
-    snp.path <- POLYFUN.prepare_snp_input(PF.output.path=PF.output.path,
+    snp.path <- POLYFUN_prepare_snp_input(PF.output.path=PF.output.path,
                                           locus_dir=locus_dir,
-                                          finemap_dat=finemap_dat)
+                                          dat=dat)
     # [2.] Retrieve priors
     # test <- data.table::fread("./Data/GWAS/Nalls23andMe_2019/LRRK2/PolyFun/snps_to_finemap.txt.gz")
     try({
@@ -236,10 +198,10 @@ POLYFUN.get_precomputed_priors <- function(polyfun=NULL,
     if(file.exists(miss.file)){
       messager("+ PolyFun:: Rerunning after removing missing SNPs.")
       miss.snps <- data.table::fread(miss.file)
-      filt_DT <- subset(finemap_dat, !(SNP %in% miss.snps$SNP) )
+      filt_DT <- subset(dat, !(SNP %in% miss.snps$SNP) )
       if(remove_tmps){file.remove(miss.file)}
-      priors <- POLYFUN.get_precomputed_priors(locus_dir=locus_dir,
-                                               finemap_dat=filt_DT,
+      priors <- POLYFUN_get_precomputed_priors(locus_dir=locus_dir,
+                                               dat=filt_DT,
                                                force_new_priors=force_new_priors,
                                                conda_env = conda_env)
     }
@@ -267,9 +229,9 @@ POLYFUN.get_precomputed_priors <- function(polyfun=NULL,
 #' \dontrun{
 #' data("genome_wide_dir");
 #' fullSS_path <- example_fullSS(fullSS_path="~/Desktop/Nalls23andMe_2019.fullSS_subset.tsv")
-#' munged_path <- POLYFUN.munge_summ_stats(fullSS_path=fullSS_path, locus_dir=genome_wide_dir, force_new_munge=TRUE)
+#' munged_path <- POLYFUN_munge_summ_stats(fullSS_path=fullSS_path, locus_dir=genome_wide_dir, force_new_munge=TRUE)
 #' }
-POLYFUN.munge_summ_stats <- function(polyfun=NULL,
+POLYFUN_munge_summ_stats <- function(polyfun=NULL,
                                      fullSS_path,
                                      locus_dir,
                                      sample_size=NULL,
@@ -278,7 +240,7 @@ POLYFUN.munge_summ_stats <- function(polyfun=NULL,
                                      force_new_munge=FALSE,
                                      conda_env="echoR"){
   python <- echoconda::find_python_path(conda_env = conda_env)
-  polyfun <- POLYFUN.find_polyfun_folder(polyfun_path = polyfun)
+  polyfun <- POLYFUN_find_polyfun_folder(polyfun_path = polyfun)
   PF.output.path <- file.path(locus_dir, "PolyFun")
   dir.create(PF.output.path, showWarnings = FALSE, recursive = TRUE)
   munged_path <- file.path(PF.output.path,
@@ -318,13 +280,13 @@ POLYFUN.munge_summ_stats <- function(polyfun=NULL,
 #' @examples
 #' \dontrun{
 #' output_prefix <- file.path(system.file("tools/polyfun/gold","",package = "echolocatoR"),"testrun.22")
-#' ldscore <- POLYFUN.gather_ldscores(output_prefix=output_prefix)
+#' ldscore <- POLYFUN_gather_ldscores(output_prefix=output_prefix)
 #' }
-POLYFUN.gather_ldscores <- function(output_prefix){
+POLYFUN_gather_ldscores <- function(output_prefix){
   ldscore.files <-  list.files(dirname(output_prefix),
                                pattern = ".l2.ldscore.parquet", full.names = TRUE)
   if(length(ldscore.files)>1){messager("POLYFUN:: >1 ldscore file detected. Only using the first:",ldscore.files[1])}
-  parquor <- POLYFUN.read_parquet(ldscore.files[1])
+  parquor <- POLYFUN_read_parquet(ldscore.files[1])
   return(parquor)
 }
 
@@ -339,9 +301,9 @@ POLYFUN.gather_ldscores <- function(output_prefix){
 #' BST1 <- echodata::BST1
 #' dat <- BST1
 #' subset_snps <- dat$SNP
-#' annot_DT <- POLYFUN.gather_annotations(chromosomes=dat$CHR[1], subset_snps=subset_snps, polyfun_annots="/pd-omics/tools/polyfun/annotations/baselineLF2.2.UKB")
+#' annot_DT <- POLYFUN_gather_annotations(chromosomes=dat$CHR[1], subset_snps=subset_snps, polyfun_annots="/pd-omics/tools/polyfun/annotations/baselineLF2.2.UKB")
 #' }
-POLYFUN.gather_annotations <- function(chromosomes=c(1:22),
+POLYFUN_gather_annotations <- function(chromosomes=c(1:22),
                                        subset_snps=NULL,
                                        polyfun_annots){
   annot_DT <- lapply(chromosomes, function(chrom){
@@ -350,7 +312,7 @@ POLYFUN.gather_annotations <- function(chromosomes=c(1:22),
                                # e.g. " /pd-omics/tools/polyfun/annotations/baselineLF2.2.UKB/baselineLF2.2.UKB.5.annot.parquet"
                                pattern = paste0("*\\.",chrom,"\\.annot\\.parquet"),
                                full.names = TRUE)
-    annot_df <- POLYFUN.read_parquet(parquet_path = parquet.file)
+    annot_df <- POLYFUN_read_parquet(parquet_path = parquet.file)
     annot_df$BP <- as.integer(annot_df$BP)
     if(!is.null(subset_snps)){
       annot_df <- subset(annot_df, SNP %in% subset_snps)
@@ -368,9 +330,9 @@ POLYFUN.gather_annotations <- function(chromosomes=c(1:22),
 #' @family polyfun
 #' @examples
 #' \dontrun{
-#' ref.prefix <- POLYFUN.download_ref_files(force_overwrite=TRUE)
+#' ref.prefix <- POLYFUN_download_ref_files(force_overwrite=TRUE)
 #' }
-POLYFUN.download_ref_files <- function(alkes_url="https://data.broadinstitute.org/alkesgroup/LDSCORE/1000G_Phase1_plinkfiles.tgz",
+POLYFUN_download_ref_files <- function(alkes_url="https://data.broadinstitute.org/alkesgroup/LDSCORE/1000G_Phase1_plinkfiles.tgz",
                                        # output_path="/sc/arion/projects/pd-omics/data/1000_Genomes/Phase1",
                                        results_dir="./results",
                                        force_overwrite=FALSE,
@@ -411,7 +373,7 @@ POLYFUN.download_ref_files <- function(alkes_url="https://data.broadinstitute.or
 
 #' Get ref data path prefix
 #'
-POLYFUN.get_ref_prefix <- function(ref_prefix=NULL,
+POLYFUN_get_ref_prefix <- function(ref_prefix=NULL,
                                    locus_dir){
   "./resources/1000_Genomes/Phase1/1000G.mac5eur."
 
@@ -426,9 +388,9 @@ POLYFUN.get_ref_prefix <- function(ref_prefix=NULL,
 #' locus_dir <- echodata::locus_dir;
 #' fullSS_path <- example_fullSS(fullSS_path="~/Desktop/Nalls23andMe_2019.fullSS_subset.tsv")
 #' munged_path <- "results/GWAS/Nalls23andMe_2019/_genome_wide/PolyFun/nallsEtAl2019_allSamples_allVariants.mod.munged.parquet"
-#' LDSC.files <- POLYFUN.compute_priors(locus_dir=locus_dir, fullSS_path=fullSS_path, conda_env="echoR")
+#' LDSC.files <- POLYFUN_compute_priors(locus_dir=locus_dir, fullSS_path=fullSS_path, conda_env="echoR")
 #' }
-POLYFUN.compute_priors <- function(polyfun=NULL,
+POLYFUN_compute_priors <- function(polyfun=NULL,
                                     locus_dir,
                                     fullSS_path,
                                     sample_size = NULL,
@@ -443,11 +405,11 @@ POLYFUN.compute_priors <- function(polyfun=NULL,
                                     ref_prefix=NULL,
                                     remove_tmps=TRUE,
                                     conda_env = "echoR"){
-  # polyfun="./echolocatoR/tools/polyfun"; parametric=T;  weights.path=file.path(polyfun,"example_data/weights."); annotations.path=file.path(polyfun,"example_data/annotations."); munged.path= "./Data/GWAS/Nalls23andMe_2019/_genome_wide/PolyFun/sumstats_munged.parquet"; parametric=T; dataset="Nalls23andMe_2019"; prefix="PD_GWAS"; compute_ldscores=F; allow_missing_SNPs=T; chrom="all"; finemap_dat=NULL; locus="LRRK2"; server=F; ref.prefix="/sc/arion/projects/pd-omics/data/1000_Genomes/Phase1/1000G.mac5eur.";
+  # polyfun="./echolocatoR/tools/polyfun"; parametric=T;  weights.path=file.path(polyfun,"example_data/weights."); annotations.path=file.path(polyfun,"example_data/annotations."); munged.path= "./Data/GWAS/Nalls23andMe_2019/_genome_wide/PolyFun/sumstats_munged.parquet"; parametric=T; dataset="Nalls23andMe_2019"; prefix="PD_GWAS"; compute_ldscores=F; allow_missing_SNPs=T; chrom="all"; dat=NULL; locus="LRRK2"; server=F; ref.prefix="/sc/arion/projects/pd-omics/data/1000_Genomes/Phase1/1000G.mac5eur.";
   # echoconda::activate_env(conda_env = conda_env)
   # PATH_cmd <- "source ~/.bash_profile &&"
   python <- echoconda::find_python_path(conda_env = conda_env)
-  polyfun <- POLYFUN.find_polyfun_folder(polyfun_path = polyfun)
+  polyfun <- POLYFUN_find_polyfun_folder(polyfun_path = polyfun)
 
 
 
@@ -464,7 +426,7 @@ POLYFUN.compute_priors <- function(polyfun=NULL,
   # 1. Munge summary stats
 
   messager("PolyFun:: [1]  Create a munged summary statistics file in a PolyFun-friendly parquet format.")
-  munged.path <- POLYFUN.munge_summ_stats(polyfun=polyfun,
+  munged.path <- POLYFUN_munge_summ_stats(polyfun=polyfun,
                                            fullSS_path = fullSS_path,
                                            locus_dir=locus_dir,
                                            sample_size=sample_size,
@@ -536,8 +498,8 @@ POLYFUN.compute_priors <- function(polyfun=NULL,
     LDSC.files <- list.files(out.path,
                              pattern = "*.snpvar_constrained.gz", full.names = TRUE)
     # pd_ldsc <- data.table::fread(PS_LDSC.files[1], nThread = 4)
-    # ldscore <- POLYFUN.read_parquet(file.path(out.path,"PD_GWAS.1.l2.ldscore.parquet"))
-    # bin.1 <- POLYFUN.read_parquet(file.path(out.path,"PD_GWAS.2.bins.parquet"))
+    # ldscore <- POLYFUN_read_parquet(file.path(out.path,"PD_GWAS.1.l2.ldscore.parquet"))
+    # bin.1 <- POLYFUN_read_parquet(file.path(out.path,"PD_GWAS.2.bins.parquet"))
     #rowSums(bin.1[,-c(1:5)]) # each SNP belongs to only 1 bin
   } else { LDSC.files <- list.files(out.path, pattern = "_ridge_constrained.gz", full.names = TRUE) }
 
@@ -564,7 +526,7 @@ POLYFUN.compute_priors <- function(polyfun=NULL,
 #' https://www.biorxiv.org/content/10.1101/807792v3
 #' @keywords internal
 #' @family polyfun
-POLYFUN.run_ldsc <- function(polyfun=NULL,
+POLYFUN_run_ldsc <- function(polyfun=NULL,
                              output_dir=NULL,
                              munged.path,
                              min_INFO = 0.6,
@@ -579,7 +541,7 @@ POLYFUN.run_ldsc <- function(polyfun=NULL,
                              ref.prefix="/sc/arion/projects/pd-omics/data/1000_Genomes/Phase1/1000G.mac5eur.",
                              freq.prefix="/sc/arion/projects/pd-omics/tools/polyfun/1000G_frq/1000G.mac5eur.",
                              conda_env="echoR"){
-  polyfun <- POLYFUN.find_polyfun_folder(polyfun_path = polyfun)
+  polyfun <- POLYFUN_find_polyfun_folder(polyfun_path = polyfun)
   python <- echoconda::find_python_path(conda_env = conda_env) 
 
   # 0. Create paths
@@ -612,7 +574,7 @@ POLYFUN.run_ldsc <- function(polyfun=NULL,
 
 #' Run PolyFun+SUSIE fine-mapping pipeline
 #'
-#' Uses echolocatoR wrapper for SUSIE instead of the \code{\link{POLYFUN.finemapper}}
+#' Uses echolocatoR wrapper for SUSIE instead of the \code{\link{POLYFUN_finemapper}}
 #' function which uses a python script provided with PolyFun.
 #' @source
 #' https://www.biorxiv.org/content/10.1101/807792v3
@@ -620,7 +582,7 @@ POLYFUN.run_ldsc <- function(polyfun=NULL,
 #' @family polyfun
 POLYFUN_SUSIE <- function(locus_dir,
                           polyfun=NULL,
-                          finemap_dat=NULL,
+                          dat=NULL,
                           LD_matrix=NULL,
                           polyfun_approach="non-parametric",
                           dataset_type="GWAS",
@@ -628,17 +590,17 @@ POLYFUN_SUSIE <- function(locus_dir,
                           sample_size=NULL, 
                           PP_threshold=.95,
                           conda_env="echoR"){
-  # polyfun="./echolocatoR/tools/polyfun";  locus_dir="./Data/GWAS/Nalls23andMe_2019/_genome_wide"; dataset="Nalls23andMe_2019"; locus="LRRK2"; finemap_dat=NULL; polyfun_priors="parametric"; sample_size=1474097; min_INFO=0; min_MAF=0; server=T; dataset_type="GWAS"; n_causal=10; PP_threshold=.95
-  polyfun <- POLYFUN.find_polyfun_folder(polyfun_path = polyfun)
+  # polyfun="./echolocatoR/tools/polyfun";  locus_dir="./Data/GWAS/Nalls23andMe_2019/_genome_wide"; dataset="Nalls23andMe_2019"; locus="LRRK2"; dat=NULL; polyfun_priors="parametric"; sample_size=1474097; min_INFO=0; min_MAF=0; server=T; dataset_type="GWAS"; n_causal=10; PP_threshold=.95
+  polyfun <- POLYFUN_find_polyfun_folder(polyfun_path = polyfun)
   out.path <- file.path(dirname(locus_dir),"_genome_wide/PolyFun/output")
-  chrom <- unique(finemap_dat$CHR)
+  chrom <- unique(dat$CHR)
   # messager("++ POLYFUN:: Unique chrom =",paste(chrom,collapse=","))
 
   # Import priors
   # ~~~~~~~~ Approach 1 ~~~~~~~~
   if (polyfun_approach=="precomputed"){
-    priors <- POLYFUN.get_precomputed_priors(locus_dir=locus_dir,
-                                             finemap_dat=finemap_dat,
+    priors <- POLYFUN_get_precomputed_priors(locus_dir=locus_dir,
+                                             dat=dat,
                                              force_new_priors=FALSE,
                                              conda_env=conda_env)
     # precomputed.priors <- priors
@@ -654,12 +616,12 @@ POLYFUN_SUSIE <- function(locus_dir,
   }
 
   # Ensure formatting is correct (sometimes SNP gets turned into logical?)
-  finemap_dat$SNP <- as.character(finemap_dat$SNP)
-  priors <- dplyr::select(priors, SNP, POLYFUN.h2=SNPVAR) %>%
+  dat$SNP <- as.character(dat$SNP)
+  priors <- dplyr::select(priors, SNP, POLYFUN_h2=SNPVAR) %>%
     data.table::data.table() %>%
     dplyr::mutate(SNP=as.character(SNP))
   # Prepare data
-  merged_dat <- data.table::merge.data.table(x = finemap_dat,
+  merged_dat <- data.table::merge.data.table(x = dat,
                                              y = priors,
                                              by="SNP")
   sub.out <- echoLD::subset_common_snps(LD_matrix = LD_matrix,
@@ -675,7 +637,7 @@ POLYFUN_SUSIE <- function(locus_dir,
                      sample_size=sample_size,
                      PP_threshold=PP_threshold,
 
-                     prior_weights=new_DT$POLYFUN.h2,
+                     prior_weights=new_DT$POLYFUN_h2,
                      rescale_priors = TRUE)
   # dat.precomputed <- dat
   # dat.computed <- dat
@@ -709,8 +671,8 @@ POLYFUN_SUSIE <- function(locus_dir,
 #' https://www.biorxiv.org/content/10.1101/807792v3
 #' @keywords internal
 #' @family polyfun
-POLYFUN.finemapper <- function(polyfun=NULL,
-                               finemap_dat=NULL,
+POLYFUN_finemapper <- function(polyfun=NULL,
+                               dat=NULL,
                                npz_gz_LD=NULL,
                                locus=NULL,
                                sample_size=NULL,
@@ -720,10 +682,10 @@ POLYFUN.finemapper <- function(polyfun=NULL,
                                h2_path=NULL,
                                conda_env="echoR"){
   # base_url  <- "./echolocatoR/tools/polyfun/LD_temp"
-  polyfun <- POLYFUN.find_polyfun_folder(polyfun_path = polyfun)
+  polyfun <- POLYFUN_find_polyfun_folder(polyfun_path = polyfun)
   python <- echoconda::find_python_path(conda_env = conda_env)
 
-  chrom <- unique(finemap_dat$CHR)
+  chrom <- unique(dat$CHR)
   file.name <- paste0("chr",chrom,"_","40000001_43000001")
   ld_path <- file.path(locus_dir,"LD",file.name)
   out_path <- file.path(locus_dir,"PolyFun",
@@ -735,9 +697,9 @@ POLYFUN.finemapper <- function(polyfun=NULL,
   #   h2_path <- paste0(url_prefix,chrom,".snpvar_constrained.gz")
   # }
 
-  if(is.null(sample_size) & (!"N" %in% colnames(finemap_dat))){
-    finemap_dat <- get_sample_size(finemap_dat)
-    sample_size <- max(finemap_dat$N)
+  if(is.null(sample_size) & (!"N" %in% colnames(dat))){
+    dat <- get_sample_size(dat)
+    sample_size <- max(dat$N)
   }
   # munged.path <- "~/Desktop/Nalls23andMe_2019.sumstats_munged.parquet"
   # locus="LRRK2"
@@ -758,8 +720,8 @@ POLYFUN.finemapper <- function(polyfun=NULL,
                 "--sumstats",h2_path,
                 "--n",sample_size,
                 "--chr",chrom,
-                "--start",min(finemap_dat$POS),
-                "--end",max(finemap_dat$POS),
+                "--start",min(dat$POS),
+                "--end",max(dat$POS),
                 "--method",method,
                 "--max-num-causal",n_causal,
                 # "--threads 2",# use max detected cores if not specified
@@ -778,7 +740,7 @@ POLYFUN.finemapper <- function(polyfun=NULL,
 #' https://www.biorxiv.org/content/10.1101/807792v3
 #' @keywords internal
 #' @family polyfun
-POLYFUN.plot <- function(dat,
+POLYFUN_plot <- function(dat,
                          LD_matrix,
                          locus=NULL,
                          subtitle="PolyFun Comparison",
@@ -809,7 +771,7 @@ POLYFUN.plot <- function(dat,
     scale_y_continuous(limits = c(0,max(-log10(dat$P))*1.1)) +
 
     # PolyFun priors
-    ggplot(dat, aes(x=Mb, y=POLYFUN.h2, color=POLYFUN.h2)) +
+    ggplot(dat, aes(x=Mb, y=POLYFUN_h2, color=POLYFUN_h2)) +
     scale_color_viridis_c(limits=c(0,1), breaks=c(0,.5,1)) +
     geom_point() +
     # ylim(0,1) +
@@ -862,7 +824,7 @@ POLYFUN.plot <- function(dat,
 #' https://www.biorxiv.org/content/10.1101/807792v3
 #' @keywords internal
 #' @family polyfun
-POLYFUN.ldsc_annot_enrichment <- function(.results = "Data/GWAS/Nalls23andMe_2019/_genome_wide/PolyFun/output/PD_GWAS_LDSC/PD_GWAS_LDSC.results",
+POLYFUN_ldsc_annot_enrichment <- function(.results = "Data/GWAS/Nalls23andMe_2019/_genome_wide/PolyFun/output/PD_GWAS_LDSC/PD_GWAS_LDSC.results",
                                            show_plot=TRUE,
                                            save_plot=FALSE,
                                            title = "LDSC Heritability Enrichment",
@@ -876,7 +838,7 @@ POLYFUN.ldsc_annot_enrichment <- function(.results = "Data/GWAS/Nalls23andMe_201
   res$p_adj <- p.adjust(res$Enrichment_p, method="fdr")
 
 
-  POLYFUN.annot_enrichment_plot  <- function(res,
+  POLYFUN_annot_enrichment_plot  <- function(res,
                                              title = "LDSC Heritability Enrichment",
                                              subtitle = "PD GWAS"){
     sig_res <- subset(res, p_adj<0.05)
@@ -902,26 +864,26 @@ POLYFUN.ldsc_annot_enrichment <- function(.results = "Data/GWAS/Nalls23andMe_201
     hist(res$Enrichment_p, breaks = 50)
     plot_dir <- dirname(.results)
     # Alphabetical
-    gp.all <- POLYFUN.annot_enrichment_plot(res, title, subtitle)
+    gp.all <- POLYFUN_annot_enrichment_plot(res, title, subtitle)
     if(show_plot){print(gp.all)}
     if(save_plot){ggsave(gp.all, filename = file.path(plot_dir,"ldsc_annot_enrich_all.png"),
                          dpi = 400, width=10, height=20)}
     # Top p-vals
-    gp.sig <- POLYFUN.annot_enrichment_plot(subset(res, p_adj<0.05), title, subtitle)
+    gp.sig <- POLYFUN_annot_enrichment_plot(subset(res, p_adj<0.05), title, subtitle)
     if(show_plot){print(gp.sig)}
     if(save_plot){ggsave(gp.sig, filename = file.path(plot_dir,"ldsc_annot_enrich_sig.png"),
                          dpi = 400, width=10,height=5)}
   }
 
 
-  POLYFUN.get_annot_refs <- function(res,
+  POLYFUN_get_annot_refs <- function(res,
                                      supp_file="./echolocatoR/tools/polyfun/SuppTables.xlsx", sheet="S1"){
     supp <- openxlsx::read.xlsx(supp_file,sheet = sheet)
     supp_merge <- data.table:::merge.data.table(data.table::data.table(supp), res,
                                   by.x = "Annotation", by.y = "Category")
     return(supp_merge)
   }
-  # supp_merge <- POLYFUN.get_annot_refs(sig_res)
+  # supp_merge <- POLYFUN_get_annot_refs(sig_res)
   # echodata::createDT(supp_merge[,c("Annotation","Reference","Prop._SNPs","Prop._h2")])
  return(res)
 }
@@ -933,13 +895,13 @@ POLYFUN.ldsc_annot_enrichment <- function(.results = "Data/GWAS/Nalls23andMe_201
 #' https://www.biorxiv.org/content/10.1101/807792v3
 #' @keywords internal
 #' @family polyfun
-POLYFUN.gather_annot_proportions <- function(base_url="/sc/arion/projects/pd-omics/tools/polyfun/annotations/baselineLF2.2.UKB"){
+POLYFUN_gather_annot_proportions <- function(base_url="/sc/arion/projects/pd-omics/tools/polyfun/annotations/baselineLF2.2.UKB"){
   prop.file <- file.path(base_url,"annot_proportions.csv")
   if(!file.exists(prop.file)){
     all_annot <- list.files(base_url, pattern = "*.annot.parquet$", full.names = TRUE)
   annot_PROP <- parallel::mclapply(all_annot, function(x){
     print(x)
-    annot <- POLYFUN.read_parquet(parquet_path = x)
+    annot <- POLYFUN_read_parquet(parquet_path = x)
     annot_sums <- colSums(annot[,6:ncol(annot)])
     annot_prop <- annot_sums/nrow(annot)
     return(annot_prop)
@@ -960,24 +922,24 @@ POLYFUN.gather_annot_proportions <- function(base_url="/sc/arion/projects/pd-omi
 #' https://www.biorxiv.org/content/10.1101/807792v3
 #' @keywords internal
 #' @family polyfun
-POLYFUN.functional_enrichment <- function(finemap_dat,
+POLYFUN_functional_enrichment <- function(dat,
                                           PP_thresh=.95,
                                           save_plot="./Data/GWAS/Nalls23andMe_2019/_genome_wide/PolyFun/annot_enrichment.png"){
   # "...functional enrichment of fine-mapped common SNPs in the PIP range,
   ## defined as the proportion of common SNPs in the PIP range lying in the annotation
   ## divided by the proportion of genome-wide common SNPs lying in the annotation"
   base_url <- "/pd-omics/tools/polyfun/annotations/baselineLF2.2.UKB"
-  chrom <- finemap_dat$CHR[1]
+  chrom <- dat$CHR[1]
   annot.file <- list.files(base_url, pattern = paste0(".UKB.",chrom,".annot.parquet"), full.names = TRUE)
 
   library(reticulate)
   echoconda::activate_env(conda_env = "echoR")
   # pd <- reticulate::import("pandas")
-  annot <- POLYFUN.read_parquet(parquet_path = annot.file,
+  annot <- POLYFUN_read_parquet(parquet_path = annot.file,
                                 conda_env = "echoR",
                                 method = "pandas")
   annot_names <- annot %>% dplyr::select(-c(SNP,CHR,BP,A1,A2)) %>% colnames()
-  annot_DT <- data.table:::merge.data.table(finemap_dat,
+  annot_DT <- data.table:::merge.data.table(dat,
                                             data.table::data.table(annot) %>%
                                               dplyr::rename(SNP_y = SNP, A1_y=A1, A2_y=A2),
                                             by.x = c("CHR","POS"),
@@ -997,7 +959,7 @@ POLYFUN.functional_enrichment <- function(finemap_dat,
   UCS <- annot_DT %>% dplyr::summarise_at(.vars =dplyr::vars(annot_names),
                                           .funs = list(sum(Support > 0 & .>0) / n())) %>% t() %>% `colnames<-`("UCS")
   # Tool-specific CS
-  FM_methods <- gsub("*\\.PP$","",grep(pattern = "*\\.PP$",colnames(finemap_dat), value = TRUE))
+  FM_methods <- gsub("*\\.PP$","",grep(pattern = "*\\.PP$",colnames(dat), value = TRUE))
   CS <- lapply(FM_methods, function(m){
     print(m)
     annot_mod <- annot_DT
@@ -1010,7 +972,7 @@ POLYFUN.functional_enrichment <- function(finemap_dat,
   }) %>% data.table::rbindlist() %>% t() %>% `colnames<-`(FM_methods)
 
   # Gather annotation proportions genome-wide
-  annot_SUMS_DF <- POLYFUN.gather_annot_proportions(base_url)
+  annot_SUMS_DF <- POLYFUN_gather_annot_proportions(base_url)
   SNP_groups <- cbind(nom.sig.GWAS, sig.GWAS, lead.GWAS, UCS, CS)
   enrich <- (SNP_groups / rowMeans(annot_SUMS_DF)) %>% melt() %>%
     `colnames<-`(c("Annot","SNP_group","Enrichment"))
@@ -1036,7 +998,7 @@ POLYFUN.functional_enrichment <- function(finemap_dat,
 #' https://www.biorxiv.org/content/10.1101/807792v3
 #' @keywords internal
 #' @family polyfun
-POLYFUN.h2_enrichment <- function(h2_df,
+POLYFUN_h2_enrichment <- function(h2_df,
                                   target_SNPs=NULL,
                                   fillNA=TRUE){
   # Only consider SNPs that overlap between LDCS and GWAS results to make things fair
@@ -1056,10 +1018,10 @@ POLYFUN.h2_enrichment <- function(h2_df,
   }
   return(h2.enrichment)
 }
-# POLYFUN.h2_enrichment <- function(h2_df,
+# POLYFUN_h2_enrichment <- function(h2_df,
 #                                   target_SNPs=NULL){
 #   h2.target <- subset(h2_df, SNP %in% unique(target_SNPs))
-#   data.table:::merge.data.table(subset(finemap_dat))
+#   data.table:::merge.data.table(subset(dat))
 # }
 
 
@@ -1078,9 +1040,9 @@ POLYFUN.h2_enrichment <- function(h2_df,
 #' merged_dat <- merge_finemapping_results(dataset = dirname(root), LD_reference = "UKB", minimum_support = 0)
 #' merged_dat <- echodata::find_consensus_snps_no_polyfun(merged_dat)
 #'
-#' RES <- POLYFUN.h2_enrichment_SNPgroups(merged_dat=merged_dat, ldsc_dir=file.path(root,"PolyFun/output"),  save_enrich=file.path(root,"PolyFun/Nalls23andMe_2019.h2_enrich.snp_groups.csv.gz"))
+#' RES <- POLYFUN_h2_enrichment_SNPgroups(merged_dat=merged_dat, ldsc_dir=file.path(root,"PolyFun/output"),  save_enrich=file.path(root,"PolyFun/Nalls23andMe_2019.h2_enrich.snp_groups.csv.gz"))
 #' }
-POLYFUN.h2_enrichment_SNPgroups <- function(merged_dat,
+POLYFUN_h2_enrichment_SNPgroups <- function(merged_dat,
                                             chrom="*",
                                             ldsc_dir="/sc/arion/projects/pd-omics/brian/Fine_Mapping/Data/GWAS/Nalls23andMe_2019/_genome_wide/PolyFun/output",
                                             ldsc_suffix="*.snpvar_constrained.gz",
@@ -1102,64 +1064,64 @@ POLYFUN.h2_enrichment_SNPgroups <- function(merged_dat,
   # Iterate over loci
   RES <-parallel::mclapply(unique(merged_dat$Locus), function(locus){
     print(locus)
-    finemap_dat <- subset(merged_dat, Locus==locus)
-    h2_df <- subset(h2_DF, SNP %in% unique(finemap_dat$SNP))
+    dat <- subset(merged_dat, Locus==locus)
+    h2_df <- subset(h2_DF, SNP %in% unique(dat$SNP))
 
     # Random subset  of the same size as the Consenus SNPs
-    size <- dplyr::n_distinct(subset(finemap_dat, Consensus_SNP)$SNP)
-    random <- POLYFUN.h2_enrichment(h2_df=h2_df,
-                                    target_SNPs= sample(finemap_dat$SNP, size = size) )
+    size <- dplyr::n_distinct(subset(dat, Consensus_SNP)$SNP)
+    random <- POLYFUN_h2_enrichment(h2_df=h2_df,
+                                    target_SNPs= sample(dat$SNP, size = size) )
     # All SNPs
-    GWAS.all <- POLYFUN.h2_enrichment(h2_df=h2_df,
-                                      target_SNPs=finemap_dat$SNP )
+    GWAS.all <- POLYFUN_h2_enrichment(h2_df=h2_df,
+                                      target_SNPs=dat$SNP )
     # GWAS nominally sig hits
-    GWAS.nom.sig <- POLYFUN.h2_enrichment(h2_df=h2_df,
-                                          target_SNPs=subset(finemap_dat, P<.05)$SNP )
+    GWAS.nom.sig <- POLYFUN_h2_enrichment(h2_df=h2_df,
+                                          target_SNPs=subset(dat, P<.05)$SNP )
     # GWAS sig hits
-    GWAS.sig <- POLYFUN.h2_enrichment(h2_df=h2_df,
-                                      target_SNPs=subset(finemap_dat, P<5e-8)$SNP)
+    GWAS.sig <- POLYFUN_h2_enrichment(h2_df=h2_df,
+                                      target_SNPs=subset(dat, P<5e-8)$SNP)
     # Lead GWAS
-    GWAS.lead <- POLYFUN.h2_enrichment(h2_df=h2_df,
-                                       target_SNPs=subset(finemap_dat, leadSNP)$SNP)
+    GWAS.lead <- POLYFUN_h2_enrichment(h2_df=h2_df,
+                                       target_SNPs=subset(dat, leadSNP)$SNP)
     # Credible Set
-    UCS <- POLYFUN.h2_enrichment(h2_df=h2_df,
-                                 target_SNPs = subset(finemap_dat, Support>0)$SNP)
+    UCS <- POLYFUN_h2_enrichment(h2_df=h2_df,
+                                 target_SNPs = subset(dat, Support>0)$SNP)
     # # PAINTOR CS
-    # PAINTOR.credset <- POLYFUN.h2_enrichment(h2_df=h2_df,
-    #                                          target_SNPs = subset(finemap_dat, PAINTOR.CS>0)$SNP)
-    ABF.credset <- POLYFUN.h2_enrichment(h2_df=h2_df,
-                                         target_SNPs = subset(finemap_dat, ABF.CS>0)$SNP)
+    # PAINTOR.credset <- POLYFUN_h2_enrichment(h2_df=h2_df,
+    #                                          target_SNPs = subset(dat, PAINTOR.CS>0)$SNP)
+    ABF.credset <- POLYFUN_h2_enrichment(h2_df=h2_df,
+                                         target_SNPs = subset(dat, ABF.CS>0)$SNP)
 
-    FINEMAP.credset <- POLYFUN.h2_enrichment(h2_df=h2_df,
-                                             target_SNPs = subset(finemap_dat, FINEMAP.CS>0)$SNP)
+    FINEMAP.credset <- POLYFUN_h2_enrichment(h2_df=h2_df,
+                                             target_SNPs = subset(dat, FINEMAP.CS>0)$SNP)
 
-    SUSIE.credset <- POLYFUN.h2_enrichment(h2_df=h2_df,
-                                           target_SNPs = subset(finemap_dat, SUSIE.CS>0)$SNP)
+    SUSIE.credset <- POLYFUN_h2_enrichment(h2_df=h2_df,
+                                           target_SNPs = subset(dat, SUSIE.CS>0)$SNP)
 
-    POLYFUN_SUSIE.credset <- POLYFUN.h2_enrichment(h2_df=h2_df,
-                                                   target_SNPs = subset(finemap_dat, POLYFUN_SUSIE.CS>0)$SNP)
+    POLYFUN_SUSIE.credset <- POLYFUN_h2_enrichment(h2_df=h2_df,
+                                                   target_SNPs = subset(dat, POLYFUN_SUSIE.CS>0)$SNP)
     # Support levels
     ## Support==0
-    support0 <- POLYFUN.h2_enrichment(h2_df=h2_df,
-                                      target_SNPs = subset(finemap_dat, Support==0)$SNP)
-    support1 <- POLYFUN.h2_enrichment(h2_df=h2_df,
+    support0 <- POLYFUN_h2_enrichment(h2_df=h2_df,
+                                      target_SNPs = subset(dat, Support==0)$SNP)
+    support1 <- POLYFUN_h2_enrichment(h2_df=h2_df,
                                       target_SNPs = subset(finemap_dat, Support==1)$SNP)
-    support2 <- POLYFUN.h2_enrichment(h2_df=h2_df,
+    support2 <- POLYFUN_h2_enrichment(h2_df=h2_df,
                                       target_SNPs = subset(finemap_dat, Support==2)$SNP)
-    support3 <- POLYFUN.h2_enrichment(h2_df=h2_df,
+    support3 <- POLYFUN_h2_enrichment(h2_df=h2_df,
                                       target_SNPs = subset(finemap_dat, Support==3)$SNP)
-    support4 <- POLYFUN.h2_enrichment(h2_df=h2_df,
+    support4 <- POLYFUN_h2_enrichment(h2_df=h2_df,
                                       target_SNPs = subset(finemap_dat, Support==4)$SNP)
 
     # Consenus SNPs
-    Finemap.consensus <- POLYFUN.h2_enrichment(h2_df=h2_df,
+    Finemap.consensus <- POLYFUN_h2_enrichment(h2_df=h2_df,
                                                target_SNPs = subset(finemap_dat, Consensus_SNP)$SNP)
 
     # Consensus SNPs (no PolyFun)
-    Finemap.consensus_noPF <- POLYFUN.h2_enrichment(h2_df=h2_df,
+    Finemap.consensus_noPF <- POLYFUN_h2_enrichment(h2_df=h2_df,
                                                     target_SNPs = subset(finemap_dat, Consensus_SNP_noPF)$SNP)
     # UCS SNPs (no PolyFun)
-    UCS_noPF <- POLYFUN.h2_enrichment(h2_df=h2_df,
+    UCS_noPF <- POLYFUN_h2_enrichment(h2_df=h2_df,
                                       target_SNPs = subset(finemap_dat, Support_noPF>0)$SNP)
 
     res <- data.frame(SNP_group=c("Random",
@@ -1220,11 +1182,11 @@ POLYFUN.h2_enrichment_SNPgroups <- function(merged_dat,
 #' \dontrun{
 #' root <- "/sc/arion/projects/pd-omics/brian/Fine_Mapping"
 #' merged_dat <- merge_finemapping_results(dataset = file.path("Data/GWAS/Nalls23andMe_2019"), LD_reference = "UKB", minimum_support = 0)
-#' RES <- POLYFUN.h2_enrichment_SNPgroups(merged_dat=merged_dat, out.path="/sc/arion/projects/pd-omics/brian/Fine_Mapping/Data/GWAS/Nalls23andMe_2019/_genome_wide/PolyFun/output")
+#' RES <- POLYFUN_h2_enrichment_SNPgroups(merged_dat=merged_dat, out.path="/sc/arion/projects/pd-omics/brian/Fine_Mapping/Data/GWAS/Nalls23andMe_2019/_genome_wide/PolyFun/output")
 #'
-#' plot.h2 <- POLYFUN.h2_enrichment_SNPgroups_plot(RES = RES, show_plot = TRUE)
+#' plot.h2 <- POLYFUN_h2_enrichment_SNPgroups_plot(RES = RES, show_plot = TRUE)
 #' }
-POLYFUN.h2_enrichment_SNPgroups_plot <- function(RES,
+POLYFUN_h2_enrichment_SNPgroups_plot <- function(RES,
                                                  snp_groups=c("GWAS lead","UCS","Consensus (-PolyFun)","Consensus"),
                                                  comparisons_filter=function(x){if("Consensus" %in% x) return(x)},
                                                  method="wilcox.test",

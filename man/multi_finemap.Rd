@@ -44,5 +44,9 @@ dat <- BST1
 finemap_method_list <- c("ABF","SUSIE")
 }
 }
+\seealso{
+Other finemapping functions: 
+\code{\link{finemap_handler}()}
+}
 \concept{finemapping functions}
 \keyword{internal}

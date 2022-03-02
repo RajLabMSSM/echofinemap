@@ -65,13 +65,13 @@ multi_finemap <- function(locus_dir,
   for(i in seq_len(length(unique(finemap_method_list)))){
     m <- unique(finemap_method_list)[i];
     message("\n+++ Multi-finemap:: ",m," +++")
-    finemap_dat <- null_DT <- data.table::data.table(SNP=merged_dat$SNP,
+    dat <- null_DT <- data.table::data.table(SNP=merged_dat$SNP,
                                                      CS=NA,
                                                      PP=NA);
     # DT <- tryCatch({
       # EXPRESSION
      try({
-       finemap_dat <- finemap_method_handler(
+       dat <- finemap_method_handler(
          fullSS_path = fullSS_path,
          locus_dir = locus_dir,
          finemap_method = m,
@@ -110,11 +110,11 @@ multi_finemap <- function(locus_dir,
       #   }
       # ) ## End tryCatch
       try({messager("++ Credible Set SNPs identified =",
-                    nrow(subset(finemap_dat, CS>0)),v=verbose )})
+                    nrow(subset(dat, CS>0)),v=verbose )})
       # Add results to method-specific columns
       messager("++ Merging",m,"results with multi-finemap data.",v=verbose);
       value_var <- if(m=="COJO"){"Conditioned_Effect"}else{"PP"};
-      dat_select <- subset(finemap_dat, select = c("SNP","CS",value_var) );
+      dat_select <- subset(dat, select = c("SNP","CS",value_var) );
       # Rename columns according to method name
       cols <- colnames(dat_select);
       colnames(dat_select) <- c("SNP", 

@@ -3,6 +3,8 @@
 export(ABF)
 export(FINEMAP)
 export(SUSIE)
+export(finemap_handler)
+export(read_parquet)
 importFrom(Matrix,forceSymmetric)
 importFrom(coloc,finemap.abf)
 importFrom(dplyr,"%>%")

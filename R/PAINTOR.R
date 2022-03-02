@@ -68,11 +68,11 @@ PAINTOR.create_locusFile <- function(subset_path,
                                         use_saved=TRUE,
                                         output_path=output_path)
   # Get the party started using the GWAS file
-  finemap_dat <- data.table::fread(subset_path, nThread = 4) %>%
+  dat <- data.table::fread(subset_path, nThread = 4) %>%
     dplyr::mutate(CHR=paste0("chr",CHR),
                   RSID=SNP,
                   ZSCORE.P1=Zscore(x = Effect, z.info = z.info.gwas))
-  merged_DT <- finemap_dat
+  merged_DT <- dat
 
   # Merge QTL data (for loop won't run if QTL_datasets=NULL)
   i=1
@@ -111,7 +111,7 @@ PAINTOR.create_locusFile <- function(subset_path,
 #' Create QTL locus file for PAINTOR
 #'
 #' @keywords internal
-PAINTOR.create_locusFile.QTL <- function(finemap_dat,
+PAINTOR.create_locusFile.QTL <- function(dat,
                                          GWAS_datasets,
                                          QTL_datasets=NULL,
                                          PT_results_path,
@@ -119,7 +119,7 @@ PAINTOR.create_locusFile.QTL <- function(finemap_dat,
                                          metric_suffix=".t_stat",
                                          NA_method=c("fill","drop"),
                                          force_new_zscore=FALSE){
-  locus_DT <- finemap_dat
+  locus_DT <- dat
   i=1
   # Iterate GWAS
   for(gwas in GWAS_datasets){
@@ -256,10 +256,10 @@ PAINTOR.prepare_LD <- function(subset_path,
   ## The output of PAINTOR will not be correct if there are mismatches of this type in the data.
   ##Please see wiki section 2a for instructions on how to use the LD utility provided with the software."
   messager("++ PAINTOR:: Creating LD Matrix File...")
-  finemap_dat <- data.table::fread(file.path(subset_path,"Multi-finemap/Multi-finemap_results.txt"), nThread = 4)
+  dat <- data.table::fread(file.path(subset_path,"Multi-finemap/Multi-finemap_results.txt"), nThread = 4)
   if(is.null(LD_matrix)){
     LD_matrix <- LD.load_or_create(locus_dir=locus_dir,
-                                   dat=finemap_dat,
+                                   dat=dat,
                                    remote_LD  = TRUE,
                                    force_new_LD = FALSE,
                                    LD_reference="1KG_Phase1",
@@ -491,12 +491,12 @@ PAINTOR.process_results <- function(PT_results_path,
 #' Merge PAINTOR results
 #'
 #'  @keywords internal
-PAINTOR.merge_results <- function(finemap_dat,
+PAINTOR.merge_results <- function(dat,
                                   paintor.results,
                                   PP_threshold=.5,
                                   multi_finemap_col_name="PAINTOR"){
   messager("PAINTOR:: Merging PAINTOR results with multi-finemap file.")
-  merged_DT <- data.table:::merge.data.table(finemap_dat, paintor.results[,c("RSID","Posterior_Prob")],
+  merged_DT <- data.table:::merge.data.table(dat, paintor.results[,c("RSID","Posterior_Prob")],
                                              by.x="SNP", by.y="RSID", all.x = TRUE)
   PP.col.name <- paste0(multi_finemap_col_name,".PP")
   names(merged_DT)[names(merged_DT) == "Posterior_Prob"] <- PP.col.name
@@ -669,7 +669,7 @@ PAINTOR.import_QTL_DT <- function(QTL_datasets,
 #' \href{https://github.com/gkichaev/PAINTOR_V3.0}{GitHub}
 #' \href{https://github.com/gkichaev/PAINTOR_V3.0/wiki/2a.-Computing-1000-genomes-LD}{LD Tutorial}
 #' @keywords internal
-PAINTOR <- function(finemap_dat=NULL,
+PAINTOR <- function(dat=NULL,
                     paintor_path = NULL,
                     GWAS_datasets=NULL,
                     QTL_datasets=NULL,
@@ -696,7 +696,7 @@ PAINTOR <- function(finemap_dat=NULL,
   # Note: All file formats are assumed to be single space delimited.
 
   ## Quick setup
-  # chromatin_state="TssA"; paintor_path = "./echolocatoR/tools/PAINTOR_V3.0";  QTL_datasets = c("Fairfax_2014_IFN","Fairfax_2014_LPS24");locus_name=NA; locus="LRRK2";  no_annotations=F;  XGR_dataset=NA; ROADMAP_search="monocyte"; n_causal=5; finemap_dat=NA; multi_finemap_col_name="PAINTOR_Fairfax";  PP_threshold=.95; QTL_datasets=c("MESA_CAU","MESA_HIS"); trim_gene_limits=T; multi_finemap_col_name <- "PAINTOR_MESA_transethnic"; QTL_populations = c("CAU","HIS"); GWAS_populations="EUR"; use_annotations=F; force_new_LD=F; force_new_subset=F; LD_reference="1KG_Phase1"; GWAS_datasets = "Nalls23andMe_2019";
+  # chromatin_state="TssA"; paintor_path = "./echolocatoR/tools/PAINTOR_V3.0";  QTL_datasets = c("Fairfax_2014_IFN","Fairfax_2014_LPS24");locus_name=NA; locus="LRRK2";  no_annotations=F;  XGR_dataset=NA; ROADMAP_search="monocyte"; n_causal=5; dat=NA; multi_finemap_col_name="PAINTOR_Fairfax";  PP_threshold=.95; QTL_datasets=c("MESA_CAU","MESA_HIS"); trim_gene_limits=T; multi_finemap_col_name <- "PAINTOR_MESA_transethnic"; QTL_populations = c("CAU","HIS"); GWAS_populations="EUR"; use_annotations=F; force_new_LD=F; force_new_subset=F; LD_reference="1KG_Phase1"; GWAS_datasets = "Nalls23andMe_2019";
 
   # if(is.na(GWAS_dataset_name)){
   #   GWAS_dataset_name <- basename(dirname(subset_path));
@@ -720,11 +720,11 @@ PAINTOR <- function(finemap_dat=NULL,
       fullSS <- Directory_info(GWAS_datasets, "fullSS.local")
       subset_path <- file.path(dirname(fullSS),locus)
       mfm_path <- file.path(subset_path,"Multi-finemap/Multi-finemap_results.txt")
-      if(is.null(finemap_dat)){
-        messager("PAINTOR:: No finemap_dat supplied. Retrieving from storage:",mfm_path)
-        finemap_dat <- data.table::fread(mfm_path, nThread = 4)
+      if(is.null(dat)){
+        messager("PAINTOR:: No dat supplied. Retrieving from storage:",mfm_path)
+        dat <- data.table::fread(mfm_path, nThread = 4)
       }
-      finemap_dat <- calculate_tstat(finemap_dat=finemap_dat)
+      dat <- calculate_tstat(dat=dat)
   }
   if(!is.null(QTL_datasets)){
     qtl_DT <- PAINTOR.import_QTL_DT(QTL_datasets = QTL_datasets,
@@ -733,23 +733,23 @@ PAINTOR <- function(finemap_dat=NULL,
                                         trim_gene_limits = trim_gene_limits,
                                         force_new_subset = force_new_subset)
     if(!is.null(GWAS_datasets) & length(GWAS_datasets)==1){
-      finemap_dat <- finemap_dat[,c("SNP","t_stat","A1","A2","P","leadSNP")]
-      colnames(finemap_dat)[-1] <- paste0("GWAS.",colnames(finemap_dat)[-1])
-      finemap_dat <- data.table:::merge.data.table(finemap_dat, qtl_DT, by="SNP")
+      dat <- dat[,c("SNP","t_stat","A1","A2","P","leadSNP")]
+      colnames(dat)[-1] <- paste0("GWAS.",colnames(dat)[-1])
+      dat <- data.table:::merge.data.table(dat, qtl_DT, by="SNP")
       # Flip alleles
-      finemap_dat <- finemap_dat %>%
+      dat <- dat %>%
         dplyr::mutate(GWAS.t_stat = ifelse((GWAS.A1!=A1 & GWAS.A2!=A2),
                                            -GWAS.t_stat,GWAS.t_stat)) %>%
         data.table::data.table()
       # Rename GWAS cols
-      colnames(finemap_dat) <- gsub("GWAS.",paste0(GWAS_datasets[1],"."),colnames(finemap_dat))
+      colnames(dat) <- gsub("GWAS.",paste0(GWAS_datasets[1],"."),colnames(dat))
     } else{
-      finemap_dat <- qtl_DT
+      dat <- qtl_DT
     }
   }
 
 
-  locus_DT <- PAINTOR.create_locusFile.QTL(finemap_dat=finemap_dat,
+  locus_DT <- PAINTOR.create_locusFile.QTL(dat=dat,
                                            GWAS_datasets=GWAS_datasets,
                                            QTL_datasets=QTL_datasets,
                                            locus_name = locus_name,
@@ -768,7 +768,7 @@ PAINTOR <- function(finemap_dat=NULL,
                                          locus = locus,
                                          LD_matrix=LD_matrix)
   } else{
-    LD.list <- PAINTOR.prepare_LD.transethnic(dat=subset(finemap_dat, SNP %in% locus_DT$RSID),
+    LD.list <- PAINTOR.prepare_LD.transethnic(dat=subset(dat, SNP %in% locus_DT$RSID),
                                               PT_results_path=PT_results_path,
                                               locus=locus,
                                               QTL_datasets=QTL_datasets,
@@ -839,22 +839,22 @@ PAINTOR <- function(finemap_dat=NULL,
   paintor.results <- PAINTOR.process_results(PT_results_path=PT_results_path,
                                              locus_name=locus_name)
   # Remove columns with the same name
-  ff.cols <- grep(paste0(multi_finemap_col_name,"."), colnames(finemap_dat), value = TRUE)
-  if(length(ff.cols)>0){finemap_dat[,c(ff.cols):=NULL]}
+  ff.cols <- grep(paste0(multi_finemap_col_name,"."), colnames(dat), value = TRUE)
+  if(length(ff.cols)>0){dat[,c(ff.cols):=NULL]}
   # Merge results
   # LD_matrix <- readRDS("./Data/QTL/MESA/CAU/LRRK2/plink/LD_matrix.RData")
-  finemap_dat.P <- PAINTOR.import_QTL_DT(QTL_datasets = QTL_datasets,
+  dat.P <- PAINTOR.import_QTL_DT(QTL_datasets = QTL_datasets,
                                       locus = locus,
                                       trim_gene_limits = trim_gene_limits,
                                       force_new_subset = force_new_subset,
                                       metric = "P")
-  finemap_dat.P <- data.table:::merge.data.table(finemap_dat.P,
-                                subset(finemap_dat, select=c("SNP",
+  dat.P <- data.table:::merge.data.table(dat.P,
+                                subset(dat, select=c("SNP",
                                                             paste0(GWAS_datasets,".P"),
                                                             paste0(GWAS_datasets,".leadSNP")))
                                 )
 
-  merged_DT <- PAINTOR.merge_results(finemap_dat = finemap_dat.P,
+  merged_DT <- PAINTOR.merge_results(dat = dat.P,
                                      paintor.results = paintor.results,
                                      PP_threshold = PP_threshold,
                                      multi_finemap_col_name = multi_finemap_col_name)
@@ -864,7 +864,7 @@ PAINTOR <- function(finemap_dat=NULL,
 
   # Update Consensus SNP col and Summarise
   # merged_DT <- echodata::find_consensus_snps(merged_DT, support_thresh = 2)
-  # top_snps <- (finemap_dat %>% arrange(desc(Support)))[,c("SNP","Support","Consensus_SNP")] %>% head(10)
+  # top_snps <- (dat %>% arrange(desc(Support)))[,c("SNP","Support","Consensus_SNP")] %>% head(10)
   # data.table::fwrite(merged_DT, mfm_path, nThread = 4, sep="\t")
 
   # PLOT

@@ -1,5 +1,9 @@
+#' Fine-map handler
+#' 
+#' Handle fine-mapping across multiple tools.
+#' 
 #' @family finemapping functions
-#' @keywords internal
+#' @export
 finemap_handler <- function(locus_dir,
                             fullSS_path,
                             finemap_methods=c("SUSIE","FINEMAP"),

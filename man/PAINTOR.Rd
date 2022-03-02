@@ -9,7 +9,7 @@
 }
 \usage{
 PAINTOR(
-  finemap_dat = NULL,
+  dat = NULL,
   paintor_path = NULL,
   GWAS_datasets = NULL,
   QTL_datasets = NULL,
