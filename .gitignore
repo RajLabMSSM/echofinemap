@@ -1,4 +1,5 @@
 .conda$
+results/
 # R project files
 *.Rproj
 .Rproj.user
