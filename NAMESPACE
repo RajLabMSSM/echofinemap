@@ -2,7 +2,9 @@
 
 export(ABF)
 export(FINEMAP)
+export(POLYFUN_SUSIE)
 export(SUSIE)
+export(create_method_path)
 export(finemap_handler)
 export(read_parquet)
 importFrom(Matrix,forceSymmetric)

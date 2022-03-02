@@ -46,6 +46,7 @@ finemap_method_list <- c("ABF","SUSIE")
 }
 \seealso{
 Other finemapping functions: 
+\code{\link{create_method_path}()},
 \code{\link{finemap_handler}()}
 }
 \concept{finemapping functions}

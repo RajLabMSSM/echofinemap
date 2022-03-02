@@ -31,6 +31,7 @@ Handle fine-mapping across multiple tools.
 }
 \seealso{
 Other finemapping functions: 
+\code{\link{create_method_path}()},
 \code{\link{multi_finemap}()}
 }
 \concept{finemapping functions}

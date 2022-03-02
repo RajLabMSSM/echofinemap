@@ -1,0 +1,3 @@
+[submodule "inst/tools/polyfun"]
+	path = inst/tools/polyfun
+	url = https://github.com/omerwe/polyfun.git

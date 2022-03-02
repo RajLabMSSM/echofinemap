@@ -20,12 +20,12 @@ Read parquet file as data.frame
 }
 \examples{
 \dontrun{
-parquet_path <- system.file("tools/polyfun/example_data/weights.10.l2.ldscore.parquet", package = "echolocatoR")
+parquet_path <- system.file("tools/polyfun/example_data/weights.10.l2.ldscore.parquet", package = "echofinemap")
 #### Using python (pandas) - default ####
-dat <- read_parquet(parquet_path=parquet_path, method="pandas")
+parq <- read_parquet(parquet_path=parquet_path, method="pandas")
 
 #### Using R (SparkR) ####
-dat <- read_parquet(parquet_path=parquet_path, method="sparkR")
+parq <- read_parquet(parquet_path=parquet_path, method="sparkR")
 }
 }
 \seealso{
