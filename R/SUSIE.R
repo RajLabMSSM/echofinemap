@@ -1,4 +1,3 @@
-
 # ***************** #
 ####    SUSIE    ####
 # ***************** #
@@ -26,44 +25,61 @@
 #' Sum of Single Effects (SuSiE): Iterative Bayesian Step-wise Selection
 #'
 #' \strong{Notes on convergence:}
-#' \pkg{susieR} will often give the warning: \code{IBSS algorithm did not converge in 100 iterations!}.
+#' \pkg{susieR} will often give the warning: 
+#' \code{IBSS algorithm did not converge in 100 iterations!}.
 #' This means the results might not necessarily be reliable.
 #' There's several things you can try to avoid this:
 #' \itemize{
-#' \item{Make sure \code{susieR} is up-to-date: \code{ devtools::install_github("stephenslab/susieR@@0.9.0")}}
+#' \item{Make sure \code{susieR} is up-to-date: 
+#' \code{ devtools::install_github("stephenslab/susieR@@0.9.0")}}
 #' \item{Increase \code{max_causal} (e.g. 5 => 10).}
-#' \item{Increase \code{max_iter} (e.g. 100 => 1000), though this will take longer.}
-#' \item{Decrease the locus window size, which will also speed up the algorithm but potentially miss causal variants far from the lead SNP.}
+#' \item{Increase \code{max_iter} (e.g. 100 => 1000), 
+#' though this will take longer.}
+#' \item{Decrease the locus window size, which will also speed up
+#'  the algorithm but potentially miss causal variants far from the lead SNP.}
 #' }
-#' Changing \code{estimate_prior_method} does not seem to affect covergence warnings.
+#' Changing \code{estimate_prior_method} does not seem to affect 
+#' convergence warnings.
 #'
 #' \strong{Notes on variance:}
 #' \href{https://github.com/stephenslab/susieR/issues/90}{GitHub Issue}
-#' If \code{estimate_residual_variance=TRUE} \emph{without} providing \code{var_y}
-#' \emph{and} \code{L>1}, \pkg{susieR} will throw error:
+#' If \code{estimate_residual_variance=TRUE} \emph{without} 
+#' providing \code{var_y} \emph{and} \code{L>1}, \pkg{susieR} will throw error:
 #' \code{Estimating residual variance failed: the estimated value is negative}
-#' Running \pkg{susieR} with \code{var_y = var(b)} provides \emph{exactly} the same results.
+#' Running \pkg{susieR} with \code{var_y = var(b)} provides \emph{exactly}
+#'  the same results.
 #'
-#' @param max_causal The maximum number of non-zero effects (and thus causal variants).
-#' @param rescale_priors If prior probabiltities are supplied,
+#' @param max_causal The maximum number of non-zero effects 
+#' (and thus causal variants).
+#' @param rescale_priors If prior probabilities are supplied,
 #' rescale them from 0-1 (i.e. \code{rescaled_priors = priors / sum(priors)}).
 #' @param plot_track_fit Record each iteration and make a GIF of the
 #' fine-mapping algorithm learning the causal variants.
-#' \strong{WARNING!:} Making this plot can take a long time if there's many iterations.
+#' \strong{WARNING!:} Making this plot can take a long time if there's
+#'  many iterations.
 #' @inheritParams susieR::susie_suff_stat
-#' @inheritParams finemap_locus
+#' @inheritParams susieR::susie_plot_iteration
+#' @inheritParams echoLD::load_or_create
+#' 
 #' @source
 #' \href{https://stephenslab.github.io/susieR/}{GitHub}
-#' \href{https://rss.onlinelibrary.wiley.com/doi/full/10.1111/rssb.12388}{Publication}
+#' \href{https://rss.onlinelibrary.wiley.com/doi/full/10.1111/rssb.12388}{
+#' Publication}
+#' 
+#' @importFrom echoLD subset_common_snps
+#' @importFrom dplyr %>% 
+#' @importFrom stats setNames
+#' @importFrom rlang missing_arg
+#' @importFrom Matrix forceSymmetric
+#' @importFrom susieR susie_get_pip susie_get_cs susie_plot_iteration
 #' @examples
-#' BST1 <- echodata::BST1; data("LD_matrix");
-#' # LD_matrix <- readRDS("~/Desktop/Fine_Mapping/Data/GWAS/Nalls23andMe_2019/BST1/plink/UKB_LD.RDS")
-#' finemap_DT <- SUSIE(dat=BST1, LD_matrix=LD_matrix, estimate_residual_variance=TRUE)
+#' dat <- echodata::BST1
+#' LD_matrix <- echodata::BST1_LD_matrix
+#' dat2 <- echofinemap::SUSIE(dat=dat, LD_matrix=LD_matrix)
 #' @export
 SUSIE <- function(dat,
                   LD_matrix,
                   dataset_type="GWAS",
-
                   # susieR default max_causal=L=10
                   max_causal=5,
                   # susieR default sample_size=n=<missing>
@@ -72,8 +88,9 @@ SUSIE <- function(dat,
                   prior_weights=NULL,
                   # susieR default PP_threshold=coverage=.95
                   PP_threshold=.95,
-                  # PolyFun uses default `scaled_prior_variance=0.0001` (susieR default=0.2)
-                  scaled_prior_variance=0.001,# (previously 0.001)
+                  # PolyFun default: scaled_prior_variance=0.0001 
+                  # susieR default: scaled_prior_variance=0.2
+                  scaled_prior_variance=0.001, 
                   # susieR default estimate_residual_variance=T
                   estimate_residual_variance=FALSE,
                   # susieR default estimate_prior_variance=T
@@ -89,163 +106,70 @@ SUSIE <- function(dat,
                   rescale_priors=TRUE,
                   plot_track_fit=FALSE,
                   return_all_CS=TRUE,
+                  file_prefix=file.path(tempdir(),"SUSIE"),
+                  var_name="Expression",
                   verbose=TRUE){
-  # Quickstart
-  # dataset_type="GWAS";max_causal=5;sample_size=NULL;prior_weights=NULL;PP_threshold=.95;scaled_prior_variance=0.001;
-  # estimate_residual_variance=F;estimate_prior_variance=T;residual_variance=NULL;max_iter=100;manual_var_y=F;rescale_priors=T; estimate_prior_method="optim";
-  # plot_track_fit=F;return_all_CS=T;verbose=T;
-  # dat=BST1; LD_matrix <- readRDS("/Volumes/Steelix/fine_mapping_files/GWAS/Nalls23andMe_2019/BST1/plink/UKB_LD.RDS");
-
-  # sample_size
+  
+  #### sample_size ####
   if(is.null(sample_size)){
-    ss_df <- get_sample_size(dat, sample_size = sample_size)
+    ss_df <- echodata::get_sample_size(dat = dat, 
+                                       method = sample_size,
+                                       verbose = verbose)
     sample_size <- if("N" %in% colnames(ss_df)) max(ss_df$N, na.rm = TRUE)
-    if(is.null(sample_size)) stop("sample_size=NULL")
+    if(is.null(sample_size)) stop("sample_size==NULL")
   }
   messager("+ SUSIE:: sample_size=",sample_size,v=verbose)
-
-  # var_y
+  #### Get phenotype variance ####
   if(manual_var_y){
-    susie_vars <- get_var_y(dat, dataset_type)
-    var_y <- susie_vars$var_y
+    var_y <- get_pheno_variance(dat = dat,
+                                dataset_type =  dataset_type, 
+                                var_name = var_name,
+                                verbose = verbose)
   } else {var_y <- rlang::missing_arg()}
-
-
-  messager("+ SUSIE:: max_causal =",max_causal, v=verbose)
-  if(!is.null(prior_weights)){
-    messager("+ SUSIE:: Utilizing prior_weights for",length(prior_weights),"SNPs.",v=verbose)
-    if(rescale_priors){
-      messager("+ SUSIE:: Rescaling priors",v=verbose)
-      prior_weights <- prior_weights / sum(prior_weights, na.rm = TRUE)
-    }
-  }
+  #### Filter SNPs to only those in LD ref ####
   sub.out <- echoLD::subset_common_snps(LD_matrix=LD_matrix,
                                 dat=dat,
                                 fillNA = 0,
                                 verbose = verbose)
+  keep_i <- which(dat$SNP %in% sub.out$DT$SNP) ### Necessary to subset priors
   LD_matrix <- sub.out$LD
-  dat <- sub.out$DT
-
+  dat <- sub.out$DT 
+  #### Check priors ####
+  prior_weights <- SUSIE_check_priors(
+    prior_weights=prior_weights,
+    dat=dat,
+    keep_i=keep_i,
+    max_causal=max_causal,
+    rescale_priors=rescale_priors,
+    verbose=verbose)
   ## Ensure the matrix is of "symmetric" class (not just objectively symmetric)
-  ## susieR will throw an error otherwise
-  LD_matrix <- Matrix::forceSymmetric(LD_matrix)
-
-
-  # library(susieR)
-  # SUSIE's authors "merge[d] susie_ss and susie_bhat to susie_suff_stat" in 11/2019.
-  susie_version <- utils::packageVersion("susieR")
-  if(length(find("susie_bhat"))==0){
-    messager("+ SUSIE:: Using `susie_suff_stat()` from susieR",paste0("v",susie_version),v=verbose)
-    susie_func <- get("susie_suff_stat", asNamespace("susieR"))
-  } else {
-    messager("+ SUSIE:: Using `susie_bhat()` from susieR",paste0("v",susie_version),v=verbose)
-    susie_func <- get("susie_bhat", asNamespace("susieR"))
-  }
-
-  fitted_bhat <-  susie_func(bhat = dat$Effect,
-                             shat = dat$StdErr,
-                             maf = if("MAF" %in% colnames(dat)) dat$MAF else NULL,
-                             R = base::data.matrix(LD_matrix),
-                             n = sample_size, # Number of samples/individuals in the dataset
-                             L = max_causal, # maximum number of non-zero effects
-                             ## NOTE: setting L == 1 has a strong tendency to simply return the SNP with the largest effect size.
-                             scaled_prior_variance = scaled_prior_variance, # 0.1: Equates to "proportion of variance explained"
-                             estimate_prior_variance = estimate_prior_variance,
-                             residual_variance = residual_variance,
-                             # Raising max_iter can help susie converge
-                             max_iter = max_iter,
-                             ### Correspondence with Omer Weissbrod (7/28/2020):
-                             ## The value of var_y also shouldn't make a big difference if estimate_residual_variance=TRUE,
-                             ## because it just sets the initial value of the optimization algorithm. However,
-                             ## if estimate_residual_variance=F it makes a big difference.
-                             ## I also found that I often get the error you mentioned if var_y is very small.
-                             ## It could be due to not supplying a good initial parameter value.
-                             ## I believe that you can change the optimization method to EM and then you will get more robust convergence. In any case, if the causal effects in your target locus is small, var_y=1 to a first order approximation should give you pretty robust results.
-                             estimate_prior_method = estimate_prior_method,
-                             # standardize = TRUE,
-                             estimate_residual_variance = estimate_residual_variance, # TRUE
-
-                             #### IMPORTANT!! susieR uses the missing() function,
-                             ## which means supplying var_y=NULL will give you errors!!!
-                             ## When var_y is missing, it will be calculated automatically.
-                             ### Correspondence with Omer Weissbrod (7/28/2020):
-                             ## The value of var_y also shouldn't make a big difference if estimate_residual_variance=TRUE,
-                             ## because it just sets the initial value of the optimization algorithm. However,
-                             ## if estimate_residual_variance=F it makes a big difference.
-                             ## I also found that I often get the error you mentioned ("Estimating residual variance failed: the estimated value is negative") if var_y is very small.
-                             ## It could be due to not supplying a good initial parameter value.
-                             ## I believe that you can change the optimization method to EM and then you will get more robust convergence.
-                             ##In any case, if the causal effects in your target locus is small, var_y=1 to a first order approximation should give you pretty robust results.
-                             # var_y = var_y, # Variance of the phenotype (e.g. gene expression, or disease status)
-
-                             # A p vector of prior probability that each element is non-zero
-                             prior_weights = prior_weights,
-                             coverage = PP_threshold,
-                             track_fit = plot_track_fit,
-
-                             verbose  = FALSE)
-
-  if(plot_track_fit){
-    track_path <- file.path(locus_dir, "SUSIE","test_track_fit")
-    dir.create(dirname(track_path),showWarnings = FALSE, recursive = TRUE)
-    try({susieR::susie_plot_iteration(fitted_bhat, n_causal, track_path)})
-  }
-  messager("+ SUSIE:: Extracting Credible Sets...",v=verbose)
-  ## Get PIP
-  dat$PP <- susieR::susie_get_pip(fitted_bhat)
-  ## Get CS assignments
-  CS_indices <- susieR::susie_get_cs(fitted_bhat)$cs
-  susie_snps <- names(fitted_bhat$X_column_scale_factors)
-  CS <- lapply(CS_indices, function(x){susie_snps[x]})
-  CS_dict <- list()
-  len <- if(return_all_CS) length(CS) else 1
-  ## Assign a CS number for each group of SNPs
-  for(i in 1:len){
-    for(s in CS[[i]]){
-      CS_dict <- append(CS_dict, setNames(i,s))
-    }
-  }
-  # Assign each SNP a CS group if it meets the PP threshold
-  dat$CS <- lapply(dat$SNP, function(x){
-    if(x %in% names(CS_dict) & subset(dat, SNP==x)$PP>=PP_threshold){
-      CS_dict[[x]]
-    } else{0}}) %>% unlist()
+  ## susieR will throw an error otherwise.
+  LD_matrix <- Matrix::forceSymmetric(LD_matrix, uplo = "U")
+  #### Run fine-mapping #####
+  fitted_bhat <- SUSIE_run(
+    dat=dat,
+    LD_matrix=LD_matrix,
+    sample_size=sample_size,
+    max_causal=max_causal,
+    scaled_prior_variance=scaled_prior_variance,
+    estimate_prior_variance=estimate_prior_variance,
+    residual_variance=residual_variance,
+    max_iter=max_iter,
+    estimate_prior_method=estimate_prior_method,
+    estimate_residual_variance=estimate_residual_variance,
+    prior_weights=prior_weights,
+    PP_threshold=PP_threshold,
+    plot_track_fit=plot_track_fit,
+    verbose=TRUE)
+  #### Animated plot track ####
+  SUSIE_plot_track(plot_track_fit=plot_track_fit,
+                   fitted_bhat=fitted_bhat,
+                   max_causal=max_causal,
+                   file_prefix=file_prefix)
+  dat <- SUSIE_extract_cs(dat=dat,
+                          fitted_bhat=fitted_bhat,
+                          PP_threshold=PP_threshold,
+                          return_all_CS=return_all_CS,
+                          verbose=verbose)
   return(dat)
 }
-
-
-
-
-
-
-
-###------#### SUSIER SUPPORT FUNCTIONS ###------####
-
-
-
-
-
-get_var_y <- function(dat,
-                      dataset_type){
-  ### Correspondence with Omer Weissbrod (7/28/2020):
-  ## The rationale is that we're treating the trait as if were actually continuous,
-  ## so that we just coincidentally happen to see only zeros and ones. Of course it's incorrect,
-  ##but since we're doing this anyway it makes sense to be consistent and estimate var_y under this assumption as well.
-  if(dataset_type=="GWAS" & "N_cases" %in% colnames(dat) & "N_controls" %in% colnames(dat)){
-    messager("++ Computing phenotype variance...")
-    phenotype_variance <- var(c(rep(0, max(dat$N_cases)),
-                                rep(1, max(dat$N_controls)))
-    )
-  } else if(dataset_type=="eQTL" & "Expression" %in% colnames(dat)){
-    phenotype_variance <- var(dat$Expression)
-  } else {
-    messager("++ Phenotype variance could not be calculated from this data.")
-    messager("    Estimating prior variance instead...")
-    phenotype_variance <- 1
-  }
-  return(list(var_y=phenotype_variance))
-}
-
-
-
-

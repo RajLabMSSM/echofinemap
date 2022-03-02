@@ -5,7 +5,8 @@
 \title{Fine-map with SUSIE}
 \source{
 \href{https://stephenslab.github.io/susieR/}{GitHub}
-\href{https://rss.onlinelibrary.wiley.com/doi/full/10.1111/rssb.12388}{Publication}
+\href{https://rss.onlinelibrary.wiley.com/doi/full/10.1111/rssb.12388}{
+Publication}
 }
 \usage{
 SUSIE(
@@ -26,11 +27,16 @@ SUSIE(
   rescale_priors = TRUE,
   plot_track_fit = FALSE,
   return_all_CS = TRUE,
+  file_prefix = file.path(tempdir(), "SUSIE"),
+  var_name = "Expression",
   verbose = TRUE
 )
 }
 \arguments{
-\item{max_causal}{The maximum number of non-zero effects (and thus causal variants).}
+\item{dat}{GWAS summary statistics subset to query the LD panel with.}
+
+\item{max_causal}{The maximum number of non-zero effects 
+(and thus causal variants).}
 
 \item{prior_weights}{A vector of length p, in which each entry
 gives the prior probability that corresponding column of X has a
@@ -72,12 +78,17 @@ likelihood at the specified prior variance is compared to the
 likelihood at a variance of zero, and the setting with the larger
 likelihood is retained.}
 
-\item{rescale_priors}{If prior probabiltities are supplied,
+\item{rescale_priors}{If prior probabilities are supplied,
 rescale them from 0-1 (i.e. \code{rescaled_priors = priors / sum(priors)}).}
 
 \item{plot_track_fit}{Record each iteration and make a GIF of the
 fine-mapping algorithm learning the causal variants.
-\strong{WARNING!:} Making this plot can take a long time if there's many iterations.}
+\strong{WARNING!:} Making this plot can take a long time if there's
+ many iterations.}
+
+\item{file_prefix}{Prefix to path of output plot file. If not
+specified, the plot, or plots, will be saved to a temporary
+directory generated using \code{\link{tempdir}}.}
 
 \item{verbose}{If \code{verbose = TRUE}, the algorithm's progress,
 and a summary of the optimization settings, are printed to the
@@ -88,26 +99,32 @@ Sum of Single Effects (SuSiE): Iterative Bayesian Step-wise Selection
 }
 \details{
 \strong{Notes on convergence:}
-\pkg{susieR} will often give the warning: \code{IBSS algorithm did not converge in 100 iterations!}.
+\pkg{susieR} will often give the warning: 
+\code{IBSS algorithm did not converge in 100 iterations!}.
 This means the results might not necessarily be reliable.
 There's several things you can try to avoid this:
 \itemize{
-\item{Make sure \code{susieR} is up-to-date: \code{ devtools::install_github("stephenslab/susieR@0.9.0")}}
+\item{Make sure \code{susieR} is up-to-date: 
+\code{ devtools::install_github("stephenslab/susieR@0.9.0")}}
 \item{Increase \code{max_causal} (e.g. 5 => 10).}
-\item{Increase \code{max_iter} (e.g. 100 => 1000), though this will take longer.}
-\item{Decrease the locus window size, which will also speed up the algorithm but potentially miss causal variants far from the lead SNP.}
+\item{Increase \code{max_iter} (e.g. 100 => 1000), 
+though this will take longer.}
+\item{Decrease the locus window size, which will also speed up
+ the algorithm but potentially miss causal variants far from the lead SNP.}
 }
-Changing \code{estimate_prior_method} does not seem to affect covergence warnings.
+Changing \code{estimate_prior_method} does not seem to affect 
+convergence warnings.
 
 \strong{Notes on variance:}
 \href{https://github.com/stephenslab/susieR/issues/90}{GitHub Issue}
-If \code{estimate_residual_variance=TRUE} \emph{without} providing \code{var_y}
-\emph{and} \code{L>1}, \pkg{susieR} will throw error:
+If \code{estimate_residual_variance=TRUE} \emph{without} 
+providing \code{var_y} \emph{and} \code{L>1}, \pkg{susieR} will throw error:
 \code{Estimating residual variance failed: the estimated value is negative}
-Running \pkg{susieR} with \code{var_y = var(b)} provides \emph{exactly} the same results.
+Running \pkg{susieR} with \code{var_y = var(b)} provides \emph{exactly}
+ the same results.
 }
 \examples{
-BST1 <- echodata::BST1; data("LD_matrix");
-# LD_matrix <- readRDS("~/Desktop/Fine_Mapping/Data/GWAS/Nalls23andMe_2019/BST1/plink/UKB_LD.RDS")
-finemap_DT <- SUSIE(dat=BST1, LD_matrix=LD_matrix, estimate_residual_variance=TRUE)
+dat <- echodata::BST1
+LD_matrix <- echodata::BST1_LD_matrix
+dat2 <- echofinemap::SUSIE(dat=dat, LD_matrix=LD_matrix)
 }

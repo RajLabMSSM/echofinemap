@@ -24,15 +24,9 @@ ABF(
 )
 }
 \description{
-Conduct statistical (non-functional) fine-mapping with approximate Bayes factor (ABF).
+Conduct statistical fine-mapping with approximate Bayes factor (ABF).
 }
 \examples{
-# GWAS
-BST1 <- echodata::BST1;
-finemap_DT <- ABF(dat=BST1)
-
-# QTL
-locus_dir <- "/sc/arion/projects/pd-omics/brian/Fine_Mapping/Data/QTL/Microglia_all_regions/BIN1"
-dat <- data.table::fread(file.path(locus_dir,"/Multi-finemap/BIN1.Microglia_all_regions.1KGphase3_LD.Multi-finemap.tsv.gz"))
-finemap_DT <- ABF(dat=dat, case_control=FALSE, sample_size=90)
+dat <- echodata::LRRK2
+dat2 <- echofinemap::ABF(dat=dat) 
 }

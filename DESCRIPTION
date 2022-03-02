@@ -33,6 +33,8 @@ Imports:
     echoconda,
     coloc,
     tools,
+    rlang,
+    Matrix,
     Ckmeans.1d.dp,
     susieR (>= 0.9.0)
 Suggests:
