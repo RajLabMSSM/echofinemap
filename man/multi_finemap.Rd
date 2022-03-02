@@ -23,13 +23,18 @@ multi_finemap(
 )
 }
 \description{
-Fine-mapping will be repeated on the same locus using each of the tools in \code{finemap_method_list}.
+Fine-mapping will be repeated on the same locus using each of the tools 
+in \code{finemap_method_list}.
 Then, all results will be merged into the locus-specific multi-finemap file,
 along with the original per-SNP GWAS/QTL summary statistics.
 Each tools will have the following columns:
 \describe{
- \item{<tool>.PP}{The posterior probability (PP) of a SNP being causal for the trait. Though this is a generalization and the exact meaning of PP will differ by tools (e.g. Posterior Inclusion Probability for SUSIE).}
- \item{<tool>.CS}{Which credible set the SNP is part of (within a locus). If \code{=0}, then the SNP was not part of any credible set. Some tools only produce one credible set per locus.}
+ \item{<tool>.PP}{The posterior probability (PP) of a SNP being causal for
+  the trait. Though this is a generalization and the exact meaning of PP
+   will differ by tools (e.g. Posterior Inclusion Probability for SUSIE).}
+ \item{<tool>.CS}{Which credible set the SNP is part of (within a locus). 
+ If \code{=0}, then the SNP was not part of any credible set. 
+ Some tools only produce one credible set per locus.}
 }
 }
 \examples{

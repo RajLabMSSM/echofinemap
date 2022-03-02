@@ -1,28 +1,6 @@
-# ***************** #
-####    SUSIE    ####
-# ***************** #
-
-# * Notes on L parameter
-# + L is the expected number of causal variants
-# + Increasing L increases computational time
-# + L=1: Gives a good amount of variation in PIP.
-# + L=2: Warns "IBSS algorithm did not converge in 100 iterations!", but gives good variation in PIP.
-# + L=3: Warns "IBSS algorithm did not converge in 100 iterations!". All PIPs 1s and 0s.
-# + These results seem to be at least partially dependent on whether the ethnic composition of the LD matrix.
-
-# * Statistical Terms:
-#   + posterior inclusion probability (PIP)
-#   + coefficient estimate (Beta)
-#   + Effect allele frequency (EAF)
-#   + The I^2 statistic describes the percentage of variation across studies that seems not to be due to chance.
-
-
-
-###------#### MAIN FUNCTION ###------####
-
 #' Fine-map with SUSIE
 #'
-#' Sum of Single Effects (SuSiE): Iterative Bayesian Step-wise Selection
+#' Sum of Single Effects (SuSiE): Iterative Bayesian Step-wise Selection.
 #'
 #' \strong{Notes on convergence:}
 #' \pkg{susieR} will often give the warning: 
@@ -144,7 +122,8 @@ SUSIE <- function(dat,
     verbose=verbose)
   ## Ensure the matrix is of "symmetric" class (not just objectively symmetric)
   ## susieR will throw an error otherwise.
-  LD_matrix <- Matrix::forceSymmetric(LD_matrix, uplo = "U")
+  LD_matrix <- Matrix::forceSymmetric(x = LD_matrix,
+                                      uplo = "U")
   #### Run fine-mapping #####
   fitted_bhat <- SUSIE_run(
     dat=dat,
@@ -173,3 +152,19 @@ SUSIE <- function(dat,
                           verbose=verbose)
   return(dat)
 }
+
+
+
+# * Notes on L parameter
+# + L is the expected number of causal variants
+# + Increasing L increases computational time
+# + L=1: Gives a good amount of variation in PIP.
+# + L=2: Warns "IBSS algorithm did not converge in 100 iterations!", but gives good variation in PIP.
+# + L=3: Warns "IBSS algorithm did not converge in 100 iterations!". All PIPs 1s and 0s.
+# + These results seem to be at least partially dependent on whether the ethnic composition of the LD matrix.
+
+# * Statistical Terms:
+#   + posterior inclusion probability (PIP)
+#   + coefficient estimate (Beta)
+#   + Effect allele frequency (EAF)
+#   + The I^2 statistic describes the percentage of variation across studies that seems not to be due to chance.

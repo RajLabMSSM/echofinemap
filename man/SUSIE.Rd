@@ -95,7 +95,7 @@ and a summary of the optimization settings, are printed to the
 console.}
 }
 \description{
-Sum of Single Effects (SuSiE): Iterative Bayesian Step-wise Selection
+Sum of Single Effects (SuSiE): Iterative Bayesian Step-wise Selection.
 }
 \details{
 \strong{Notes on convergence:}

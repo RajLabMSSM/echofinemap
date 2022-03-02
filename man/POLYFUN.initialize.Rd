@@ -11,7 +11,7 @@ Create output dir and import SNP data.frame
 }
 \examples{
 BST1 <- echodata::BST1; locus_dir <- echodata::locus_dir;
-finemap_DT <- POLYFUN.initialize(locus_dir=locus_dir, finemap_dat=BST1)
+dat <- POLYFUN.initialize(locus_dir=locus_dir, finemap_dat=BST1)
 }
 \seealso{
 Other polyfun: 

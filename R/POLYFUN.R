@@ -104,7 +104,7 @@ POLYFUN.find_polyfun_folder <- function(polyfun_path=NULL){
 #' @family polyfun
 #' @examples
 #' BST1 <- echodata::BST1; locus_dir <- echodata::locus_dir;
-#' finemap_DT <- POLYFUN.initialize(locus_dir=locus_dir, finemap_dat=BST1)
+#' dat <- POLYFUN.initialize(locus_dir=locus_dir, finemap_dat=BST1)
 POLYFUN.initialize <- function(locus_dir,
                                finemap_dat=NULL,
                                nThread=1){
@@ -337,9 +337,9 @@ POLYFUN.gather_ldscores <- function(output_prefix){
 #' @examples
 #' \dontrun{
 #' BST1 <- echodata::BST1
-#' finemap_DT <- BST1
-#' subset_snps <- finemap_DT$SNP
-#' annot_DT <- POLYFUN.gather_annotations(chromosomes=finemap_DT$CHR[1], subset_snps=subset_snps, polyfun_annots="/pd-omics/tools/polyfun/annotations/baselineLF2.2.UKB")
+#' dat <- BST1
+#' subset_snps <- dat$SNP
+#' annot_DT <- POLYFUN.gather_annotations(chromosomes=dat$CHR[1], subset_snps=subset_snps, polyfun_annots="/pd-omics/tools/polyfun/annotations/baselineLF2.2.UKB")
 #' }
 POLYFUN.gather_annotations <- function(chromosomes=c(1:22),
                                        subset_snps=NULL,
@@ -580,11 +580,7 @@ POLYFUN.run_ldsc <- function(polyfun=NULL,
                              freq.prefix="/sc/arion/projects/pd-omics/tools/polyfun/1000G_frq/1000G.mac5eur.",
                              conda_env="echoR"){
   polyfun <- POLYFUN.find_polyfun_folder(polyfun_path = polyfun)
-  python <- echoconda::find_python_path(conda_env = conda_env)
-  # if(server){
-  #   annotations.path <-  "/sc/arion/projects/pd-omics/tools/polyfun/annotations/baselineLF2.2.UKB/baselineLF2.2.UKB."
-  #   weights.path <-  "/sc/arion/projects/pd-omics/tools/polyfun/annotations/baselineLF2.2.UKB/weights.UKB."
-  # }
+  python <- echoconda::find_python_path(conda_env = conda_env) 
 
   # 0. Create paths
   dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
@@ -629,8 +625,7 @@ POLYFUN_SUSIE <- function(locus_dir,
                           polyfun_approach="non-parametric",
                           dataset_type="GWAS",
                           max_causal=5,
-                          sample_size=NULL,
-                          server=FALSE,
+                          sample_size=NULL, 
                           PP_threshold=.95,
                           conda_env="echoR"){
   # polyfun="./echolocatoR/tools/polyfun";  locus_dir="./Data/GWAS/Nalls23andMe_2019/_genome_wide"; dataset="Nalls23andMe_2019"; locus="LRRK2"; finemap_dat=NULL; polyfun_priors="parametric"; sample_size=1474097; min_INFO=0; min_MAF=0; server=T; dataset_type="GWAS"; n_causal=10; PP_threshold=.95

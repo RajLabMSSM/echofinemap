@@ -16,9 +16,9 @@ Find and import PolyFun annotation files
 \examples{
 \dontrun{
 BST1 <- echodata::BST1
-finemap_DT <- BST1
-subset_snps <- finemap_DT$SNP
-annot_DT <- POLYFUN.gather_annotations(chromosomes=finemap_DT$CHR[1], subset_snps=subset_snps, polyfun_annots="/pd-omics/tools/polyfun/annotations/baselineLF2.2.UKB")
+dat <- BST1
+subset_snps <- dat$SNP
+annot_DT <- POLYFUN.gather_annotations(chromosomes=dat$CHR[1], subset_snps=subset_snps, polyfun_annots="/pd-omics/tools/polyfun/annotations/baselineLF2.2.UKB")
 }
 }
 \seealso{

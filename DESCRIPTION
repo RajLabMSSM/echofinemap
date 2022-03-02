@@ -33,8 +33,10 @@ Imports:
     echoconda,
     coloc,
     tools,
+    utils,
     rlang,
     Matrix,
+    piggyback,
     Ckmeans.1d.dp,
     susieR (>= 0.9.0)
 Suggests:
@@ -47,8 +49,7 @@ Suggests:
     covr,
     testthat (>= 3.0.0),
     badger,
-    hexSticker,
-    utils
+    hexSticker
 Remotes:
   github::RajLabMSSM/echodata,
   github::RajLabMSSM/echoannot,

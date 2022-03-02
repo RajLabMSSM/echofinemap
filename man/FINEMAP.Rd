@@ -16,9 +16,9 @@ FINEMAP(
   n_causal = 5,
   model = "sss",
   remove_tmps = FALSE,
+  force_new = FALSE,
   credset_thresh = 0.95,
   finemap_version = "1.4",
-  server = FALSE,
   args_list = list(),
   verbose = TRUE
 )
@@ -26,39 +26,47 @@ FINEMAP(
 \arguments{
 \item{FINEMAP_path}{Path to a custom FINEMAP executable to use
 instead of the ones included in \pkg{echolocatoR}.
-Users can also simply supply "finemap" if this command is linked to the executable.}
+Users can also simply supply "finemap" if this command is linked to
+ the executable.}
 
-\item{model}{"cond" for stepwise conditional search, "sss" for stochastic shotgun search.}
+\item{model}{"cond" for stepwise conditional search, 
+"sss" for stochastic shotgun search.}
 
 \item{finemap_version}{Which FINEMAP version to use (specify as a string).}
 
 \item{args_list}{A named list of additional arguments to pass to FINEMAP
 (e.g.: args_list = list("--n-iterations"=5000,"--sss"="")).
-Alternatively, can supply a string instead (e.g.: args_list = "--n-iterations 5000 --sss").}
+Alternatively, can supply a string instead 
+(e.g.: args_list = "--n-iterations 5000 --sss").}
 }
 \description{
-The stepwise conditional search starts with a causal configuration containing the
-SNP with the lowest P-value alone and then iteratively adds to the causal configuration
-the SNP given the highest posterior model probability until no further SNP yields
+The stepwise conditional search starts with a causal configuration 
+containing the SNP with the lowest P-value alone and then iteratively 
+adds to the causal configuration the SNP given the highest 
+posterior model probability until no further SNP yields
 a higher posterior model probability.
 }
 \examples{
-locus_dir <- echodata::locus_dir; BST1 <- echodata::BST1; data("BST1_LD_matrix");
-finemap_DT <- BST1
-locus_dir <- here::here(locus_dir)
-dir.create(file.path(locus_dir,"FINEMAP"), showWarnings = FALSE, recursive = TRUE)
-out <- echoLD::subset_common_snps(BST1_LD_matrix, finemap_DT)
+locus_dir <- file.path(tempdir(),echodata::locus_dir)
+dat <- echodata::BST1;
+LD_matrix <- echodata::BST1_LD_matrix
+
+dir.create(file.path(locus_dir,"FINEMAP"),
+ showWarnings = FALSE, recursive = TRUE)
+out <- echoLD::subset_common_snps(LD_matrix, dat)
 LD_matrix <- out$LD
 dat <- out$DT
-dat $N<- dat$N_cases+dat$N_controls
-finemap_DT <- FINEMAP(dat=dat, locus_dir=locus_dir, LD_matrix=LD_matrix, finemap_version="1.3")
+
+dat <- FINEMAP(dat=dat,
+               locus_dir=locus_dir,
+               LD_matrix=LD_matrix,
+               finemap_version="1.3.1")
 }
 \seealso{
 Other FINEMAP: 
-\code{\link{FINEMAP.construct_data}()},
-\code{\link{FINEMAP.construct_master}()},
-\code{\link{FINEMAP.find_executable}()},
-\code{\link{FINEMAP.process_results}()}
+\code{\link{FINEMAP_construct_data}()},
+\code{\link{FINEMAP_construct_master}()},
+\code{\link{FINEMAP_find_executable}()},
+\code{\link{FINEMAP_process_results}()}
 }
 \concept{FINEMAP}
-\keyword{internal}

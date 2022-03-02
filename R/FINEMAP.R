@@ -1,38 +1,42 @@
-# ***************** #
-#----  FINEMAP  ----#
-# ***************** #
-
-
 #' Fine-map locus with \code{FINEMAP}
 #'
-#' The stepwise conditional search starts with a causal configuration containing the
-#' SNP with the lowest P-value alone and then iteratively adds to the causal configuration
-#' the SNP given the highest posterior model probability until no further SNP yields
+#' The stepwise conditional search starts with a causal configuration 
+#' containing the SNP with the lowest P-value alone and then iteratively 
+#' adds to the causal configuration the SNP given the highest 
+#' posterior model probability until no further SNP yields
 #' a higher posterior model probability.
 #'
-#' @inheritParams finemap_loci
-#' @param model "cond" for stepwise conditional search, "sss" for stochastic shotgun search.
+#' @param model "cond" for stepwise conditional search, 
+#' "sss" for stochastic shotgun search.
 #' @param finemap_version Which FINEMAP version to use (specify as a string).
 #' @param args_list A named list of additional arguments to pass to FINEMAP
 #' (e.g.: args_list = list("--n-iterations"=5000,"--sss"="")).
-#' Alternatively, can supply a string instead (e.g.: args_list = "--n-iterations 5000 --sss").
+#' Alternatively, can supply a string instead 
+#' (e.g.: args_list = "--n-iterations 5000 --sss").
 #' @param FINEMAP_path Path to a custom FINEMAP executable to use
 #' instead of the ones included in \pkg{echolocatoR}.
-#' Users can also simply supply "finemap" if this command is linked to the executable.
-#' @source
-#' \url{http://www.christianbenner.com}
+#' Users can also simply supply "finemap" if this command is linked to
+#'  the executable.
+#' @source \url{http://www.christianbenner.com}
 #' @family FINEMAP
-#' @keywords internal
+#' 
+#' @export
+#' @importFrom echodata get_sample_size
 #' @examples
-#' locus_dir <- echodata::locus_dir; BST1 <- echodata::BST1; data("BST1_LD_matrix");
-#' finemap_DT <- BST1
-#' locus_dir <- here::here(locus_dir)
-#' dir.create(file.path(locus_dir,"FINEMAP"), showWarnings = FALSE, recursive = TRUE)
-#' out <- echoLD::subset_common_snps(BST1_LD_matrix, finemap_DT)
+#' locus_dir <- file.path(tempdir(),echodata::locus_dir)
+#' dat <- echodata::BST1;
+#' LD_matrix <- echodata::BST1_LD_matrix
+#' 
+#' dir.create(file.path(locus_dir,"FINEMAP"),
+#'  showWarnings = FALSE, recursive = TRUE)
+#' out <- echoLD::subset_common_snps(LD_matrix, dat)
 #' LD_matrix <- out$LD
 #' dat <- out$DT
-#' dat $N<- dat$N_cases+dat$N_controls
-#' finemap_DT <- FINEMAP(dat=dat, locus_dir=locus_dir, LD_matrix=LD_matrix, finemap_version="1.3")
+#' 
+#' dat <- FINEMAP(dat=dat,
+#'                locus_dir=locus_dir,
+#'                LD_matrix=LD_matrix,
+#'                finemap_version="1.3.1")
 FINEMAP <- function(dat,
                     locus_dir,
                     LD_matrix,
@@ -41,37 +45,61 @@ FINEMAP <- function(dat,
                     n_causal=5,# Max number of allowed causal SNPs
                     model="sss",
                     remove_tmps=FALSE,
+                    force_new=FALSE,
                     credset_thresh=.95,
-                    finemap_version="1.4",
-                    server=FALSE,
+                    finemap_version="1.4", 
                     args_list=list(),
                     verbose=TRUE){
-  # n_causal=5; model="cond"; credset_thresh=.95; verbose=T; finemap_version="1.4"; n_samples=NULL;
-  # args_list=list()
-  n_samples <- if(is.null(n_samples)) max(dat$N) else n_samples
+  # n_causal=5; model="cond"; credset_thresh=.95; verbose=T;
+  # finemap_version="1.3.1"; n_samples=NULL; args_list=list()
+  
+  #### Add sample size ####
+  if(is.null(n_samples)){
+    ss_df <- echodata::get_sample_size(dat = dat,
+                                       method = n_samples,
+                                       force_new = FALSE,
+                                       verbose = verbose)
+    if(!is.null(ss_df$N)) n_samples <-  max(ss_df$N, na.rm = TRUE);
+  }  
   dir.create(locus_dir, showWarnings = FALSE, recursive = TRUE)
-  # Setup files
-  master_path <- FINEMAP.construct_master(locus_dir = locus_dir,
+  #### Setup files ####
+  master_path <- FINEMAP_construct_master(locus_dir = locus_dir,
                                           n_samples = n_samples)
-  dat_paths <- FINEMAP.construct_data(locus_dir = locus_dir,
+  dat_paths <- FINEMAP_construct_data(locus_dir = locus_dir,
                                       dat = dat,
                                       LD_matrix = LD_matrix)
-  # Command line
-  ## Example:
-  ## cmd <- paste(FINEMAP_path," --sss --in-files",file.path(dirname(FINEMAP_path),"example","master"), "--dataset 1 --n-causal-snps 5")
+  #### Use pre=existing results #### 
+  if(any(file.exists(file.path(dirname(master_path),
+                               c("data.cred","data.snp","data.config")))) &&
+     force_new==FALSE){
+    messager("+ FINEMAP:: Importing pre-computed FINEMAP results files.",
+             "Set force_new=TRUE to compute new results.",v=verbose)
+    finemap_dat <- FINEMAP_process_results(locus_dir = locus_dir,
+                                           dat = dat,
+                                           credset_thresh = credset_thresh,
+                                           results_file = ".cred",
+                                           finemap_version = finemap_version)
+    return(finemap_dat)
+  }
+  
+  ####  Command line example  ####
+  # cmd <- paste(FINEMAP_path," --sss --in-files",
+  # file.path(dirname(FINEMAP_path),
+  # "example","master"), "--dataset 1 --n-causal-snps 5")
+  
+  #### Check FINEMAP exec ####
   if(is.null(FINEMAP_path)){
-    FINEMAP_path <- FINEMAP.find_executable(version = finemap_version,
+    FINEMAP_path <- FINEMAP_find_executable(version = finemap_version,
                                             verbose = verbose)
   }else {
     messager("+ FINEMAP:: User-defined FINEMAP path:",FINEMAP_path, v=verbose)
-    finemap_version <- FINEMAP.check_version(FINEMAP_path,
+    finemap_version <- FINEMAP_check_version(FINEMAP_path = FINEMAP_path,
                                              verbose = verbose)
   }
-
   #### Run FINEMAP ####
   # NOTE: Must cd into the directory first,
   # or else FINEMAP won't be able to find the input files.
-  msg <- FINEMAP.run(locus_dir=locus_dir,
+  msg <- FINEMAP_run(locus_dir=locus_dir,
                      FINEMAP_path=FINEMAP_path,
                      model=model,
                      master_path=master_path,
@@ -90,10 +118,10 @@ FINEMAP <- function(dat,
          please see the main FINEMAP website for additional support (http://www.christianbenner.com).
             *********\n\n")
     #### Rerun if preferred version of FINEMAP fails ####
-    FINEMAP_path <- FINEMAP.find_executable(version = "1.3.1",
+    FINEMAP_path <- FINEMAP_find_executable(version = "1.3.1",
                                             verbose  = FALSE)
     message("+ FINEMAP:: Rerunning with FINEMAP v1.3.1.")
-    msg <- FINEMAP.run(locus_dir=locus_dir,
+    msg <- FINEMAP_run(locus_dir=locus_dir,
                        FINEMAP_path=FINEMAP_path,
                        model=model,
                        master_path=master_path,
@@ -108,8 +136,8 @@ FINEMAP <- function(dat,
   } else {
     if(verbose) try({cat(paste(msg, collapse = "\n"))})
   }
-  # Process results
-  finemap_dat <- FINEMAP.process_results(locus_dir = locus_dir,
+  #### Process results #### 
+  finemap_dat <- FINEMAP_process_results(locus_dir = locus_dir,
                                          dat = dat,
                                          credset_thresh = credset_thresh,
                                          results_file = ".cred",
@@ -132,382 +160,3 @@ FINEMAP <- function(dat,
   }
   return(finemap_dat)
 }
-
-
-
-
-FINEMAP.run <- function(locus_dir,
-                        FINEMAP_path,
-                        model="sss",# "cond"
-                        master_path,
-                        n_causal=5,
-                        args_list=list(),
-                        verbose=TRUE){
-  cmd <- paste("cd",locus_dir,"&&",
-               FINEMAP_path,
-               paste0("--",model),
-               "--in-files", master_path,
-               "--log",
-               # Option to set the maximum number of allowed causal SNPs
-               # (Default is 5)
-               "--n-causal-snps",n_causal,
-               collapse_args(args_list)
-  )
-  messager(cmd, v=verbose)
-  msg <- system(cmd, intern =  T)
-  return(msg)
-}
-
-
-FINEMAP.check_version <- function(FINEMAP_path,
-                                  verbose=TRUE){
-  ### FINEMAP does not have a -v or --version flag.
-  # FINEMAP_path <- "/Library/Frameworks/R.framework/Versions/3.6/Resources/library/echolocatoR/tools/FINEMAP/finemap_v1.3.1_MacOSX"
-  out <- system(paste(FINEMAP_path,"-h"), intern = TRUE)
-  out_split <- strsplit(grep("Welcome to FINEMAP",out, value = TRUE)[1]," ")[[1]]
-  finemap_version <- gsub("v","",out_split[grepl("v",out_split)])
-  messager("+ FINEMAP:: Inferred FINEMAP version =",finemap_version,v=verbose)
-  return(finemap_version)
-}
-
-
-
-#' Prepare input files for \code{FINEMAP}
-#'
-#' Creates and saves 1) the summary stats file, and 2) the LD matrix.
-#' "Columns beta and se are required for fine-mapping.
-#' Column maf is needed to output posterior effect size estimates on the
-#' allelic scale. All other columns are not required for computations and
-#' can be specified arbitrarily."
-#' @family FINEMAP
-#' @keywords internal
-#' @source
-#' \url{http://www.christianbenner.com}
-#' @examples
-#' locus_dir <- echodata::locus_dir; BST1 <- echodata::BST1; data("BST1_LD_matrix");
-#' finemap_DT <- BST1
-#' dir.create(file.path(locus_dir,"FINEMAP"), showWarnings = FALSE, recursive = TRUE)
-#' out <- echoLD::subset_common_snps(LD_matrix=LD_matrix, dat=finemap_DT)
-#' LD_matrix <- out$LD
-#' finemap_DT <- out$DT
-#' dat_paths <- FINEMAP.construct_data(locus_dir=locus_dir, dat=finemap_DT, LD_matrix=LD_matrix)
-FINEMAP.construct_data <- function(locus_dir,
-                                   dat,
-                                   LD_matrix,
-                                   nThread=1,
-                                   verbose=TRUE){
-  ####### data.z #######
-  if(!"A1" %in% colnames(dat)) {dat$A1 <- "A"; messager("+ FINEMAP:: Optional A1 col missing. Replacing with all 'A's.")};
-  if(!"A2" %in% colnames(dat)) {dat$A2 <- "T";  messager("+ FINEMAP:: Optional A2 col missing. Replacing with all 'T's.")};
-  if(!"MAF" %in% colnames(dat)) {dat$MAF <- .1; messager(" + FINEMAP:: Optional MAF col missing. Replacing with all '.1's")};
-  messager("++ FINEMAP:: Constructing data.z file.",v=verbose)
-  data.z <- dat %>% dplyr::select(rsid=SNP,
-                                        chromosome=CHR,
-                                        position=POS,
-                                        allele1=A1,
-                                        allele2=A2,
-                                        maf=MAF,
-                                        beta=Effect, # *required
-                                        se=StdErr # *required
-  )
-  data.z$flip <- 0 # [optional] - flip==1, don't flip==0
-
-  # !!! IMPORTANT !!!
-  # Trim whitespaces
-  ## Extra whitespace causes problems when you try to make space-delimited files
-  # https://stackoverflow.com/questions/20760547/removing-whitespace-from-a-whole-data-frame-in-r
-  cols_to_be_rectified <- names(data.z)[vapply(data.z, is.character, logical(1))]
-  data.z <- data.z %>%
-    dplyr::mutate_at(.vars = dplyr::vars(cols_to_be_rectified),
-                     .funs = trimws )
-
-  ####### data.ld #######
-  messager("++ FINEMAP:: Constructing data.ld file.",v=verbose)
-  ## The order of the SNPs in the dataset.ld must correspond to the order of variants in dataset.z.
-  # load(file.path(locus_dir,"plink","LD_matrix.RData"))
-
-  # Filter
-  data.z <- subset(data.z, rsid %in% rownames(LD_matrix))
-  ## This filters AND sorts LD_matrix by the order of rsids in data.z
-  LD_filt <- LD_matrix[data.z$rsid, data.z$rsid]
-
-  # Write files
-  ## MUST be space-delimited
-  # messager("++ FINEMAP:: Writing z and ld files...",v=verbose)
-  if( dim(data.z)[1]==dim(LD_filt)[1] ){
-    # data.z
-    data.z_path <- file.path(locus_dir,"FINEMAP","data.z")
-    data.table::fwrite(data.z, data.z_path, sep = " ",
-                       nThread = 1)
-    # Sys.chmod(data.z_path, "777", use_umask = FALSE)
-    # data.ld
-    data.ld_path <- file.path(locus_dir,"FINEMAP","data.ld")
-    data.table::fwrite(data.table:::as.data.table.matrix(LD_filt),
-                       data.ld_path, sep=" ", quote = FALSE, col.names = FALSE,
-                       nThread = 1)
-    # Sys.chmod(data.ld_path, "777", use_umask = FALSE)
-  } else {warning("+ FINEMAP:: Summary statistics file (data.z) and LD matrix (data.ld) must contain the same number of SNPs.")}
-  return(c("Zscore_path"=data.z_path,
-           "LD_path"=data.ld_path))
-}
-
-
-
-
-#' Construct the \code{FINAMAP} master file
-#'
-#' Creates and saves the master file
-#' which tells \code{FINEMAP} where to find each input file.
-#' @family FINEMAP
-#' @keywords internal
-#' @source
-#' \url{http://www.christianbenner.com}
-#' @examples
-#' locus_dir <- echodata::locus_dir;
-#' master_path <- FINEMAP.construct_master(locus_dir=locus_dir, n_samples=25000)
-FINEMAP.construct_master <- function(locus_dir,
-                                     n_samples,
-                                     dataset_number=1,
-                                     file.k=NA,
-                                     verbose=TRUE){ # [optional input]){
-  messager("++ FINEMAP:: Constructing master file.",v=verbose)
-  # For full list of parameters: http://www.christianbenner.com
-  header <- "z;ld;snp;config;cred;log;n_samples"
-  # pathList <-  paste(c(file.z, file.ld, file.snp, file.config, file.log, n_samples), collapse=";")
-  files <- c("data.z",  # [required input]
-             "data.ld", # [required input]
-             "data.snp", # [output]
-             "data.config", # [optional output]
-             "data.cred", # [optional output]
-             "data.log"# [optional output]
-  )
-  if(!is.na(file.k)){ pathList <- append(pathList, file.k) }
-  paths_list <- paste(c(file.path("FINEMAP",files),n_samples), collapse = ";")
-  # Write master file
-  dir.create(file.path(locus_dir, "FINEMAP"), recursive = TRUE, showWarnings  = FALSE)
-  master_path <- file.path(locus_dir,"FINEMAP","master")
-  data.table::fwrite(list(header,paths_list), master_path, quote=FALSE, sep="\n")
-  return(master_path)
-}
-
-
-
-
-#' Post-processing of \code{FINEMAP} results
-#'
-#' @family FINEMAP
-#' @keywords internal
-#' @source
-#' \url{http://www.christianbenner.com}
-#' @examples
-#' \dontrun{
-#' locus_dir <- echodata::locus_dir; BST1 <- echodata::BST1;
-#' finemap_DT <- BST1
-#' dat <-FINEMAP.process_results(locus_dir=locus_dir, dat=finemap_DT)
-#' }
-FINEMAP.process_results <- function(locus_dir,
-                                    dat,
-                                    credset_thresh=.95,
-                                    pvalue_thresh=.05,
-                                    finemap_version="1.4",
-                                    results_file=".cred",
-                                    nThread=1,
-                                    sort_by_CS=TRUE,
-                                    verbose=TRUE){
-  #### Notes on FINEMAP output files ####
-  ##
-  ## .snp and .cred are often similiar, but not identical.
-  ## Reccomendation: use the .cred file that shows the largest posterior probability for the number of causal variants in line 1 of the file.
-  ## and extract credible sets from that file.
-
-  ## Example locus:
-  # locus_dir="~/Desktop/Fine_Mapping/Data/GWAS/Marioni_2018/ACE"
-  # dat <- data.table::fread(file.path(locus_dir, "Multi-finemap/ACE.Marioni_2018.1KGphase3.multi_finemap.csv.gz"))
-
-  #### Handling FINEMAP version differences  ####
-  if((!finemap_version %in% c("1.3.1","1.4")) & any((results_file==".cred"))){
-    warning("+ FINEMAP:: FINEMAP <1.3.1 does not produce .cred results files.\n",
-                        "Using marginal probabilties from .snp results file instead.")
-    results_file <- ".snp"
-  }
-  #### Double check which results files are available ####
-  ## This vary depending on which version of FINEMAP you're using.
-  FINEMAP.check_files <- function(locus_dir,
-                                  results_file){
-    # locus_dir="/Users/schilder/Desktop/echolocatoR/results/GWAS/Nalls23andMe_2019/BST1"
-    ### In FINEMAP v1.3, only one .cred file are produced.
-    ### In FINEMAP v1.4, multiple FINEMAP files with # suffixes are produced.
-    .cred_files <- list.files(file.path(locus_dir,"FINEMAP"), "data.cred", full.names = TRUE)
-    .cred_exists <- length(.cred_files)>0
-    .snp_exists <- file.exists(file.path(locus_dir,"FINEMAP/data.snp"))
-    .config_exists <- file.exists(file.path(locus_dir,"FINEMAP/data.config"))
-    file_options <- c(".cred",".snp",".config")[c(.cred_exists,.snp_exists,.config_exists)]
-    if(!results_file %in% file_options){
-      messager(results_file,"not detected.",
-              "Using",file_options[1],"instead.")
-      return(file_options[1])
-    }else { return(results_file)}
-  }
-  results_file <- FINEMAP.check_files(locus_dir, results_file)
-
-  ##### Define results extraction functions ####
-  FINEMAP.import_data.snp <- function(locus_dir,
-                                      credset_thresh=.95,
-                                      prob_col="prob",
-                                      verbose=TRUE){
-    # NOTES:
-    ## .snp files: Posterior probabilities in this file are the marginal posterior probability
-    ## that a given variant is causal.
-
-    # Prob column descriptions:
-    ## prob: column the marginal Posterior Inclusion Probabilities (PIP). The PIP for the l-th SNP is the posterior probability that this SNP is causal.
-    ## prob_group: the posterior probability that there is at least one causal signal among SNPs in the same group with this SNP.
-    ##
-    messager("+ FINEMAP:: Importing",prob_col,"(.snp)...", v=verbose)
-    data.snp <- data.table::fread(file.path(locus_dir,"FINEMAP/data.snp"), nThread = 1)
-    data.snp <- data.snp[data.snp[[prob_col]] > credset_thresh,] %>%
-      plyr::mutate(CS=1)%>%
-      dplyr::rename(PP=dplyr::all_of(prob_col))
-    return(data.snp)
-  }
-
-  FINEMAP.import_data.cred <- function(locus_dir,
-                                       verbose=TRUE){
-    # NOTES:
-    ## .cred files: Conditional posterior probabilities that a given variant is causal
-    ## conditional on the other causal variants in the region.
-    messager("+ FINEMAP:: Importing conditional probabilities (.cred)...", v=verbose)
-    # cred_path <- file.path(locus_dir,"FINEMAP/data.cred")
-    cred_path <- list.files(file.path(locus_dir,"FINEMAP"), "data.cred", full.names = TRUE)
-    # Only use the first CS
-    cred_path <- cred_path[1]
-    data.cred <- data.table::fread(cred_path,
-                                   na.strings = c("<NA>","NA"),
-                                   nThread = 1)
-    cred.cols <- grep("cred*", colnames(data.cred), value = TRUE)
-    prob.cols <- grep("prob*", colnames(data.cred), value = TRUE)
-    # Restructure data to SNP-wise table format
-    CS <- lapply(1:nrow(data.cred), function(i){
-      rsids <- subset(data.cred, select=cred.cols)[i,]
-      PP_vals <- subset(data.cred, select=prob.cols)[i,]
-      cred_sets <- data.table::data.table(SNP=unname( t(rsids)[,1] ),
-                                          PP=unname(t(PP_vals)[,1]),
-                                          CS=i)
-      return(cred_sets)
-    }) %>% data.table::rbindlist() %>%
-      subset(!is.na(SNP))
-    return(CS)
-  }
-
-  FINEMAP.import_data.config <- function(locus_dir,
-                                         credset_thresh=.95,
-                                         pvalue_thresh=.05,
-                                         top_config_only=TRUE,
-                                         verbose=TRUE){
-    # NOTES
-    ## .config files: Gives all model results for all the configurations tested
-    ## (regardless of whether they're over the 95% probability threshold)
-    messager("+ FINEMAP:: Importing top configuration probability (.config)...", v=verbose)
-    config_path <- file.path(locus_dir,"FINEMAP/data.config")
-    data.config <- data.table::fread(config_path, nThread=1)
-    if(top_config_only){
-      data.config <- data.config[1,]
-    }
-    # Gaurd against future renaming of columns
-    if(!is.null(credset_thresh) & "prob" %in% colnames(data.config)){
-      data.config <- subset(data.config, prob>=credset_thresh)
-    }
-    # Not all FINEMAP versions seem to have this "pvalue" column?
-    if(!is.null(pvalue_thresh) & "pvalue" %in% colnames(data.config)){
-      data.config <- subset(data.config, pvalue<pvalue_thresh)
-    }
-    # Restructure config file
-    ## Use the probability of the configuration itself as the snp-wise probabilties
-    data.config_format <- data.frame(SNP=strsplit(data.config$config, ",")[[1]],
-                                     PP=data.config$prob,
-                                     CS=1)
-    return(data.config_format)
-  }
-
-
-  #### Process FINEMAP results ####
-  if(results_file==".cred"){
-      dat <- FINEMAP.import_data.cred(locus_dir = locus_dir,
-                                      verbose = verbose)
-      # Merge with original dataframe
-      dat <- data.table::merge.data.table(data.table::data.table(dat),
-                                                data.table::data.table(dat),
-                                                by="SNP",
-                                                all.x = TRUE)
-  }
-
-  if (results_file==".snp"){
-    dat <- FINEMAP.import_data.snp(locus_dir = locus_dir,
-                                   verbose = verbose)
-    # Merge with original dataframe
-    dat <- data.table::merge.data.table(data.table::data.table(dat),
-                                              data.table::data.table(subset(dat, select=c("rsid","prob","CS")) ),
-                                              by.x = "SNP",
-                                              by.y="rsid",
-                                              all.x = TRUE)
-  }
-  if (results_file==".config"){
-    dat <- FINEMAP.import_data.config(locus_dir = locus_dir,
-                                      verbose = verbose)
-    dat <- data.table::merge.data.table(data.table::data.table(dat),
-                                              data.table::data.table(dat),
-                                              by="SNP",
-                                              all.x = TRUE)
-  }
-  # Sort so that CS SNPs are at the top
-  if(sort_by_CS){
-    dat <- dat %>% dplyr::arrange(dplyr::desc(PP))
-  }
-  return(dat)
-}
-
-
-
-
-#' Retrieve location of \code{FINEMAP} executable
-#' @family FINEMAP
-#' @keywords internal
-#' @source
-#' \url{http://www.christianbenner.com}
-#' @examples
-#' FINEMAP_path <- FINEMAP.find_executable()
-FINEMAP.find_executable <- function(FINEMAP_path=NULL,
-                                    OS=NULL,
-                                    version="1.4",
-                                    verbose=TRUE){
-  if(is.null(OS)){OS <- get_os()}
-
-  if(version=="1.4"){
-    messager("+ Using FINEMAP v1.4",v=verbose)
-    if(OS=="osx"){
-      exec <- "finemap_v1.4_MacOSX"
-    } else{
-      exec <- "finemap_v1.4_x86_64"
-    }
-  }
-  if(version=="1.3.1") {
-    messager("+ Using FINEMAP v1.3.1",v=verbose)
-    if(OS=="osx"){
-      exec <- "finemap_v1.3.1_MacOSX"
-    } else{
-      exec <- "finemap_v1.3.1_x86_64"
-    }
-  }
-
-  if(is.null(FINEMAP_path)){
-    FINEMAP_path <- system.file("tools",file.path("FINEMAP",exec), package="echolocatoR")
-    # FINEMAP_path <- file.path(find.package('echolocatoR'),"exec/FINEMAP/finemap_v1.3_MacOSX")
-  }
-  return(FINEMAP_path)
-}
-
-
-
-
-
-
