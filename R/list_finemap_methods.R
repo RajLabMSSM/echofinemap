@@ -1,5 +1,12 @@
-list_finemap_methods <- function(finemap_methods=NULL,
-                                 verbose=TRUE){
+#' List fine-mapping methods 
+#' 
+#' List all fine-mapping methods currently available in \pkg{echofinemap}.
+#' @inheritParams multifinemap
+#' @export
+#' @examples 
+#' finemap_methods <- echofinemap::list_finemap_methods()
+lfm <- list_finemap_methods <- function(finemap_methods=NULL,
+                                        verbose=TRUE){
     d <- required_cols() 
     if(is.null(finemap_methods)) finemap_methods <- d$method 
     skip_methods <- finemap_methods[!finemap_methods %in% d$method]

@@ -29,6 +29,7 @@ biocViews:
     Genetics, FunctionalGenomics, SystemsBiology
 Imports:
     echodata,
+    echoLD,
     echoannot,
     echoconda,
     coloc,
@@ -52,6 +53,7 @@ Suggests:
     hexSticker
 Remotes:
   github::RajLabMSSM/echodata,
+  github::RajLabMSSM/echoLD,
   github::RajLabMSSM/echoannot,
   github::RajLabMSSM/echoconda
 RoxygenNote: 7.1.2

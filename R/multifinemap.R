@@ -9,7 +9,7 @@
 #' LD_matrix <- echodata::BST1_LD_matrix
 #' locus_dir <- file.path(tempdir(),echodata::locus_dir)
 #' fullSS_path <- echodata::example_fullSS(dataset = "Nalls2019")
-#' dat2 <- echofinemap::multifinemap(dat = dat,
+#' dat2 <- echofinemap::multifinemap(dat = dat, 
 #'                                  locus_dir = locus_dir,
 #'                                  LD_matrix = LD_matrix,
 #'                                  fullSS_path = fullSS_path,

@@ -39,6 +39,25 @@ test_that("multifinemap works", {
             }
         }
     }
+    
+    #### Round 0: one causal SNP####
+    dat0 <- echofinemap::multifinemap(dat = dat,
+                                      locus_dir = locus_dir, 
+                                      LD_matrix = LD_matrix,
+                                      fullSS_path = fullSS_path,
+                                      sample_size = 100000,
+                                      force_new_finemap = TRUE,
+                                      n_causal = 1,
+                                      finemap_methods = finemap_methods)
+    run_tests(dat = dat,
+              dat2 = dat0,
+              finemap_methods = finemap_methods, 
+              cs_sizes = c(1,1,1),
+              pp_sizes = c(1,1,1))
+    top_snp <- subset(dat0, Support==max(Support))
+    testthat::expect_true(top_snp$Support==3)
+    testthat::expect_true(top_snp$SNP=="rs4698412")
+    testthat::expect_true(all.equal(top_snp$mean.PP, 0.9999993))
      
     #### Round 1 ####
     dat2 <- echofinemap::multifinemap(dat = dat,
