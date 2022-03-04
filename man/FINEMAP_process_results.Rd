@@ -18,6 +18,7 @@ FINEMAP_process_results(
   locus_dir,
   credset_thresh = 0.95,
   pvalue_thresh = 0.05,
+  n_causal = 5,
   finemap_version = "1.4",
   results_file = ".cred",
   nThread = 1,

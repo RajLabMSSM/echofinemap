@@ -2,7 +2,7 @@ test_that("multifinemap works", {
   
     dat <- echofinemap::drop_finemap_cols(echodata::BST1)
     LD_matrix <- echodata::BST1_LD_matrix
-    locus_dir <- file.path(tempdir(),echodata::locus_dir)
+    locus_dir <- file.path("~/Desktop",echodata::locus_dir)
     fullSS_path <- echodata::example_fullSS(dataset = "Nalls2019")
     finemap_methods <- c("ABF","SUSIE","FINEMAP")
     

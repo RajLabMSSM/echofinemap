@@ -16,6 +16,7 @@ FINEMAP_process_results <- function(dat,
                                     locus_dir,
                                     credset_thresh=.95,
                                     pvalue_thresh=.05,
+                                    n_causal=5,
                                     finemap_version="1.4",
                                     results_file=".cred",
                                     nThread=1,
@@ -39,6 +40,7 @@ FINEMAP_process_results <- function(dat,
     #### Process FINEMAP results ####
     if(results_file==".cred"){
         data.cred <- FINEMAP_import_data_cred(locus_dir = locus_dir,
+                                              n_causal = n_causal,
                                               verbose = verbose) 
         dat2 <- data.table::merge.data.table(data.table::data.table(dat),
                                             data.table::data.table(data.cred),

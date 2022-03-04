@@ -9,7 +9,6 @@
 #'                                         finemap_method = "SUSIE")
 create_method_path <- function(locus_dir,
                                finemap_method,
-                               prefix="multi-finemap.tsv",
                                include_astrices=FALSE,
                                LD_reference=NULL,
                                create_dir=TRUE,
@@ -23,7 +22,7 @@ create_method_path <- function(locus_dir,
     # locus <- basename(locus_dir)
     if(is.null(LD_reference)){
         file_path <- file.path(method_dir, 
-                               paste0(paste0("*",prefix),
+                               paste0(paste0("*",finemap_method,".tsv"),
                                       if(compress) ".gz" else "*"))
     } else{
         file_path <- file.path(method_dir,

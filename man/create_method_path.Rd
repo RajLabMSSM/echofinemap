@@ -7,7 +7,6 @@
 create_method_path(
   locus_dir,
   finemap_method,
-  prefix = "multi-finemap.tsv",
   include_astrices = FALSE,
   LD_reference = NULL,
   create_dir = TRUE,
