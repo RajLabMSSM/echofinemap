@@ -1,10 +1,14 @@
 #' @family finemapping functions
 #' @keywords internal
 save_finemap_results <- function(dat,
-                                 file_dir,
-                                 nThread=1){
-    data.table::fwrite(dat, file_dir, 
-                       sep = "\t", na = NA, quote = FALSE,
+                                 path,
+                                 nThread=1,
+                                 verbose=TRUE){
+    messager("Saving merged finemapping results ==>",path,v=verbose)
+    data.table::fwrite(x = dat, 
+                       file = path, 
+                       sep = "\t", 
+                       na = NA, quote = FALSE,
                        nThread = nThread)
 }
 

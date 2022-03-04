@@ -75,24 +75,24 @@ POLYFUN_h2_enrichment_SNPgroups <- function(merged_dat,
         support0 <- POLYFUN_h2_enrichment(h2_df=h2_df,
                                           target_SNPs = subset(dat, Support==0)$SNP)
         support1 <- POLYFUN_h2_enrichment(h2_df=h2_df,
-                                          target_SNPs = subset(finemap_dat, Support==1)$SNP)
+                                          target_SNPs = subset(dat, Support==1)$SNP)
         support2 <- POLYFUN_h2_enrichment(h2_df=h2_df,
-                                          target_SNPs = subset(finemap_dat, Support==2)$SNP)
+                                          target_SNPs = subset(dat, Support==2)$SNP)
         support3 <- POLYFUN_h2_enrichment(h2_df=h2_df,
-                                          target_SNPs = subset(finemap_dat, Support==3)$SNP)
+                                          target_SNPs = subset(dat, Support==3)$SNP)
         support4 <- POLYFUN_h2_enrichment(h2_df=h2_df,
-                                          target_SNPs = subset(finemap_dat, Support==4)$SNP)
+                                          target_SNPs = subset(dat, Support==4)$SNP)
         
         # Consenus SNPs
         Finemap.consensus <- POLYFUN_h2_enrichment(h2_df=h2_df,
-                                                   target_SNPs = subset(finemap_dat, Consensus_SNP)$SNP)
+                                                   target_SNPs = subset(dat, Consensus_SNP)$SNP)
         
         # Consensus SNPs (no PolyFun)
         Finemap.consensus_noPF <- POLYFUN_h2_enrichment(h2_df=h2_df,
-                                                        target_SNPs = subset(finemap_dat, Consensus_SNP_noPF)$SNP)
+                                                        target_SNPs = subset(dat, Consensus_SNP_noPF)$SNP)
         # UCS SNPs (no PolyFun)
         UCS_noPF <- POLYFUN_h2_enrichment(h2_df=h2_df,
-                                          target_SNPs = subset(finemap_dat, Support_noPF>0)$SNP)
+                                          target_SNPs = subset(dat, Support_noPF>0)$SNP)
         
         res <- data.frame(SNP_group=c("Random",
                                       "All",

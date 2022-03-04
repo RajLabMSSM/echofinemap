@@ -57,7 +57,7 @@ out <- echoLD::subset_common_snps(LD_matrix, dat)
 LD_matrix <- out$LD
 dat <- out$DT
 
-dat <- FINEMAP(dat=dat,
+dat <- echofinemap::FINEMAP(dat=dat,
                locus_dir=locus_dir,
                LD_matrix=LD_matrix,
                finemap_version="1.3.1")

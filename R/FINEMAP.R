@@ -33,7 +33,7 @@
 #' LD_matrix <- out$LD
 #' dat <- out$DT
 #' 
-#' dat <- FINEMAP(dat=dat,
+#' dat <- echofinemap::FINEMAP(dat=dat,
 #'                locus_dir=locus_dir,
 #'                LD_matrix=LD_matrix,
 #'                finemap_version="1.3.1")
@@ -69,18 +69,13 @@ FINEMAP <- function(dat,
                                       dat = dat,
                                       LD_matrix = LD_matrix)
   #### Use pre=existing results #### 
-  if(any(file.exists(file.path(dirname(master_path),
-                               c("data.cred","data.snp","data.config")))) &&
-     force_new==FALSE){
-    messager("+ FINEMAP:: Importing pre-computed FINEMAP results files.",
-             "Set force_new=TRUE to compute new results.",v=verbose)
-    dat <- FINEMAP_process_results(locus_dir = locus_dir,
-                                           dat = dat,
-                                           credset_thresh = credset_thresh,
-                                           results_file = ".cred",
-                                           finemap_version = finemap_version)
-    return(dat)
-  }
+  dat_prev <- FINEMAP_check_existing_results(locus_dir = locus_dir,
+                                             credset_thresh = credset_thresh,
+                                             finemap_version = finemap_version,
+                                             master_path = master_path,
+                                             force_new = force_new,
+                                             verbose = verbose)
+  if(!is.null(dat_prev)) return(dat_prev)
   
   ####  Command line example  ####
   # cmd <- paste(FINEMAP_path," --sss --in-files",

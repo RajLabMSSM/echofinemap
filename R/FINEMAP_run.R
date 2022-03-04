@@ -1,10 +1,11 @@
 FINEMAP_run <- function(locus_dir,
                         FINEMAP_path,
-                        model="sss",# "cond"
+                        model=c("sss","cond"),
                         master_path,
                         n_causal=5,
                         args_list=list(),
                         verbose=TRUE){
+    model <- tolower(model)[1]
     cmd <- paste("cd",locus_dir,"&&",
                  FINEMAP_path,
                  paste0("--",model),

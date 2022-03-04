@@ -40,8 +40,7 @@ Other polyfun:
 \code{\link{POLYFUN_ldsc_annot_enrichment}()},
 \code{\link{POLYFUN_munge_summ_stats}()},
 \code{\link{POLYFUN_plot}()},
-\code{\link{POLYFUN_run_ldsc}()},
-\code{\link{read_parquet}()}
+\code{\link{POLYFUN_run_ldsc}()}
 }
 \concept{polyfun}
 \keyword{internal}

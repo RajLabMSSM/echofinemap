@@ -3,8 +3,14 @@
 #' Create a fine-mapping method-specific path.
 #' @family finemapping functions
 #' @export
+#' @examples 
+#' locus_dir <- echodata::locus_dir
+#' path <- echofinemap::create_method_path(locus_dir = locus_dir, 
+#'                                         finemap_method = "SUSIE")
 create_method_path <- function(locus_dir,
                                finemap_method,
+                               prefix="multi-finemap.tsv",
+                               include_astrices=FALSE,
                                LD_reference=NULL,
                                create_dir=TRUE,
                                compress=FALSE){
@@ -17,7 +23,7 @@ create_method_path <- function(locus_dir,
     # locus <- basename(locus_dir)
     if(is.null(LD_reference)){
         file_path <- file.path(method_dir, 
-                               paste0("*Multi-finemap.tsv",
+                               paste0(paste0("*",prefix),
                                       if(compress) ".gz" else "*"))
     } else{
         file_path <- file.path(method_dir,
@@ -27,5 +33,6 @@ create_method_path <- function(locus_dir,
                                       if(compress) ".gz" else "*")
         )
     }
+    if(!include_astrices) file_path <- gsub("\\*","",file_path)
     return(file_path)
 }

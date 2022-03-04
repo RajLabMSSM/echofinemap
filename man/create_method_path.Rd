@@ -7,6 +7,8 @@
 create_method_path(
   locus_dir,
   finemap_method,
+  prefix = "multi-finemap.tsv",
+  include_astrices = FALSE,
   LD_reference = NULL,
   create_dir = TRUE,
   compress = FALSE
@@ -15,9 +17,14 @@ create_method_path(
 \description{
 Create a fine-mapping method-specific path.
 }
+\examples{
+locus_dir <- echodata::locus_dir
+path <- echofinemap::create_method_path(locus_dir = locus_dir, 
+                                        finemap_method = "SUSIE")
+}
 \seealso{
 Other finemapping functions: 
-\code{\link{finemap_handler}()},
-\code{\link{multi_finemap}()}
+\code{\link{multifinemap_handler}()},
+\code{\link{multifinemap}()}
 }
 \concept{finemapping functions}

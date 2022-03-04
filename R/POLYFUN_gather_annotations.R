@@ -17,7 +17,7 @@ POLYFUN_gather_annotations <- function(chromosomes=c(1:22),
                                    # e.g. " /pd-omics/tools/polyfun/annotations/baselineLF2.2.UKB/baselineLF2.2.UKB.5.annot.parquet"
                                    pattern = paste0("*\\.",chrom,"\\.annot\\.parquet"),
                                    full.names = TRUE)
-        annot_df <- read_parquet(parquet_path = parquet.file)
+        annot_df <- echodata::read_parquet(path = parquet.file)
         annot_df$BP <- as.integer(annot_df$BP)
         if(!is.null(subset_snps)){
             annot_df <- subset(annot_df, SNP %in% subset_snps)

@@ -16,7 +16,7 @@ POLYFUN_functional_enrichment <- function(dat,
     library(reticulate)
     echoconda::activate_env(conda_env = "echoR")
     # pd <- reticulate::import("pandas")
-    annot <- read_parquet(parquet_path = annot.file,
+    annot <- echodata::read_parquet(path = annot.file,
                                   conda_env = "echoR",
                                   method = "pandas")
     annot_names <- annot %>% dplyr::select(-c(SNP,CHR,BP,A1,A2)) %>% colnames()

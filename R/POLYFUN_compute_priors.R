@@ -116,8 +116,8 @@ POLYFUN_compute_priors <- function(polyfun=NULL,
         LDSC.files <- list.files(out.path,
                                  pattern = "*.snpvar_constrained.gz", full.names = TRUE)
         # pd_ldsc <- data.table::fread(PS_LDSC.files[1], nThread = 4)
-        # ldscore <- read_parquet(file.path(out.path,"PD_GWAS.1.l2.ldscore.parquet"))
-        # bin.1 <- read_parquet(file.path(out.path,"PD_GWAS.2.bins.parquet"))
+        # ldscore <- echodata::read_parquet(file.path(out.path,"PD_GWAS.1.l2.ldscore.parquet"))
+        # bin.1 <- echodata::read_parquet(file.path(out.path,"PD_GWAS.2.bins.parquet"))
         #rowSums(bin.1[,-c(1:5)]) # each SNP belongs to only 1 bin
     } else { LDSC.files <- list.files(out.path, pattern = "_ridge_constrained.gz", full.names = TRUE) }
     

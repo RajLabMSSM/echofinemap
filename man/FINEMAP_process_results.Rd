@@ -5,6 +5,12 @@
 \title{FINEMAP: process results}
 \source{
 \url{http://www.christianbenner.com}
+
+\code{
+locus_dir <- file.path(tempdir(), echodata::locus_dir)
+dat <- echodata::BST1;
+dat2 <- echofinemap:::FINEMAP_process_results(dat=dat, locus_dir=locus_dir)
+}
 }
 \usage{
 FINEMAP_process_results(
@@ -21,13 +27,6 @@ FINEMAP_process_results(
 }
 \description{
 Post-processing of \code{FINEMAP} results.
-}
-\examples{
-\dontrun{
-locus_dir <- file.path(tempdir(), echodata::locus_dir)
-dat <- echodata::BST1;
-dat2 <-FINEMAP_process_results(dat=dat, locus_dir=locus_dir)
-}
 }
 \seealso{
 Other FINEMAP: 

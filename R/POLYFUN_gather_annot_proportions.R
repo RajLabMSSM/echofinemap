@@ -8,7 +8,7 @@ POLYFUN_gather_annot_proportions <- function(base_url="/sc/arion/projects/pd-omi
         all_annot <- list.files(base_url, pattern = "*.annot.parquet$", full.names = TRUE)
         annot_PROP <- parallel::mclapply(all_annot, function(x){
             print(x)
-            annot <- read_parquet(parquet_path = x)
+            annot <- echodata::read_parquet(path = x)
             annot_sums <- colSums(annot[,6:ncol(annot)])
             annot_prop <- annot_sums/nrow(annot)
             return(annot_prop)

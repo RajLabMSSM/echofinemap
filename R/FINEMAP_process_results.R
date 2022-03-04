@@ -6,11 +6,11 @@
 #' @keywords internal
 #' @source \url{http://www.christianbenner.com}
 #' @importFrom dplyr %>% arrange desc
-#' @examples
-#' \dontrun{
+#' @source 
+#' \code{
 #' locus_dir <- file.path(tempdir(), echodata::locus_dir)
 #' dat <- echodata::BST1;
-#' dat2 <-FINEMAP_process_results(dat=dat, locus_dir=locus_dir)
+#' dat2 <- echofinemap:::FINEMAP_process_results(dat=dat, locus_dir=locus_dir)
 #' }
 FINEMAP_process_results <- function(dat,
                                     locus_dir,
@@ -31,8 +31,8 @@ FINEMAP_process_results <- function(dat,
     
     #### Handling FINEMAP version differences  ####
     results_file <- FINEMAP_check_version_results(
-        finemap_version=finemap_version,
-        results_file=results_file)
+        finemap_version = finemap_version,
+        results_file = results_file)
     #### Double check which results files are available ####
     ## This vary depending on which version of FINEMAP you're using.
     results_file <- FINEMAP_check_files(locus_dir, results_file)
