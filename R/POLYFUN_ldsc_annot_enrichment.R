@@ -1,7 +1,7 @@
 #' Run and plot heritability enrichment tests
 #'
 #' @source
-#' https://www.biorxiv.org/content/10.1101/807792v3
+#' https://www.nature.com/articles/s41588-020-00735-5
 #' @keywords internal
 #' @family polyfun
 POLYFUN_ldsc_annot_enrichment <- function(.results = "Data/GWAS/Nalls23andMe_2019/_genome_wide/PolyFun/output/PD_GWAS_LDSC/PD_GWAS_LDSC.results",
@@ -59,7 +59,7 @@ POLYFUN_ldsc_annot_enrichment <- function(.results = "Data/GWAS/Nalls23andMe_201
     POLYFUN_get_annot_refs <- function(res,
                                        supp_file="./echolocatoR/tools/polyfun/SuppTables.xlsx", sheet="S1"){
         supp <- openxlsx::read.xlsx(supp_file,sheet = sheet)
-        supp_merge <- data.table:::merge.data.table(data.table::data.table(supp), res,
+        supp_merge <- echodata::merge_robust(data.table::data.table(supp), res,
                                                     by.x = "Annotation", by.y = "Category")
         return(supp_merge)
     }

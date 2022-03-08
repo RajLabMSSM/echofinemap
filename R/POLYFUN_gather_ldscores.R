@@ -8,8 +8,12 @@
 #' }
 POLYFUN_gather_ldscores <- function(output_prefix){
     ldscore.files <-  list.files(dirname(output_prefix),
-                                 pattern = ".l2.ldscore.parquet", full.names = TRUE)
-    if(length(ldscore.files)>1){messager("POLYFUN:: >1 ldscore file detected. Only using the first:",ldscore.files[1])}
+                                 pattern = ".l2.ldscore.parquet",
+                                 full.names = TRUE)
+    if(length(ldscore.files)>1){
+        messager("PolyFun:: >1 ldscore file detected. Only using the first:",
+                 ldscore.files[1])
+    }
     parquor <- echodata::read_parquet(ldscore.files[1])
     return(parquor)
 }

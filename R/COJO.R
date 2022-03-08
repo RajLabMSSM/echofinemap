@@ -148,9 +148,10 @@ process_COJO_results <- function(dat,
 
   colnames(conditional_results)[2] <- paste0(colnames(conditional_results)[2])
   # Merge with original data
-  cojo_DT <- data.table:::merge.data.table(data.table::data.table(dat, key = "SNP"),
-                                           data.table::data.table(conditional_results, key = "SNP"),
-                                              by = "SNP", all = TRUE)
+  cojo_DT <- echodata::merge_robust(
+    data.table::data.table(dat, key = "SNP"),
+    data.table::data.table(conditional_results, key = "SNP"),
+    by = "SNP", all = TRUE)
   cojo_DT$CS <- ifelse(cojo_DT$SNP %in% independent_SNPs,1,0)
   return(cojo_DT)
 }

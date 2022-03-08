@@ -49,8 +49,8 @@ multifinemap_handler_method <- function(dat,
                                      dataset_type = dataset_type,
                                      max_causal = n_causal,
                                      sample_size = sample_size,
-                                     polyfun_approach = "precomputed",
-                                     # polyfun_approach = "non-parametric",
+                                     mode = "precomputed",
+                                     # mode = "non-parametric",
                                      PP_threshold = PP_threshold,
                                      conda_env = conda_env)
         

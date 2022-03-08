@@ -68,7 +68,7 @@ PAINTOR.create_locusFile <- function(subset_path,
                                         use_saved=TRUE,
                                         output_path=output_path)
   # Get the party started using the GWAS file
-  dat <- data.table::fread(subset_path, nThread = 4) %>%
+  dat <- data.table::fread(subset_path, nThread = 1) %>%
     dplyr::mutate(CHR=paste0("chr",CHR),
                   RSID=SNP,
                   ZSCORE.P1=Zscore(x = Effect, z.info = z.info.gwas))
@@ -101,7 +101,7 @@ PAINTOR.create_locusFile <- function(subset_path,
   ## Save
   data.table::fwrite(merged_DT,
                      file.path(PT_results_path, locus_name),
-                     sep=" ", quote = FALSE, na = NA, nThread = 4)
+                     sep=" ", quote = FALSE, na = NA, nThread = 1)
   return(merged_DT)
 }
 
@@ -160,7 +160,7 @@ PAINTOR.create_locusFile.QTL <- function(dat,
   ## Save
   data.table::fwrite(locus_DT,
                      file.path(PT_results_path, locus_name),
-                     sep=" ", quote = FALSE, na = NA, nThread = 4)
+                     sep=" ", quote = FALSE, na = NA, nThread = 1)
 
   return(data.table::data.table(locus_DT))
 }
@@ -201,7 +201,8 @@ PAINTOR.prepare_LD.transethnic <- function(subset_path,
   if(shared_snps_only){
     shared.snps <- Reduce(intersect, lapply(ld.mat.list,  colnames))
     shared.snps <- intersect(shared.snps, dat$SNP)
-    messager("+ PAINTOR::",length(shared.snps), "shared SNPs identified.")
+    messager("+ PAINTOR::",formatC(length(shared.snps),big.mark = ","),
+             "shared SNPs identified.")
   } else {
     shared.snps <- Reduce(intersect, lapply(ld.mat.list,  colnames))
     shared.snps <- intersect(shared.snps,  dat$SNP)
@@ -225,7 +226,7 @@ PAINTOR.prepare_LD.transethnic <- function(subset_path,
                        sep = " ", quote = FALSE,
                        col.names = FALSE, row.names = FALSE,
                        na = 0.0,
-                       nThread = 4)
+                       nThread = 1)
 
     return(.LD_file)
   }) %>% unlist()
@@ -256,7 +257,7 @@ PAINTOR.prepare_LD <- function(subset_path,
   ## The output of PAINTOR will not be correct if there are mismatches of this type in the data.
   ##Please see wiki section 2a for instructions on how to use the LD utility provided with the software."
   messager("++ PAINTOR:: Creating LD Matrix File...")
-  dat <- data.table::fread(file.path(subset_path,"Multi-finemap/Multi-finemap_results.txt"), nThread = 4)
+  dat <- data.table::fread(file.path(subset_path,"Multi-finemap/Multi-finemap_results.txt"), nThread = 1)
   if(is.null(LD_matrix)){
     LD_matrix <- LD.load_or_create(locus_dir=locus_dir,
                                    dat=dat,
@@ -481,7 +482,7 @@ PAINTOR.survey_annotation <- function(PT_results_path,
 PAINTOR.process_results <- function(PT_results_path,
                                     locus_name="Locus1"){
   paintor.results <- data.table::fread(file.path(PT_results_path, paste0(locus_name,".results.txt")),
-                                       nThread = 4) %>%
+                                       nThread = 1) %>%
     arrange(desc(Posterior_Prob))
   return(data.table::data.table(paintor.results))
 }
@@ -496,7 +497,7 @@ PAINTOR.merge_results <- function(dat,
                                   PP_threshold=.5,
                                   multi_finemap_col_name="PAINTOR"){
   messager("PAINTOR:: Merging PAINTOR results with multi-finemap file.")
-  merged_DT <- data.table:::merge.data.table(dat, paintor.results[,c("RSID","Posterior_Prob")],
+  merged_DT <- echodata::merge_robust(dat, paintor.results[,c("RSID","Posterior_Prob")],
                                              by.x="SNP", by.y="RSID", all.x = TRUE)
   PP.col.name <- paste0(multi_finemap_col_name,".PP")
   names(merged_DT)[names(merged_DT) == "Posterior_Prob"] <- PP.col.name
@@ -616,10 +617,10 @@ PAINTOR.import_QTL_DT <- function(QTL_datasets,
     # Save subset
     # force_new_subset=T
     if(file.exists(subset_path) & force_new_subset==FALSE){
-      dat <- data.table::fread(subset_path, nThread = 4)
+      dat <- data.table::fread(subset_path, nThread = 1)
     } else {
       messager("PAINTOR:: Creating subset file for",locus)
-      qtl.dat <- data.table::fread(fullSS_path, nThread = 4)
+      qtl.dat <- data.table::fread(fullSS_path, nThread = 1)
       ## Remove the "locus" column bc it confuses subsetting functions
       # qtl.dat <- dplyr::select(qtl.dat, select = -locus) %>%
       #   subset(gene_name==locus)
@@ -722,7 +723,7 @@ PAINTOR <- function(dat=NULL,
       mfm_path <- file.path(subset_path,"Multi-finemap/Multi-finemap_results.txt")
       if(is.null(dat)){
         messager("PAINTOR:: No dat supplied. Retrieving from storage:",mfm_path)
-        dat <- data.table::fread(mfm_path, nThread = 4)
+        dat <- data.table::fread(mfm_path, nThread = 1)
       }
       dat <- calculate_tstat(dat=dat)
   }
@@ -735,7 +736,7 @@ PAINTOR <- function(dat=NULL,
     if(!is.null(GWAS_datasets) & length(GWAS_datasets)==1){
       dat <- dat[,c("SNP","t_stat","A1","A2","P","leadSNP")]
       colnames(dat)[-1] <- paste0("GWAS.",colnames(dat)[-1])
-      dat <- data.table:::merge.data.table(dat, qtl_DT, by="SNP")
+      dat <- echodata::merge_robust(dat, qtl_DT, by="SNP")
       # Flip alleles
       dat <- dat %>%
         dplyr::mutate(GWAS.t_stat = ifelse((GWAS.A1!=A1 & GWAS.A2!=A2),
@@ -787,7 +788,7 @@ PAINTOR <- function(dat=NULL,
     ## Save
     data.table::fwrite(locus_DT,
                        file.path(PT_results_path, locus_name),
-                       sep=" ", quote = FALSE, na = NA, nThread = 4)
+                       sep=" ", quote = FALSE, na = NA, nThread = 1)
   }
 
 
@@ -848,7 +849,7 @@ PAINTOR <- function(dat=NULL,
                                       trim_gene_limits = trim_gene_limits,
                                       force_new_subset = force_new_subset,
                                       metric = "P")
-  dat.P <- data.table:::merge.data.table(dat.P,
+  dat.P <- echodata::merge_robust(dat.P,
                                 subset(dat, select=c("SNP",
                                                             paste0(GWAS_datasets,".P"),
                                                             paste0(GWAS_datasets,".leadSNP")))
@@ -865,7 +866,7 @@ PAINTOR <- function(dat=NULL,
   # Update Consensus SNP col and Summarise
   # merged_DT <- echodata::find_consensus_snps(merged_DT, support_thresh = 2)
   # top_snps <- (dat %>% arrange(desc(Support)))[,c("SNP","Support","Consensus_SNP")] %>% head(10)
-  # data.table::fwrite(merged_DT, mfm_path, nThread = 4, sep="\t")
+  # data.table::fwrite(merged_DT, mfm_path, nThread = 1, sep="\t")
 
   # PLOT
   transethnic_plot(merged_DT = merged_DT,
@@ -896,7 +897,7 @@ gather.transethnic.LD <- function(merged_DT,
     lead.snp <- merged_DT[merged_DT[,paste0(cond,".leadSNP")]==TRUE,]$SNP
     dat <- data.table(SNP=names(LD_matrix[lead.snp,]),
                       r2=LD_matrix[lead.snp,]^2)
-    merged_DT <- data.table:::merge.data.table(merged_DT, dat, by = "SNP")
+    merged_DT <- echodata::merge_robust(merged_DT, dat, by = "SNP")
     colnames(merged_DT)[colnames(merged_DT)=="r2"] <- paste0(cond,".r2")
   }
   merged_DT <- dplyr::mutate(merged_DT,

@@ -1,6 +1,6 @@
 #' Run heritability enrichment tests across SNP groups
 #' @source
-#' https://www.biorxiv.org/content/10.1101/807792v3
+#' https://www.nature.com/articles/s41588-020-00735-5
 #' @keywords internal
 #' @family polyfun
 #' @examples
@@ -21,7 +21,7 @@ POLYFUN_h2_enrichment_SNPgroups <- function(merged_dat,
     # Gather your heritability
     ldsc.files <- list.files(ldsc_dir, pattern = ldsc_suffix, full.names = TRUE) %>%
         grep(pattern = paste0(".",chrom,"."), value = TRUE)
-    h2_DF <- echolocatoR:::.rbind.file.list(ldsc.files)
+    h2_DF <- echolocatoR:::rbind_filelist(ldsc.files)
     
     h2_merged <- data.table::merge.data.table(merged_dat,
                                               subset(h2_DF, select=c(SNP,SNPVAR)),

@@ -22,6 +22,7 @@ POLYFUN_prepare_snp_input <- function(PF.output.path,
                                       locus_dir,
                                       dat=NULL,
                                       nThread=1){
+    SNP <- CHR <- POS <- NULL;
     messager("PolyFun:: Preparing SNP input file...")
     if(!"A1" %in% colnames(dat)) A1 <- NULL;
     if(!"A2" %in% colnames(dat)) A2 <- NULL;
@@ -31,14 +32,16 @@ POLYFUN_prepare_snp_input <- function(PF.output.path,
                             BP=POS,
                             A1=A1,
                             A2=A2)
-    messager("+ PolyFun::",nrow(PF.dat),"SNPs identified.")
+    messager("+ PolyFun::",formatC(nrow(PF.dat),big.mark = ","),
+             "SNPs identified.")
     snp.path <- file.path(PF.output.path,"snps_to_finemap.txt.gz")
     messager("+ PolyFun:: Writing SNP file ==>",snp.path)
     dir.create(dirname(snp.path), recursive = TRUE, showWarnings  = FALSE)
     data.table::fwrite(PF.dat, file = snp.path,
                        nThread = nThread, sep = " ")
-    # Check if it's actually gzipped
-    ## (in older versions of data.table, files with the .gz extension are automatically gzipped)
+    # Check if the saved file is actually gzipped.
+    # In some versions of data.table, 
+    # files with the .gz extension are NOT automatically gzipped.
     if(!R.utils::isGzipped(snp.path)){
         R.utils::gzip(filename=snp.path, destname=snp.path, overwrite=TRUE)
     }

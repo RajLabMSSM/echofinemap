@@ -1,6 +1,6 @@
 #' Run functional enrichment tests
 #' @source
-#' https://www.biorxiv.org/content/10.1101/807792v3
+#' https://www.nature.com/articles/s41588-020-00735-5
 #' @keywords internal
 #' @family polyfun
 POLYFUN_functional_enrichment <- function(dat,
@@ -20,7 +20,7 @@ POLYFUN_functional_enrichment <- function(dat,
                                   conda_env = "echoR",
                                   method = "pandas")
     annot_names <- annot %>% dplyr::select(-c(SNP,CHR,BP,A1,A2)) %>% colnames()
-    annot_DT <- data.table:::merge.data.table(dat,
+    annot_DT <- echodata::merge_robust(dat,
                                               data.table::data.table(annot) %>%
                                                   dplyr::rename(SNP_y = SNP, A1_y=A1, A2_y=A2),
                                               by.x = c("CHR","POS"),

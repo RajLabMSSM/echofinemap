@@ -96,7 +96,8 @@ SUSIE <- function(dat,
     sample_size <- if("N" %in% colnames(ss_df)) max(ss_df$N, na.rm = TRUE)
     if(is.null(sample_size)) stop("sample_size==NULL")
   }
-  messager("+ SUSIE:: sample_size=",sample_size,v=verbose)
+  messager("+ SUSIE:: sample_size=",
+           formatC(sample_size,big.mark = ","),v=verbose)
   #### Get phenotype variance ####
   if(manual_var_y){
     var_y <- get_pheno_variance(dat = dat,
@@ -112,8 +113,8 @@ SUSIE <- function(dat,
   keep_i <- which(dat$SNP %in% sub.out$DT$SNP) ### Necessary to subset priors
   LD_matrix <- sub.out$LD
   dat <- sub.out$DT 
-  #### Check priors ####
-  prior_weights <- SUSIE_check_priors(
+  #### Check arguments, including priors ####
+  prior_weights <- SUSIE_check_args(
     prior_weights=prior_weights,
     dat=dat,
     keep_i=keep_i,
@@ -139,7 +140,7 @@ SUSIE <- function(dat,
     prior_weights=prior_weights,
     PP_threshold=PP_threshold,
     plot_track_fit=plot_track_fit,
-    verbose=TRUE)
+    verbose=verbose)
   #### Animated plot track ####
   SUSIE_plot_track(plot_track_fit=plot_track_fit,
                    fitted_bhat=fitted_bhat,

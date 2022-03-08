@@ -2,27 +2,33 @@
 % Please edit documentation in R/POLYFUN_munge_summ_stats.R
 \name{POLYFUN_munge_summ_stats}
 \alias{POLYFUN_munge_summ_stats}
-\title{Munge summary stats}
+\title{PolyFun: Munge summary stats}
 \usage{
 POLYFUN_munge_summ_stats(
   polyfun = NULL,
   fullSS_path,
-  locus_dir,
+  locus_dir = tempdir(),
   sample_size = NULL,
   min_INFO = 0,
   min_MAF = 0.001,
+  chi2_cutoff = 30,
+  keep_hla = FALSE,
+  no_neff = FALSE,
   force_new_munge = FALSE,
-  conda_env = "echoR"
+  conda_env = "echoR",
+  verbose = TRUE
 )
 }
 \description{
-Munge summary stats
+Munge summary statistics using the PolyFun implementation of the LDSSC
+ munge sum stats python script (\code{munge_polyfun_sumstats.py}).
 }
 \examples{
 \dontrun{
-data("genome_wide_dir");
-fullSS_path <- example_fullSS(fullSS_path="~/Desktop/Nalls23andMe_2019.fullSS_subset.tsv")
-munged_path <- POLYFUN_munge_summ_stats(fullSS_path=fullSS_path, locus_dir=genome_wide_dir, force_new_munge=TRUE)
+fullSS_path <- echodata::example_fullSS()
+#### Remove duplicates ####
+dat <- data.table::fread(fullSS_path)
+munged_path <- POLYFUN_munge_summ_stats(fullSS_path=fullSS_path)
 }
 }
 \seealso{
@@ -35,11 +41,11 @@ Other polyfun:
 \code{\link{POLYFUN_functional_enrichment}()},
 \code{\link{POLYFUN_gather_annotations}()},
 \code{\link{POLYFUN_gather_ldscores}()},
-\code{\link{POLYFUN_get_precomputed_priors}()},
 \code{\link{POLYFUN_h2_enrichment_SNPgroups_plot}()},
 \code{\link{POLYFUN_h2_enrichment_SNPgroups}()},
 \code{\link{POLYFUN_h2_enrichment}()},
 \code{\link{POLYFUN_help}()},
+\code{\link{POLYFUN_import_priors}()},
 \code{\link{POLYFUN_initialize}()},
 \code{\link{POLYFUN_ldsc_annot_enrichment}()},
 \code{\link{POLYFUN_plot}()},

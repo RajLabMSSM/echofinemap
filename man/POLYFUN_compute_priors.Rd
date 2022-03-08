@@ -13,7 +13,7 @@ POLYFUN_compute_priors(
   min_MAF = 0.001,
   annotations_path = NULL,
   weights_path = NULL,
-  prefix = "PD_GWAS",
+  prefix = "GWAS1",
   chrom = "all",
   compute_ldscores = FALSE,
   allow_missing_SNPs = TRUE,
@@ -27,10 +27,10 @@ Recompute SNP-wise priors from summary stats
 }
 \examples{
 \dontrun{
-locus_dir <- echodata::locus_dir;
-fullSS_path <- example_fullSS(fullSS_path="~/Desktop/Nalls23andMe_2019.fullSS_subset.tsv")
-munged_path <- "results/GWAS/Nalls23andMe_2019/_genome_wide/PolyFun/nallsEtAl2019_allSamples_allVariants.mod.munged.parquet"
-LDSC.files <- POLYFUN_compute_priors(locus_dir=locus_dir, fullSS_path=fullSS_path, conda_env="echoR")
+locus_dir <- file.path(tempdir(),echodata::locus_dir)
+fullSS_path <- echodata::example_fullSS()
+LDSC.files <- POLYFUN_compute_priors(locus_dir=locus_dir,
+                                     fullSS_path=fullSS_path)
 }
 }
 \seealso{
@@ -42,11 +42,11 @@ Other polyfun:
 \code{\link{POLYFUN_functional_enrichment}()},
 \code{\link{POLYFUN_gather_annotations}()},
 \code{\link{POLYFUN_gather_ldscores}()},
-\code{\link{POLYFUN_get_precomputed_priors}()},
 \code{\link{POLYFUN_h2_enrichment_SNPgroups_plot}()},
 \code{\link{POLYFUN_h2_enrichment_SNPgroups}()},
 \code{\link{POLYFUN_h2_enrichment}()},
 \code{\link{POLYFUN_help}()},
+\code{\link{POLYFUN_import_priors}()},
 \code{\link{POLYFUN_initialize}()},
 \code{\link{POLYFUN_ldsc_annot_enrichment}()},
 \code{\link{POLYFUN_munge_summ_stats}()},

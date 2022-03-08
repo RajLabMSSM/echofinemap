@@ -1,7 +1,7 @@
 #' Run \emph{PolyFun+SUSIE} fine-mapping pipeline
 #'
 #' @source
-#' https://www.biorxiv.org/content/10.1101/807792v3
+#' https://www.nature.com/articles/s41588-020-00735-5
 #' @keywords internal
 #' @family polyfun
 POLYFUN_finemapper <- function(polyfun=NULL,
@@ -13,7 +13,8 @@ POLYFUN_finemapper <- function(polyfun=NULL,
                                n_causal=5,
                                method="susie",
                                h2_path=NULL,
-                               conda_env="echoR"){
+                               conda_env="echoR",
+                               verbose=TRUE){
     # base_url  <- "./echolocatoR/tools/polyfun/LD_temp"
     polyfun <- POLYFUN_find_polyfun_folder(polyfun_path = polyfun)
     python <- echoconda::find_python_path(conda_env = conda_env)
@@ -59,9 +60,9 @@ POLYFUN_finemapper <- function(polyfun=NULL,
                  "--max-num-causal",n_causal,
                  # "--threads 2",# use max detected cores if not specified
                  "--out",out_path)
-    print(cmd)
+    cmd_print(cmd, v=verbose)
     system(cmd)
     
-    h2 <- .rbind.file.list("Data/GWAS/Nalls23andMe_2019/_genome_wide/PolyFun/output/PD_GWAS.16.snpvar_constrained.gz")
+    h2 <- rbind_filelist("Data/GWAS/Nalls23andMe_2019/_genome_wide/PolyFun/output/PD_GWAS.16.snpvar_constrained.gz")
 }
 

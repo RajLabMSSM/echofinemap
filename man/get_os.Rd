@@ -9,5 +9,9 @@ get_os()
 \description{
 Identify current operating system (OS).
 }
+\seealso{
+Other general: 
+\code{\link{rbind_filelist}()}
+}
 \concept{general}
 \keyword{internal}

@@ -1,6 +1,6 @@
 #' Plot PolyFun and other fine-mapping results
 #' @source
-#' https://www.biorxiv.org/content/10.1101/807792v3
+#' https://www.nature.com/articles/s41588-020-00735-5
 #' @keywords internal
 #' @family polyfun
 POLYFUN_plot <- function(dat,
@@ -16,7 +16,7 @@ POLYFUN_plot <- function(dat,
         lead.snp <- top_n(dat,1,-P)$SNP #subset(dat, leadSNP==TRUE)$SNP
         r2 <- data.table::data.table(SNP=names(LD_matrix[lead.snp,]),
                                      r2=LD_matrix[lead.snp,]^2)
-        dat <- data.table:::merge.data.table(dat, r2, by="SNP")
+        dat <- echodata::merge_robust(dat, r2, by="SNP")
     } else{dat <- dplyr::mutate(dat, r2=1)}
     dat <- dplyr::mutate(dat, Mb=round(POS/1000000,3))
     

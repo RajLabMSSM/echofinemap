@@ -1,6 +1,6 @@
 #' Find PolyFun folder
 #' 
-#' Folder where PolyFun submodule is stored
+#' Folder where PolyFun submodule is stored.
 #' @keywords internal
 #' @family polyfun
 #' @source
@@ -9,7 +9,7 @@
 #' }
 POLYFUN_find_polyfun_folder <- function(polyfun_path=NULL){
     if(is.null(polyfun_path)){
-        polyfun_path <- system.file("tools/polyfun","",
+        polyfun_path <- system.file("tools/polyfun",
                                     package = "echofinemap")
     }
     return(polyfun_path)

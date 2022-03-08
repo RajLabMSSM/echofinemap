@@ -1,4 +1,6 @@
-#' Create output dir and import SNP data.frame
+#' PolyFun: Initialize 
+#' 
+#' Create output dir and import SNP data.frame.
 #' @keywords internal
 #' @family polyfun
 #' @source 
@@ -8,7 +10,8 @@
 #' }
 POLYFUN_initialize <- function(locus_dir,
                                dat=NULL,
-                               nThread=1){
+                               nThread=1,
+                               verbose=TRUE){
     dataset <- basename(dirname(locus_dir))
     locus <- basename(locus_dir)
     # Create path
@@ -18,11 +21,13 @@ POLYFUN_initialize <- function(locus_dir,
     if(is.null(dat)){
         if(is.null(locus)){
             messager(
-                "POLYFUN:: Importing summary stats from disk: genome-wide")
+                "PolyFun:: Importing summary stats from disk: genome-wide",
+                v=verbose)
             dat <- data.table::fread(Directory_info(dataset, "fullSS.local"),
-                                     nThread = 4)
+                                     nThread = nThread)
         }
-        messager("POLYFUN:: Importing summary stats from disk:",locus)
+        messager("PolyFun:: Importing summary stats from disk:",locus,
+                 v=verbose)
         dat <- data.table::fread(
             file.path(dirname(Directory_info(dataset, "fullSS.local")),locus,
                       paste(locus,dataset,"subset.tsv.gz",sep="_")), 

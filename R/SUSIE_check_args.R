@@ -1,8 +1,8 @@
-SUSIE_check_priors <- function(prior_weights,
+SUSIE_check_args <- function(prior_weights,
                                dat,
                                keep_i,
                                max_causal,
-                               rescale_priors,
+                               rescale_priors, 
                                verbose=TRUE){
     messager("+ SUSIE:: max_causal =",max_causal, v=verbose)
     if(!is.null(prior_weights)){
@@ -12,7 +12,7 @@ SUSIE_check_priors <- function(prior_weights,
                  v=verbose)
         if(rescale_priors){
             messager("+ SUSIE:: Rescaling priors",v=verbose)
-            prior_weights <- prior_weights / sum(prior_weights, na.rm = TRUE)
+            prior_weights <- normalize_priors(x = prior_weights)
         }
         if(length(prior_weights)!=nrow(dat)) {
             stop("prior_weights must be the same length ",

@@ -4,21 +4,52 @@
 \alias{POLYFUN_SUSIE}
 \title{Run PolyFun+SUSIE fine-mapping pipeline}
 \source{
-\url{https://www.biorxiv.org/content/10.1101/807792v3}
+\href{https://www.nature.com/articles/s41588-020-00735-5}{
+PolyFun publication}
 }
 \usage{
 POLYFUN_SUSIE(
+  dat,
+  LD_matrix,
   locus_dir,
   polyfun = NULL,
-  dat = NULL,
-  LD_matrix = NULL,
-  polyfun_approach = "non-parametric",
+  mode = c("precomputed", "parametric", "non-parametric"),
   dataset_type = "GWAS",
   max_causal = 5,
   sample_size = NULL,
   PP_threshold = 0.95,
-  conda_env = "echoR"
+  rescale_priors = TRUE,
+  conda_env = "echoR",
+  verbose = TRUE,
+  ...
 )
+}
+\arguments{
+\item{dat}{GWAS summary statistics subset to query the LD panel with.}
+
+\item{mode}{PolyFun can run in several different modes corresponding 
+to how SNP-wise prior probabilities are computed:
+\itemize{
+\item{"precomputed"}{Use precomputed priors from the original 
+\href{https://www.nature.com/articles/s41588-020-00735-5}{
+PolyFun publication}. These were computed using GWAS summary statistics from 
+49 UK Biobank traits performed in individuals of British ancestry 
+(mean n=318,000).}
+#' \item{"parametric"}{Gathered from the "*.snpvar_ridge_constrained.gz" 
+output files from PolyFun}.
+\item{"non-parametric"}{Gathered from the "*.snpvar_constrained.gz"
+output files from PolyFun}.
+}}
+
+\item{max_causal}{The maximum number of non-zero effects 
+(and thus causal variants).}
+
+\item{rescale_priors}{If prior probabilities are supplied,
+rescale them from 0-1 (i.e. \code{rescaled_priors = priors / sum(priors)}).}
+
+\item{verbose}{If \code{verbose = TRUE}, the algorithm's progress,
+and a summary of the optimization settings, are printed to the
+console.}
 }
 \description{
 Uses echolocatoR wrapper for SUSIE instead of the \code{POLYFUN_finemapper}.
@@ -26,9 +57,11 @@ function which uses a python script provided with PolyFun.
 }
 \examples{
 locus_dir <- file.path(tempdir(),echodata::locus_dir)
-
 dat <- echodata::BST1
-dat2 <- echofinemap::POLYFUN_SUSIE(locus_dir=)
+LD_matrix <- echodata::BST1_LD_matrix
+dat2 <- echofinemap::POLYFUN_SUSIE(locus_dir=locus_dir, 
+                                   dat=dat, 
+                                   LD_matrix = LD_matrix)
 }
 \seealso{
 Other polyfun: 
@@ -39,11 +72,11 @@ Other polyfun:
 \code{\link{POLYFUN_functional_enrichment}()},
 \code{\link{POLYFUN_gather_annotations}()},
 \code{\link{POLYFUN_gather_ldscores}()},
-\code{\link{POLYFUN_get_precomputed_priors}()},
 \code{\link{POLYFUN_h2_enrichment_SNPgroups_plot}()},
 \code{\link{POLYFUN_h2_enrichment_SNPgroups}()},
 \code{\link{POLYFUN_h2_enrichment}()},
 \code{\link{POLYFUN_help}()},
+\code{\link{POLYFUN_import_priors}()},
 \code{\link{POLYFUN_initialize}()},
 \code{\link{POLYFUN_ldsc_annot_enrichment}()},
 \code{\link{POLYFUN_munge_summ_stats}()},

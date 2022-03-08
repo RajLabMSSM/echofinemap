@@ -12,7 +12,7 @@ polyfun_path <- POLYFUN_find_polyfun_folder()
 POLYFUN_find_polyfun_folder(polyfun_path = NULL)
 }
 \description{
-Folder where PolyFun submodule is stored
+Folder where PolyFun submodule is stored.
 }
 \seealso{
 Other polyfun: 
@@ -23,11 +23,11 @@ Other polyfun:
 \code{\link{POLYFUN_functional_enrichment}()},
 \code{\link{POLYFUN_gather_annotations}()},
 \code{\link{POLYFUN_gather_ldscores}()},
-\code{\link{POLYFUN_get_precomputed_priors}()},
 \code{\link{POLYFUN_h2_enrichment_SNPgroups_plot}()},
 \code{\link{POLYFUN_h2_enrichment_SNPgroups}()},
 \code{\link{POLYFUN_h2_enrichment}()},
 \code{\link{POLYFUN_help}()},
+\code{\link{POLYFUN_import_priors}()},
 \code{\link{POLYFUN_initialize}()},
 \code{\link{POLYFUN_ldsc_annot_enrichment}()},
 \code{\link{POLYFUN_munge_summ_stats}()},

@@ -1,6 +1,6 @@
 #' Run heritability enrichment tests
 #' @source
-#' https://www.biorxiv.org/content/10.1101/807792v3
+#' https://www.nature.com/articles/s41588-020-00735-5
 #' @keywords internal
 #' @family polyfun
 POLYFUN_h2_enrichment <- function(h2_df,

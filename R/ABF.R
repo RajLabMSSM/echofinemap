@@ -57,7 +57,7 @@ ABF <- function(dat,
   # Any SNPs with a PP greater than the set threshold 
   # get included in the credible set
   dat$CS <- ifelse(dat$PP >= PP_threshold, 1, 0)
-  dat <- data.table:::merge.data.table(
+  dat <- echodata::merge_robust(
     x=data.table::data.table(dat),
     y=data.table::data.table(subset(dat, select=c("SNP","PP","CS")) ),
     on="SNP")

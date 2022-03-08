@@ -16,7 +16,7 @@ FINEMAP_run <- function(locus_dir,
                  "--n-causal-snps",n_causal,
                  collapse_args(args_list)
     )
-    messager(cmd, v=verbose)
+    cmd_print(cmd, v=verbose)
     msg <- system(cmd, intern =  TRUE)
     return(msg)
 }

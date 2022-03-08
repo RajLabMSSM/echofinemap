@@ -2,7 +2,7 @@
 % Please edit documentation in R/POLYFUN_initialize.R
 \name{POLYFUN_initialize}
 \alias{POLYFUN_initialize}
-\title{Create output dir and import SNP data.frame}
+\title{PolyFun: Initialize}
 \source{
 \code{
 BST1 <- echodata::BST1; locus_dir <- echodata::locus_dir;
@@ -10,10 +10,10 @@ dat <- POLYFUN_initialize(locus_dir=locus_dir, dat=BST1)
 }
 }
 \usage{
-POLYFUN_initialize(locus_dir, dat = NULL, nThread = 1)
+POLYFUN_initialize(locus_dir, dat = NULL, nThread = 1, verbose = TRUE)
 }
 \description{
-Create output dir and import SNP data.frame
+Create output dir and import SNP data.frame.
 }
 \seealso{
 Other polyfun: 
@@ -25,11 +25,11 @@ Other polyfun:
 \code{\link{POLYFUN_functional_enrichment}()},
 \code{\link{POLYFUN_gather_annotations}()},
 \code{\link{POLYFUN_gather_ldscores}()},
-\code{\link{POLYFUN_get_precomputed_priors}()},
 \code{\link{POLYFUN_h2_enrichment_SNPgroups_plot}()},
 \code{\link{POLYFUN_h2_enrichment_SNPgroups}()},
 \code{\link{POLYFUN_h2_enrichment}()},
 \code{\link{POLYFUN_help}()},
+\code{\link{POLYFUN_import_priors}()},
 \code{\link{POLYFUN_ldsc_annot_enrichment}()},
 \code{\link{POLYFUN_munge_summ_stats}()},
 \code{\link{POLYFUN_plot}()},

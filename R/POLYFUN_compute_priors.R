@@ -3,10 +3,10 @@
 #' @family polyfun
 #' @examples
 #' \dontrun{
-#' locus_dir <- echodata::locus_dir;
-#' fullSS_path <- example_fullSS(fullSS_path="~/Desktop/Nalls23andMe_2019.fullSS_subset.tsv")
-#' munged_path <- "results/GWAS/Nalls23andMe_2019/_genome_wide/PolyFun/nallsEtAl2019_allSamples_allVariants.mod.munged.parquet"
-#' LDSC.files <- POLYFUN_compute_priors(locus_dir=locus_dir, fullSS_path=fullSS_path, conda_env="echoR")
+#' locus_dir <- file.path(tempdir(),echodata::locus_dir)
+#' fullSS_path <- echodata::example_fullSS()
+#' LDSC.files <- POLYFUN_compute_priors(locus_dir=locus_dir,
+#'                                      fullSS_path=fullSS_path)
 #' }
 POLYFUN_compute_priors <- function(polyfun=NULL,
                                    locus_dir,
@@ -16,24 +16,36 @@ POLYFUN_compute_priors <- function(polyfun=NULL,
                                    min_MAF = 0.001,
                                    annotations_path=NULL,
                                    weights_path=NULL,
-                                   prefix="PD_GWAS",
+                                   prefix="GWAS1",
                                    chrom="all",
                                    compute_ldscores=FALSE,
                                    allow_missing_SNPs=TRUE,
                                    ref_prefix=NULL,
                                    remove_tmps=TRUE,
                                    conda_env = "echoR"){
-    # polyfun="./echolocatoR/tools/polyfun"; parametric=T;  weights.path=file.path(polyfun,"example_data/weights."); annotations.path=file.path(polyfun,"example_data/annotations."); munged.path= "./Data/GWAS/Nalls23andMe_2019/_genome_wide/PolyFun/sumstats_munged.parquet"; parametric=T; dataset="Nalls23andMe_2019"; prefix="PD_GWAS"; compute_ldscores=F; allow_missing_SNPs=T; chrom="all"; dat=NULL; locus="LRRK2"; server=F; ref.prefix="/sc/arion/projects/pd-omics/data/1000_Genomes/Phase1/1000G.mac5eur.";
-    # echoconda::activate_env(conda_env = conda_env)
-    # PATH_cmd <- "source ~/.bash_profile &&"
+    # echoverseTemplate:::args2vars(POLYFUN_compute_priors); 
+    # echoverseTemplate:::source_all()
+    
     python <- echoconda::find_python_path(conda_env = conda_env)
     polyfun <- POLYFUN_find_polyfun_folder(polyfun_path = polyfun)
     
-    
-    
-    if(is.null(annotations_path)){annotations_path <- file.path(system.file("tools/polyfun/example_data",package="echofinemap"),"annotations.")}
-    if(is.null(weights_path)){weights_path <- file.path(system.file("tools/polyfun/example_data",package="echofinemap"),"weights.")}
-    # 0. Create paths
+    if(is.null(annotations_path)){
+        warning("No annotations_path provided.",
+                " Running PolyFun on example data only.")
+        annotations_path <- file.path(
+            system.file("tools/polyfun/example_data",
+                        package="echofinemap"),
+            "annotations.")
+    }
+    if(is.null(weights_path)){
+        warning("No weights_path provided.",
+                " Running PolyFun on example data only.")
+        weights_path <- file.path(
+            system.file("tools/polyfun/example_data",
+                        package="echofinemap"),
+            "weights.")
+    }
+    #### 0. Create paths ####
     PF.output.path <- file.path(locus_dir, "PolyFun")
     dir.create(PF.output.path, showWarnings = FALSE, recursive = TRUE)
     out.path <- file.path(PF.output.path,"output")
@@ -41,9 +53,9 @@ POLYFUN_compute_priors <- function(polyfun=NULL,
     dir.create(out.path, showWarnings = FALSE, recursive = TRUE)
     
     
-    # 1. Munge summary stats
-    
-    messager("PolyFun:: [1]  Create a munged summary statistics file in a PolyFun-friendly parquet format.")
+    #### 1. Munge summary stats ####
+    messager("PolyFun:: [1]  Create a munged summary statistics file",
+             "in a PolyFun-friendly parquet format.")
     munged.path <- POLYFUN_munge_summ_stats(polyfun=polyfun,
                                             fullSS_path = fullSS_path,
                                             locus_dir=locus_dir,
@@ -80,7 +92,7 @@ POLYFUN_compute_priors <- function(polyfun=NULL,
                   "--ref-ld-chr",annotations_path,
                   "--w-ld-chr",weights_path,
                   ifelse(allow_missing_SNPs,"--allow-missing",""))
-    print(cmd2)
+    cmd_print(cmd2)
     system2(cmd2)
     
     # Computationally intensive: can parallelize by chromosomes
@@ -94,7 +106,7 @@ POLYFUN_compute_priors <- function(polyfun=NULL,
                       "--bfile-chr",ref_prefix,
                       ifelse(chrom=="all","",paste("--chr",chrom)),
                       ifelse(allow_missing_SNPs,"--allow-missing","") )
-        print(cmd3)
+        cmd_print(cmd3)
         system2(cmd3)
         # 4.
         messager("PolyFun:: [4] Re-estimate per-SNP heritabilities via S-LDSC")
@@ -105,7 +117,7 @@ POLYFUN_compute_priors <- function(polyfun=NULL,
                       "--sumstats",munged_path,
                       "--w-ld-chr",weights_path,
                       ifelse(allow_missing_SNPs,"--allow-missing",""))
-        print(cmd4)
+        cmd_print(cmd4)
         system(cmd4)
         
         messager("PolyFun:: Results directory =",dirname(output_prefix))
@@ -115,7 +127,7 @@ POLYFUN_compute_priors <- function(polyfun=NULL,
         # The output of the PARTITIONED LDSC has the suffix: .snpvar_constrained.gz (one per chrom)
         LDSC.files <- list.files(out.path,
                                  pattern = "*.snpvar_constrained.gz", full.names = TRUE)
-        # pd_ldsc <- data.table::fread(PS_LDSC.files[1], nThread = 4)
+        # pd_ldsc <- data.table::fread(PS_LDSC.files[1], nThread = 1)
         # ldscore <- echodata::read_parquet(file.path(out.path,"PD_GWAS.1.l2.ldscore.parquet"))
         # bin.1 <- echodata::read_parquet(file.path(out.path,"PD_GWAS.2.bins.parquet"))
         #rowSums(bin.1[,-c(1:5)]) # each SNP belongs to only 1 bin

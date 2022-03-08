@@ -4,7 +4,7 @@
 \alias{POLYFUN_finemapper}
 \title{Run \emph{PolyFun+SUSIE} fine-mapping pipeline}
 \source{
-https://www.biorxiv.org/content/10.1101/807792v3
+https://www.nature.com/articles/s41588-020-00735-5
 }
 \usage{
 POLYFUN_finemapper(
@@ -17,7 +17,8 @@ POLYFUN_finemapper(
   n_causal = 5,
   method = "susie",
   h2_path = NULL,
-  conda_env = "echoR"
+  conda_env = "echoR",
+  verbose = TRUE
 )
 }
 \description{
@@ -32,11 +33,11 @@ Other polyfun:
 \code{\link{POLYFUN_functional_enrichment}()},
 \code{\link{POLYFUN_gather_annotations}()},
 \code{\link{POLYFUN_gather_ldscores}()},
-\code{\link{POLYFUN_get_precomputed_priors}()},
 \code{\link{POLYFUN_h2_enrichment_SNPgroups_plot}()},
 \code{\link{POLYFUN_h2_enrichment_SNPgroups}()},
 \code{\link{POLYFUN_h2_enrichment}()},
 \code{\link{POLYFUN_help}()},
+\code{\link{POLYFUN_import_priors}()},
 \code{\link{POLYFUN_initialize}()},
 \code{\link{POLYFUN_ldsc_annot_enrichment}()},
 \code{\link{POLYFUN_munge_summ_stats}()},
