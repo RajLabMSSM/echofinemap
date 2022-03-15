@@ -23,7 +23,6 @@ annot_DT <- POLYFUN_gather_annotations(chromosomes=dat$CHR[1], subset_snps=subse
 }
 \seealso{
 Other polyfun: 
-\code{\link{POLYFUN_SUSIE}()},
 \code{\link{POLYFUN_compute_priors}()},
 \code{\link{POLYFUN_download_ref_files}()},
 \code{\link{POLYFUN_find_polyfun_folder}()},
@@ -40,7 +39,8 @@ Other polyfun:
 \code{\link{POLYFUN_munge_summ_stats}()},
 \code{\link{POLYFUN_plot}()},
 \code{\link{POLYFUN_prepare_snp_input}()},
-\code{\link{POLYFUN_run_ldsc}()}
+\code{\link{POLYFUN_run_ldsc}()},
+\code{\link{POLYFUN}()}
 }
 \concept{polyfun}
 \keyword{internal}

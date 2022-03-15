@@ -31,7 +31,7 @@ Imports:
     echodata,
     echoLD,
     echoannot,
-    echoconda,
+    echoconda, 
     coloc,
     tools,
     utils,
