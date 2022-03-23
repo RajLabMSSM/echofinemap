@@ -89,11 +89,13 @@ test_that("multifinemap works", {
     
     
     #### Test LRRK2 #####
-    dat <- echofinemap:: drop_finemap_cols(echodata::LRRK2)[seq_len(100),]
-    locus_dir <- file.path(tempdir(),"LRR2K2")
-    LD_list <- echoLD::load_or_create(dat = dat,
-                                        locus_dir = locus_dir, 
-                                        LD_reference = "1KGphase3")
+    dat <- echofinemap::drop_finemap_cols(echodata::LRRK2)[seq_len(100),]
+    locus_dir <- file.path(tempdir(),"LRRK2")
+    
+    LD_list <- echoLD::load_or_create(query_dat = dat,
+                                      locus_dir = locus_dir, 
+                                      LD_reference = "1KGphase3")
+    
     testthat::expect_equal(
         sum(grepl(paste(finemap_methods,collapse = "|"),colnames(dat))),0
       )

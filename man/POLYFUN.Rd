@@ -29,8 +29,6 @@ POLYFUN(
 )
 }
 \arguments{
-\item{dat}{GWAS summary statistics subset to query the LD panel with.}
-
 \item{mode}{PolyFun can run in several different modes corresponding 
 to how SNP-wise prior causal probabilities (i.e. priors) are computed:
 \itemize{

@@ -16,7 +16,7 @@ FINEMAP_construct_master <- function(locus_dir,
                                      dataset_number=1,
                                      file.k=NA,
                                      verbose=TRUE){
-    messager("++ FINEMAP:: Constructing master file.",v=verbose)
+    messager("Constructing master file.",v=verbose)
     # For full list of parameters: http://www.christianbenner.com
     header <- "z;ld;snp;config;cred;log;n_samples"
     files <- c("data.z",  # [required input]

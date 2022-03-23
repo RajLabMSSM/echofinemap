@@ -5,7 +5,7 @@ FINEMAP_import_data_cred <- function(locus_dir,
     ## .cred files: Conditional posterior probabilities that 
     ## a given variant is causal conditional on the other causal variants 
     ## in the region.
-    messager("+ FINEMAP:: Importing conditional probabilities (.cred)",
+    messager("Importing conditional probabilities (.cred)",
              v=verbose)
     
     ## ---------------------------------------------------------##

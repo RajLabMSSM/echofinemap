@@ -13,7 +13,7 @@ FINEMAP_import_data_snp <- function(locus_dir,
     ## prob_group: the posterior probability that there is at least one
     ## causal signal among SNPs in the same group with this SNP.
     
-    messager("+ FINEMAP:: Importing",prob_col,"(.snp)", v=verbose)
+    messager("Importing",prob_col,"(.snp)", v=verbose)
     data.snp <- data.table::fread(file.path(locus_dir,"FINEMAP/data.snp"),
                                   nThread = 1)
     data.snp <- data.snp[data.snp[[prob_col]] > credset_thresh,] %>%

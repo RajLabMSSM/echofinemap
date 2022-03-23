@@ -37,7 +37,7 @@
 #'  many iterations.
 #' @inheritParams susieR::susie_suff_stat
 #' @inheritParams susieR::susie_plot_iteration
-#' @inheritParams echoLD::load_or_create
+#' @inheritParams echoLD::get_LD
 #' 
 #' @source
 #' \href{https://stephenslab.github.io/susieR/}{GitHub}

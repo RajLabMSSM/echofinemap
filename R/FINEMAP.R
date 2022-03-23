@@ -87,7 +87,7 @@ FINEMAP <- function(dat,
     FINEMAP_path <- FINEMAP_find_executable(version = finemap_version,
                                             verbose = verbose)
   }else {
-    messager("+ FINEMAP:: User-defined FINEMAP path:",FINEMAP_path, v=verbose)
+    messager("User-defined FINEMAP path:",FINEMAP_path, v=verbose)
     finemap_version <- FINEMAP_check_version(FINEMAP_path = FINEMAP_path,
                                              verbose = verbose)
   }
@@ -115,7 +115,7 @@ FINEMAP <- function(dat,
     #### Rerun if preferred version of FINEMAP fails ####
     FINEMAP_path <- FINEMAP_find_executable(version = "1.3.1",
                                             verbose  = FALSE)
-    message("+ FINEMAP:: Rerunning with FINEMAP v1.3.1.")
+    message("Rerunning with FINEMAP v1.3.1.")
     msg <- FINEMAP_run(locus_dir=locus_dir,
                        FINEMAP_path=FINEMAP_path,
                        model=model,
@@ -139,7 +139,7 @@ FINEMAP <- function(dat,
                                          finemap_version = finemap_version)
   # Remove tmp files
   if(remove_tmps){
-    messager("+ FINEMAP:: Removing tmp files...")
+    messager("Removing tmp files...")
     tmp_files <- file.path(locus_dir,"FINEMAP",
                            c("data.snp",
                              "data.config",

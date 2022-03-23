@@ -32,12 +32,12 @@ FINEMAP_construct_data <- function(dat,
     ####### data.z #######
     if(!"A1" %in% colnames(dat)) {
         dat$A1 <- "A"; 
-        messager("+ FINEMAP:: Optional A1 col missing.",
+        messager("Optional A1 col missing.",
                  "Replacing with all 'A's.")
     }
     if(!"A2" %in% colnames(dat)) {
         dat$A2 <- "T";  
-        messager("+ FINEMAP:: Optional A2 col missing.",
+        messager("Optional A2 col missing.",
                  "Replacing with all 'T's.")
     }
     if(!"MAF" %in% colnames(dat)) {
@@ -46,7 +46,7 @@ FINEMAP_construct_data <- function(dat,
                  "Replacing with all '.1's")
     };
     #### Construct files #####
-    messager("++ FINEMAP:: Constructing data.z file.",v=verbose)
+    messager("Constructing data.z file.",v=verbose)
     data.z <- dat %>% dplyr::select(rsid=SNP,
                                     chromosome=CHR,
                                     position=POS,
@@ -72,7 +72,7 @@ FINEMAP_construct_data <- function(dat,
                          .funs = trimws )
     
     ####### data.ld #######
-    messager("++ FINEMAP:: Constructing data.ld file.",v=verbose)
+    messager("Constructing data.ld file.",v=verbose)
     ## The order of the SNPs in the dataset.ld must correspond to
     ## the order of variants in dataset.z.
     # load(file.path(locus_dir,"plink","LD_matrix.RData"))
@@ -84,7 +84,7 @@ FINEMAP_construct_data <- function(dat,
     
     # Write files
     ## MUST be space-delimited
-    # messager("++ FINEMAP:: Writing z and ld files...",v=verbose)
+    # messager("Writing z and ld files...",v=verbose)
     if( dim(data.z)[1]==dim(LD_filt)[1] ){
         # data.z
         data.z_path <- file.path(locus_dir,"FINEMAP","data.z")

@@ -7,7 +7,7 @@ FINEMAP_check_existing_results <- function(locus_dir,
     if(any(file.exists(file.path(dirname(master_path),
                                  c("data.cred","data.snp","data.config")))) &&
        force_new==FALSE){
-        messager("+ FINEMAP:: Importing pre-computed FINEMAP results files.",
+        messager("Importing pre-computed FINEMAP results files.",
                  "Set force_new=TRUE to compute new results.",v=verbose)
         dat <- FINEMAP_process_results(locus_dir = locus_dir,
                                        dat = dat,

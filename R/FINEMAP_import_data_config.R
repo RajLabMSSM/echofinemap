@@ -6,7 +6,7 @@ FINEMAP_import_data_config <- function(locus_dir,
     # NOTES
     ## .config files: Gives all model results for all the configurations tested
     ## (regardless of whether they're over the 95% probability threshold)
-    messager("+ FINEMAP:: Importing top configuration probability (.config)...",
+    messager("Importing top configuration probability (.config)...",
              v=verbose)
     config_path <- file.path(locus_dir,"FINEMAP/data.config")
     data.config <- data.table::fread(config_path, nThread=1)

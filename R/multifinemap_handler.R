@@ -18,7 +18,7 @@
 #' @keywords internal 
 multifinemap_handler <- function(dat,
                                  locus_dir,
-                                 fullSS_path,
+                                 fullSS_path=NULL,
                                  finemap_methods,
                                  finemap_args=NULL,
                                  dataset_type,

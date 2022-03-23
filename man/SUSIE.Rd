@@ -33,8 +33,6 @@ SUSIE(
 )
 }
 \arguments{
-\item{dat}{GWAS summary statistics subset to query the LD panel with.}
-
 \item{max_causal}{The maximum number of non-zero effects 
 (and thus causal variants).}
 

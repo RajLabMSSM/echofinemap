@@ -7,16 +7,14 @@
 #' @examples
 #' dat <- echodata::BST1
 #' LD_matrix <- echodata::BST1_LD_matrix
-#' locus_dir <- file.path(tempdir(),echodata::locus_dir)
-#' fullSS_path <- echodata::example_fullSS(dataset = "Nalls2019")
+#' locus_dir <- file.path(tempdir(),echodata::locus_dir) 
+#' 
 #' dat2 <- echofinemap::multifinemap(dat = dat, 
 #'                                  locus_dir = locus_dir,
-#'                                  LD_matrix = LD_matrix,
-#'                                  fullSS_path = fullSS_path,
-#'                                  finemap_methods = "SUSIE")
+#'                                  LD_matrix = LD_matrix)
 multifinemap <- function(dat,
                          locus_dir,
-                         fullSS_path,
+                         fullSS_path=NULL,
                          finemap_methods=c("ABF","SUSIE","FINEMAP"),
                          finemap_args=NULL,
                          dataset_type="GWAS",
@@ -41,8 +39,13 @@ multifinemap <- function(dat,
     # nThread=1;verbose=TRUE
     start_FM <- Sys.time()
     set.seed(seed) 
+    #### Standardise colnames ####
+    dat <- echodata::mungesumstats_to_echolocatoR(
+        dat = dat,
+        standardise_colnames = TRUE)
     ##  First, check if there's more than one fine-mapping method given.
     ## If so, switch to multi-finemap function.
+    
     ## Next, see if fine-mapping has previously been done (with multi-finemap)
     file_path <- create_method_path(locus_dir = locus_dir,
                                     LD_reference = LD_reference,
