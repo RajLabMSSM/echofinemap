@@ -4,7 +4,7 @@
 \alias{POLYFUN_help}
 \title{Display PolyFun help}
 \usage{
-POLYFUN_help(polyfun = NULL, conda_env = "echoR")
+POLYFUN_help(polyfun = NULL, conda_env = "echoR_mini")
 }
 \description{
 Display PolyFun help

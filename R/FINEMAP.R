@@ -32,11 +32,11 @@
 #' out <- echoLD::subset_common_snps(LD_matrix, dat)
 #' LD_matrix <- out$LD
 #' dat <- out$DT
-#' 
-#' dat <- echofinemap::FINEMAP(dat=dat,
-#'                locus_dir=locus_dir,
-#'                LD_matrix=LD_matrix,
-#'                finemap_version="1.3.1")
+#'
+#' dat2 <- echofinemap::FINEMAP(dat=dat,
+#'                              locus_dir=locus_dir,
+#'                              LD_matrix=LD_matrix,
+#'                              finemap_version="1.3.1")
 FINEMAP <- function(dat,
                     locus_dir,
                     LD_matrix,
@@ -48,6 +48,8 @@ FINEMAP <- function(dat,
                     force_new=FALSE,
                     credset_thresh=.95,
                     finemap_version="1.4", 
+                    prior_k=NULL,
+                    rescale_priors=TRUE,
                     args_list=list(),
                     verbose=TRUE){
   # n_causal=5; model="cond"; credset_thresh=.95; verbose=T;
@@ -62,6 +64,11 @@ FINEMAP <- function(dat,
     if(!is.null(ss_df$N)) n_samples <-  max(ss_df$N, na.rm = TRUE);
   }  
   dir.create(locus_dir, showWarnings = FALSE, recursive = TRUE)
+  #### Prepare priors ####
+  prior_k <- prepare_priors(prior_weights=prior_k,
+                            rescale_priors=rescale_priors,
+                            dat=dat,
+                            verbose=verbose)
   #### Setup files ####
   master_path <- FINEMAP_construct_master(locus_dir = locus_dir,
                                           n_samples = n_samples)
@@ -86,7 +93,7 @@ FINEMAP <- function(dat,
   if(is.null(FINEMAP_path)){
     FINEMAP_path <- FINEMAP_find_executable(version = finemap_version,
                                             verbose = verbose)
-  }else {
+  } else {
     messager("User-defined FINEMAP path:",FINEMAP_path, v=verbose)
     finemap_version <- FINEMAP_check_version(FINEMAP_path = FINEMAP_path,
                                              verbose = verbose)
@@ -104,23 +111,33 @@ FINEMAP <- function(dat,
 
   #### Check if FINEMAP is giving an error due to `zstd` not being installed ####
   if(any(attr(msg,"status")==134)){
-    warning("\n*********\n
-    'dyld: Library not loaded: /usr/local/lib/libzstd.1.dylib' error message detected.
-         If you are using a Mac OSX, please install Zstandard (https://facebook.github.io/zstd/).
-         e.g. via Brew: `brew install zstd`\n\n
-
-         If Zstandard is already installed and this error persists,
-         please see the main FINEMAP website for additional support (http://www.christianbenner.com).
-            *********\n\n")
+      msg <- paste(
+          "\n*********\n",
+          "Error detected:",
+          "'dyld: Library not loaded: /usr/local/lib/libzstd.1.dylib'\n",
+          "If you are using Mac OS, please install Zstandard\n",
+          "(https://facebook.github.io/zstd/).\n",
+          "e.g. `brew install zstd`\n\n",
+          
+          "Also, ensure that you have gcc v8 installed,\n",
+          "as FINEMAP v1.4 is only compatible with this version.\n\n",
+          
+          "If Zstandard is already installed and this error persists,\n",
+          "please see the main FINEMAP website for additional support\n",
+          "(http://www.christianbenner.com).",
+          "\n*********\n\n"
+      )
+    warning(msg)
     #### Rerun if preferred version of FINEMAP fails ####
     FINEMAP_path <- FINEMAP_find_executable(version = "1.3.1",
                                             verbose  = FALSE)
-    message("Rerunning with FINEMAP v1.3.1.")
+    messager("Rerunning with FINEMAP v1.3.1.",v=verbose)
     msg <- FINEMAP_run(locus_dir=locus_dir,
                        FINEMAP_path=FINEMAP_path,
                        model=model,
                        master_path=master_path,
                        n_causal=n_causal,
+                       prior_k=prior_k,
                        ## May not have the args that the user
                        ## was expecting due to version differences.
                        args_list=args_list,
@@ -133,13 +150,13 @@ FINEMAP <- function(dat,
   }
   #### Process results #### 
   dat <- FINEMAP_process_results(locus_dir = locus_dir,
-                                         dat = dat,
-                                         credset_thresh = credset_thresh,
-                                         results_file = ".cred",
-                                         finemap_version = finemap_version)
+                                 dat = dat,
+                                 credset_thresh = credset_thresh,
+                                 results_file = ".cred",
+                                 finemap_version = finemap_version)
   # Remove tmp files
   if(remove_tmps){
-    messager("Removing tmp files...")
+    messager("Removing temp files.",v=verbose)
     tmp_files <- file.path(locus_dir,"FINEMAP",
                            c("data.snp",
                              "data.config",

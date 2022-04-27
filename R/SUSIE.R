@@ -50,11 +50,12 @@
 #' @importFrom rlang missing_arg
 #' @importFrom Matrix forceSymmetric
 #' @importFrom susieR susie_get_pip susie_get_cs susie_plot_iteration
+#' 
+#' @export
 #' @examples
 #' dat <- echodata::BST1
 #' LD_matrix <- echodata::BST1_LD_matrix
 #' dat2 <- echofinemap::SUSIE(dat=dat, LD_matrix=LD_matrix)
-#' @export
 SUSIE <- function(dat,
                   LD_matrix,
                   dataset_type="GWAS",
@@ -113,14 +114,11 @@ SUSIE <- function(dat,
   keep_i <- which(dat$SNP %in% sub.out$DT$SNP) ### Necessary to subset priors
   LD_matrix <- sub.out$LD
   dat <- sub.out$DT 
-  #### Check arguments, including priors ####
-  prior_weights <- SUSIE_check_args(
-    prior_weights=prior_weights,
-    dat=dat,
-    keep_i=keep_i,
-    max_causal=max_causal,
-    rescale_priors=rescale_priors,
-    verbose=verbose)
+  #### Prepare priors ####
+  prior_weights <- prepare_priors(prior_weights=prior_weights[keep_i],
+                                  rescale_priors=rescale_priors,
+                                  dat=dat,
+                                  verbose=verbose)
   ## Ensure the matrix is of "symmetric" class (not just objectively symmetric)
   ## susieR will throw an error otherwise.
   LD_matrix <- Matrix::forceSymmetric(x = LD_matrix,

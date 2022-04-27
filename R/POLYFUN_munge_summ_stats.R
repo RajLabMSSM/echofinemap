@@ -21,7 +21,7 @@ POLYFUN_munge_summ_stats <- function(polyfun=NULL,
                                      keep_hla=FALSE,
                                      no_neff=FALSE,
                                      force_new_munge=FALSE,
-                                     conda_env="echoR",
+                                     conda_env="echoR_mini",
                                      verbose=TRUE){
     
     python <- echoconda::find_python_path(conda_env = conda_env)
@@ -56,7 +56,7 @@ POLYFUN_munge_summ_stats <- function(polyfun=NULL,
                      # "--keep-hla",if(keep_hla)"True"else"False",
                      # "--no-neff",if(no_neff)"True"else"False"
         )
-        cmd_print(cmd, v=verbose)
+        echoconda::cmd_print(cmd, verbose=verbose)
         system(cmd)
     } else {
         messager("+ PolyFun:: Existing munged summary stats files detected.",

@@ -18,7 +18,7 @@ multifinemap_handler_method <- function(dat,
                                         
                                         verbose=TRUE,
                                         nThread=1,
-                                        conda_env="echoR"){
+                                        conda_env="echoR_mini"){
     sub.out <- echoLD::subset_common_snps(LD_matrix=LD_matrix,
                                           dat=dat,
                                           verbose  = FALSE)

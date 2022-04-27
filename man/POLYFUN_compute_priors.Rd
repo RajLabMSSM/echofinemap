@@ -19,7 +19,7 @@ POLYFUN_compute_priors(
   allow_missing_SNPs = TRUE,
   ref_prefix = NULL,
   remove_tmps = TRUE,
-  conda_env = "echoR"
+  conda_env = "echoR_mini"
 )
 }
 \description{

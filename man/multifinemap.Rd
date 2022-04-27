@@ -21,7 +21,7 @@ multifinemap(
   PP_threshold = 0.95,
   consensus_threshold = 2,
   case_control = TRUE,
-  conda_env = "echoR",
+  conda_env = "echoR_mini",
   nThread = 1,
   seed = 2022,
   verbose = TRUE

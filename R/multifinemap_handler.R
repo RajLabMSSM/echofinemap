@@ -31,7 +31,7 @@ multifinemap_handler <- function(dat,
                                  case_control=TRUE,
                                  verbose=TRUE,
                                  nThread=1,
-                                 conda_env="echoR"){
+                                 conda_env="echoR_mini"){
   # PAINTOR_QTL_datasets=NULL;PP_threshold=.95; effect_col="Effect";
   #n_causal=5; sample_size=1000; stderr_col="StdErr"; pval_col="P"; 
   #N_cases_col="N_cases"; N_controls_col="N_controls"; A1_col="A1"; 

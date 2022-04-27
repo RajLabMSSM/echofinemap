@@ -50,9 +50,11 @@
 #' locus_dir <- file.path(tempdir(),echodata::locus_dir)
 #' dat <- echodata::BST1
 #' LD_matrix <- echodata::BST1_LD_matrix
-#' dat2 <- echofinemap::POLYFUN_SUSIE(locus_dir=locus_dir, 
-#'                                    dat=dat, 
-#'                                    LD_matrix = LD_matrix)
+#' 
+#' dat2 <- echofinemap::POLYFUN(locus_dir=locus_dir,
+#'                              dat=dat,
+#'                              LD_matrix = LD_matrix,
+#'                              method="SUSIE")
 POLYFUN <- function(dat,
                     LD_matrix,
                     locus_dir,
@@ -64,7 +66,7 @@ POLYFUN <- function(dat,
                     sample_size=NULL, 
                     PP_threshold=.95,
                     rescale_priors=TRUE,
-                    conda_env="echoR",
+                    conda_env="echoR_mini",
                     verbose=TRUE,
                     ...){
     # echoverseTemplate:::args2vars(POLYFUN_SUSIE)
@@ -102,21 +104,23 @@ POLYFUN <- function(dat,
                      sample_size=sample_size,
                      PP_threshold=PP_threshold, 
                      prior_weights=new_DT$POLYFUN_h2,
-                     rescale_priors = rescale_priors, 
-                     verbose = verbose, 
+                     rescale_priors=rescale_priors, 
+                     verbose=verbose, 
                      ...) 
     } 
-    ### input priors 
-    # if(method=="FINEMAP"){
-    #     dat <- FINEMAP(dat=new_DT,
-    #                    locus_dir=locus_dir,
-    #                    LD_matrix=LD_matrix, 
-    #                    n_samples=sample_size,
-    #                    n_causal=max_causal,  
-    #                    credset_thresh=PP_threshold, 
-    #                    verbose=verbose,
-    #                    ...)
-    # }
+    #### Run FINEMAP ####
+    if(method=="FINEMAP"){
+        dat <- FINEMAP(dat=new_DT,
+                       locus_dir=locus_dir,
+                       LD_matrix=LD_matrix,
+                       n_samples=sample_size,
+                       n_causal=max_causal,
+                       credset_thresh=PP_threshold,
+                       prior_k=new_DT$POLYFUN_h2,
+                       rescale_priors=rescale_priors,
+                       verbose=verbose,
+                       ...)
+    }
     return(dat)
 }
 

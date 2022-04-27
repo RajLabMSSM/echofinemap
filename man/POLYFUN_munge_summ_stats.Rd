@@ -15,7 +15,7 @@ POLYFUN_munge_summ_stats(
   keep_hla = FALSE,
   no_neff = FALSE,
   force_new_munge = FALSE,
-  conda_env = "echoR",
+  conda_env = "echoR_mini",
   verbose = TRUE
 )
 }

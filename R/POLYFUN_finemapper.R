@@ -13,7 +13,7 @@ POLYFUN_finemapper <- function(polyfun=NULL,
                                n_causal=5,
                                method="susie",
                                h2_path=NULL,
-                               conda_env="echoR",
+                               conda_env="echoR_mini",
                                verbose=TRUE){
     # base_url  <- "./echolocatoR/tools/polyfun/LD_temp"
     polyfun <- POLYFUN_find_polyfun_folder(polyfun_path = polyfun)
@@ -60,7 +60,7 @@ POLYFUN_finemapper <- function(polyfun=NULL,
                  "--max-num-causal",n_causal,
                  # "--threads 2",# use max detected cores if not specified
                  "--out",out_path)
-    cmd_print(cmd, v=verbose)
+    echoconda::cmd_print(cmd, verbose=verbose)
     system(cmd)
     
     h2 <- rbind_filelist("Data/GWAS/Nalls23andMe_2019/_genome_wide/PolyFun/output/PD_GWAS.16.snpvar_constrained.gz")

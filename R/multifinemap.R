@@ -28,14 +28,14 @@ multifinemap <- function(dat,
                          PP_threshold=.95,
                          consensus_threshold=2,
                          case_control=TRUE,
-                         conda_env="echoR",
+                         conda_env="echoR_mini",
                          nThread=1,
                          seed=2022,
                          verbose=TRUE){
     # finemap_args=NULL;dataset_type="GWAS";force_new_finemap=TRUE;
     # LD_reference=NULL;LD_matrix=NULL;n_causal=5;sample_size=NULL;
     # conditioned_snps=NULL; PAINTOR_QTL_datasets=NULL;PP_threshold=.95;
-    # consensus_threshold=2;case_control=TRUE;conda_env="echoR";
+    # consensus_threshold=2;case_control=TRUE;conda_env="echoR_mini";
     # nThread=1;verbose=TRUE
     start_FM <- Sys.time()
     set.seed(seed) 

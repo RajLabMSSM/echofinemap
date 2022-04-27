@@ -10,7 +10,7 @@ POLYFUN_download_ref_files(
   results_dir = "./results",
   force_overwrite = FALSE,
   download_method = "wget",
-  conda_env = "echoR"
+  conda_env = "echoR_mini"
 )
 }
 \description{

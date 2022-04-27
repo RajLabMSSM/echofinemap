@@ -14,7 +14,7 @@ POLYFUN_import_priors(
   force_new_priors = TRUE,
   remove_tmps = FALSE,
   nThread = 1,
-  conda_env = "echoR",
+  conda_env = "echoR_mini",
   verbose = TRUE
 )
 }

@@ -10,7 +10,7 @@ POLYFUN_download_ref_files <- function(alkes_url="https://data.broadinstitute.or
                                        results_dir="./results",
                                        force_overwrite=FALSE,
                                        download_method="wget",
-                                       conda_env="echoR"
+                                       conda_env="echoR_mini"
 ){
     output_path <- file.path(results_dir,"resources/1000Genomes_Phase1")
     file_name <- basename(alkes_url)

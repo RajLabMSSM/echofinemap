@@ -17,7 +17,7 @@ POLYFUN_finemapper(
   n_causal = 5,
   method = "susie",
   h2_path = NULL,
-  conda_env = "echoR",
+  conda_env = "echoR_mini",
   verbose = TRUE
 )
 }

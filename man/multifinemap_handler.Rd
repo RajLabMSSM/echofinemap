@@ -20,7 +20,7 @@ multifinemap_handler(
   case_control = TRUE,
   verbose = TRUE,
   nThread = 1,
-  conda_env = "echoR"
+  conda_env = "echoR_mini"
 )
 }
 \description{

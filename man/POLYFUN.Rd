@@ -23,7 +23,7 @@ POLYFUN(
   sample_size = NULL,
   PP_threshold = 0.95,
   rescale_priors = TRUE,
-  conda_env = "echoR",
+  conda_env = "echoR_mini",
   verbose = TRUE,
   ...
 )
@@ -85,9 +85,9 @@ function which uses a python script provided with PolyFun.
 locus_dir <- file.path(tempdir(),echodata::locus_dir)
 dat <- echodata::BST1
 LD_matrix <- echodata::BST1_LD_matrix
-dat2 <- echofinemap::POLYFUN_SUSIE(locus_dir=locus_dir, 
-                                   dat=dat, 
-                                   LD_matrix = LD_matrix)
+dat2 <- echofinemap::POLYFUN(locus_dir=locus_dir,
+                             dat=dat,
+                             LD_matrix = LD_matrix)
 }
 \seealso{
 Other polyfun: 

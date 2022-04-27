@@ -10,15 +10,18 @@
 #' https://www.nature.com/articles/s41588-020-00735-5
 #' @keywords internal
 #' @family polyfun 
+#' @importFrom echoconda cmd_print
 POLYFUN_import_priors <- function(locus_dir,
                                   dat=NULL,
                                   polyfun=NULL, 
                                   force_new_priors=TRUE,
                                   remove_tmps=FALSE,
                                   nThread=1,
-                                  conda_env="echoR",
+                                  conda_env="echoR_mini",
                                   verbose=TRUE){
-    python <- echoconda::find_python_path(conda_env = conda_env)
+    
+    python <- echoconda::find_python_path(conda_env = conda_env,
+                                          verbose = verbose)
     polyfun <- POLYFUN_find_polyfun_folder(polyfun_path = polyfun)
     dataset <- basename(dirname(locus_dir))
     locus <- basename(locus_dir)
@@ -51,7 +54,7 @@ POLYFUN_import_priors <- function(locus_dir,
                          # "--snps",snp.path,
                          "--sumstats",snp.path,
                          "--out",snp_w_priors.file)
-            cmd_print(cmd, v=verbose)
+            echoconda::cmd_print(cmd, verbose=verbose)
             system(cmd)
             messager("++ Remove tmp file.")
         })

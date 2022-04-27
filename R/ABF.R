@@ -49,6 +49,7 @@ ABF <- function(dat,
     if(!is.null(ss_df$N)) dataset$N <-  max(ss_df$N, na.rm = TRUE);
   } else {dataset$N <- sample_size}
   #### Run ABF ####
+  messager("Running ABF.",v=verbose)
   dat <- coloc::finemap.abf(dataset = dataset)
 
   dat <- subset(dat, snp!="null") %>%

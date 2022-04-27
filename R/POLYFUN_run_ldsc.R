@@ -19,7 +19,7 @@ POLYFUN_run_ldsc <- function(polyfun=NULL,
                              munged_path="/sc/arion/projects/pd-omics/tools/polyfun/Nalls23andMe_2019.sumstats_munged.parquet",
                              ref.prefix="/sc/arion/projects/pd-omics/data/1000_Genomes/Phase1/1000G.mac5eur.",
                              freq.prefix="/sc/arion/projects/pd-omics/tools/polyfun/1000G_frq/1000G.mac5eur.",
-                             conda_env="echoR",
+                             conda_env="echoR_mini",
                              verbose=TRUE){
     polyfun <- POLYFUN_find_polyfun_folder(polyfun_path = polyfun)
     python <- echoconda::find_python_path(conda_env = conda_env) 
@@ -40,6 +40,6 @@ POLYFUN_run_ldsc <- function(polyfun=NULL,
                  "--not-M-5-50", # Important! enrichment estimates will be provided with MAF>0.1% SNPs instead of MAF>5% SNPs.
                  "--out",output_prefix)
     # help_cmd <- paste("python",file.path(polyfun,"ldsc.py -h"))
-    cmd_print(cmd, v=verbose)
+    echoconda::cmd_print(cmd, verbose=verbose)
     system(cmd)
 }

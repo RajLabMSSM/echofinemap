@@ -4,7 +4,7 @@
 #' @examples
 #' POLYFUN_help()
 POLYFUN_help <- function(polyfun=NULL,
-                         conda_env="echoR"){
+                         conda_env="echoR_mini"){
     polyfun <- POLYFUN_find_polyfun_folder(polyfun_path = polyfun)
     python <- echoconda::find_python_path(conda_env = conda_env)
     cmd <- paste(python,

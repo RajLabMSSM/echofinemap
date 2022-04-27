@@ -22,7 +22,7 @@ POLYFUN_compute_priors <- function(polyfun=NULL,
                                    allow_missing_SNPs=TRUE,
                                    ref_prefix=NULL,
                                    remove_tmps=TRUE,
-                                   conda_env = "echoR"){
+                                   conda_env = "echoR_mini"){
     # echoverseTemplate:::args2vars(POLYFUN_compute_priors); 
     # echoverseTemplate:::source_all()
     
@@ -69,7 +69,7 @@ POLYFUN_compute_priors <- function(polyfun=NULL,
     ## If compute_ldscores == F:
     # This will create 2 output files for each chromosome: output/testrun.<CHR>.snpvar_ridge.gz and output/testrun.<CHR>.snpvar_ridge_constrained.gz. The first contains estimated per-SNP heritabilities for all SNPs (which can be used for downstream analysis with PolyFun; see below), and the second contains truncated per-SNP heritabilities, which can be used directly as prior causal probabilities in fine-mapping.
     # library(reticulate)
-    # reticulate::use_virtualenv("echoR")
+    # reticulate::use_virtualenv("echoR_mini")
     # pd <- reticulate::import("pandas")
     # pd$read_csv("./Data/directories_table.csv")
     # reticulate::
@@ -92,7 +92,7 @@ POLYFUN_compute_priors <- function(polyfun=NULL,
                   "--ref-ld-chr",annotations_path,
                   "--w-ld-chr",weights_path,
                   ifelse(allow_missing_SNPs,"--allow-missing",""))
-    cmd_print(cmd2)
+    echoconda::cmd_print(cmd2)
     system2(cmd2)
     
     # Computationally intensive: can parallelize by chromosomes
@@ -106,7 +106,7 @@ POLYFUN_compute_priors <- function(polyfun=NULL,
                       "--bfile-chr",ref_prefix,
                       ifelse(chrom=="all","",paste("--chr",chrom)),
                       ifelse(allow_missing_SNPs,"--allow-missing","") )
-        cmd_print(cmd3)
+        echoconda::cmd_print(cmd3)
         system2(cmd3)
         # 4.
         messager("PolyFun:: [4] Re-estimate per-SNP heritabilities via S-LDSC")
@@ -117,7 +117,7 @@ POLYFUN_compute_priors <- function(polyfun=NULL,
                       "--sumstats",munged_path,
                       "--w-ld-chr",weights_path,
                       ifelse(allow_missing_SNPs,"--allow-missing",""))
-        cmd_print(cmd4)
+        echoconda::cmd_print(cmd4)
         system(cmd4)
         
         messager("PolyFun:: Results directory =",dirname(output_prefix))
