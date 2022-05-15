@@ -34,8 +34,10 @@ Imports:
     echoconda, 
     coloc,
     tools,
+    R.utils,
     data.table,
     dplyr,
+    ggplot2,
     rlang,
     Matrix,
     piggyback,
@@ -51,7 +53,11 @@ Suggests:
     covr,
     testthat (>= 3.0.0),
     badger,
-    hexSticker
+    hexSticker,
+    ggpubr,
+    ggrepel,
+    patchwork,
+    purrr
 Remotes:
   github::RajLabMSSM/echodata,
   github::RajLabMSSM/echoLD,

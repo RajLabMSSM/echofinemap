@@ -23,6 +23,9 @@ POLYFUN_h2_enrichment_SNPgroups_plot <- function(RES,
                                                  vjust_signif=0.5,
                                                  show_plot=TRUE,
                                                  save_path=FALSE){
+    requireNamespace("ggplot2")
+    requireNamespace("ggpubr")
+    requireNamespace("purrr")
     colorDict <- echodata::snp_group_colorDict()
     if(is.null(snp_groups)) snp_groups <- names(colorDict)
     if(remove_outliers){

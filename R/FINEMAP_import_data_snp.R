@@ -17,7 +17,7 @@ FINEMAP_import_data_snp <- function(locus_dir,
     data.snp <- data.table::fread(file.path(locus_dir,"FINEMAP/data.snp"),
                                   nThread = 1)
     data.snp <- data.snp[data.snp[[prob_col]] > credset_thresh,] %>%
-        plyr::mutate(CS=1) %>%
+        dplyr::mutate(CS=1) %>%
         dplyr::rename(PP=dplyr::all_of(prob_col))
     if(!"prob" %in% colnames(data.snp)){
         data.snp$prob <- data.snp$prob_group

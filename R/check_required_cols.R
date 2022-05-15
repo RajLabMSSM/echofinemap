@@ -20,12 +20,15 @@ check_required_cols <- function(dat,
                                 sample_size=NULL,
                                 dataset_type="GWAS",
                                 verbose=TRUE){
+    noentry <- "\u26D4"
+    checkmark <- "\u2705"
+    warningsign <- "\u26A0"
     dat <- data.table::copy(dat)
     #### Add sample_size column ####
     if((!"N" %in% colnames(dat)) && (!is.null(sample_size) )){
         dat$N <- sample_size 
     }
-    #### Check requested methods ####
+    #### Check requested methods #### 
     finemap_methods <- list_finemap_methods(finemap_methods = finemap_methods,
                                             verbose = verbose)
     #### Get required cols table ####
@@ -37,21 +40,21 @@ check_required_cols <- function(dat,
         req <- d[m,]$required[[1]]
         req_missing <- req[!req %in% colnames(dat)]
         if(length(req_missing)>0){
-            message("⛔ Missing required columns for ",m,": ",
+            message(noentry,"Missing required columns for ",m,": ",
                     paste(req_missing,collapse=", ")," (Skipping)");
             #### Remove that method ####
             finemap_methods <- finemap_methods[finemap_methods != m]
             next()
-        } else{message("✅ All required columns present.")}
+        } else{message(checkmark,"All required columns present.")}
         #### Check suggested cols ####
         sug <- d[m,]$suggested[[1]]
         if(length(sug)==0) next()
         sug_missing <- sug[!sug %in% colnames(dat)]
         if(length(sug_missing)>0){
-            message("⚠️ Missing optional columns for ",m,": ",
+            message(warningsign,"Missing optional columns for ",m,": ",
                     paste(sug_missing,collapse=", "))
         } else {
-            message("✅ All suggested columns present.")  
+            message(checkmark,"All suggested columns present.")  
         }
     }
     if(length(finemap_methods)==0) {

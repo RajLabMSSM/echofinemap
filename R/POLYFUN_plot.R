@@ -5,12 +5,15 @@
 #' @family polyfun
 POLYFUN_plot <- function(dat,
                          LD_matrix,
+                         plot_ld=TRUE,
                          locus=NULL,
                          subtitle="PolyFun Comparison",
                          conditions=c("SUSIE","POLYFUN_SUSIE","FINEMAP","PAINTOR","PAINTOR_Fairfax")){
     # Quickstart
     # locus="LRRK2"; subtitle="PolyFun Comparison"; conditions=c("SUSIE","POLYFUN_SUSIE","FINEMAP","PAINTOR","PAINTOR_Fairfax")
     # # Get r2
+    requireNamespace("ggplot2")
+    requireNamespace("patchwork")
     
     if(plot_ld){
         lead.snp <- top_n(dat,1,-P)$SNP #subset(dat, leadSNP==TRUE)$SNP
@@ -21,8 +24,7 @@ POLYFUN_plot <- function(dat,
     dat <- dplyr::mutate(dat, Mb=round(POS/1000000,3))
     
     
-    
-    library(patchwork)
+     
     # GWAS
     gg <- ggplot(dat, aes(x=Mb, y=-log10(P), color=r2)) +
         scale_color_gradient(low="blue",high="red", breaks=c(0,.5,1), limits=c(0,1)) +

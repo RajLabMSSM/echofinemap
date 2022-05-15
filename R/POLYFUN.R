@@ -59,7 +59,9 @@ POLYFUN <- function(dat,
                     LD_matrix,
                     locus_dir,
                     polyfun=NULL,
-                    mode=c("precomputed","parametric","non-parametric"),
+                    mode=c("precomputed",
+                           "parametric",
+                           "non-parametric"),
                     method=c("SUSIE","FINEMAP"),
                     dataset_type="GWAS",
                     max_causal=5,
@@ -69,7 +71,7 @@ POLYFUN <- function(dat,
                     conda_env="echoR_mini",
                     verbose=TRUE,
                     ...){
-    # echoverseTemplate:::args2vars(POLYFUN_SUSIE)
+    # echoverseTemplate:::args2vars(POLYFUN)
     SNP <- SNPVAR <- NULL;
     
     method <- POLYFUN_check_method(method=method,
@@ -118,6 +120,7 @@ POLYFUN <- function(dat,
                        credset_thresh=PP_threshold,
                        prior_k=new_DT$POLYFUN_h2,
                        rescale_priors=rescale_priors,
+                       force_new = TRUE,
                        verbose=verbose,
                        ...)
     }

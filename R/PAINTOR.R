@@ -356,9 +356,9 @@ PAINTOR.download_annotations <- function(PT_results_path,
       messager("+++ PAINTOR:: Gathering annotations via XGR for:",paste(XGR_dataset,collapse=", "))
       GR.annotations <- XGR::xRDataLoader(XGR_dataset)
       messager("+++ PAINTOR:: Writing BED file(s) to  ==> ",file.path(PT_results_path,"annotation_files"))
-      BED_paths.gz <- GRs.to.BED(GR.annotations = GR.annotations,
-                                 output_path = file.path(PT_results_path,"annotation_files"),
-                                 sep=" ")
+      BED_paths.gz <- echodata::granges_to_bed(
+          grlist = GR.annotations,
+          save_dir = PT_results_path)
     }
     if(!is.na(ROADMAP_search)){
       messager("+++ PAINTOR:: Gathering annotations via ROADMAP server for:",paste(ROADMAP_search,collapse=", "))
@@ -717,15 +717,15 @@ PAINTOR <- function(dat=NULL,
   messager("****** Double checking PT_results_path",PT_results_path)
   subset_path <- dirname(PT_results_path)
 
-  if(!is.null(GWAS_datasets)){
+  if(!is.null(GWAS_datasets)){ 
       fullSS <- Directory_info(GWAS_datasets, "fullSS.local")
       subset_path <- file.path(dirname(fullSS),locus)
       mfm_path <- file.path(subset_path,"Multi-finemap/Multi-finemap_results.txt")
       if(is.null(dat)){
         messager("PAINTOR:: No dat supplied. Retrieving from storage:",mfm_path)
         dat <- data.table::fread(mfm_path, nThread = 1)
-      }
-      dat <- calculate_tstat(dat=dat)
+      } 
+      dat <- cechodata:::calculate_tstat(dat=dat)
   }
   if(!is.null(QTL_datasets)){
     qtl_DT <- PAINTOR.import_QTL_DT(QTL_datasets = QTL_datasets,
@@ -916,7 +916,10 @@ transethnic_plot <- function(merged_DT,
                              subtitle="Trans-ethnic Fine-mapping",
                              PAINTOR.label="PAINTOR\nTrans-ethnic",
                              conditions=c("MESA_AFA","MESA_CAU","MESA_HIS")){
-  # cons.snp <-  "rs7294619"; subset(plot_DT, SNP==cons.snp);
+  requireNamespace("ggplot2")
+  requireNamespace("ggrepel")
+  requireNamespace("patchwork")
+    # cons.snp <-  "rs7294619"; subset(plot_DT, SNP==cons.snp);
   plot_DT <- gather.transethnic.LD(merged_DT, conditions=conditions)
   plot_DT$PAINTOR.label <- PAINTOR.label
   # Melt P
@@ -932,9 +935,7 @@ transethnic_plot <- function(merged_DT,
   cond.dict <- setNames(conditions, 1:length(conditions))
   dat$Condition <- cond.dict[dat$Condition_number]
 
-
-
-  library(patchwork)
+ 
   gg <- ggplot(data=dat, aes(x=Mb, y=-log10(P), color=r2)) +
     geom_point() +
     facet_grid(Condition~., scales="free_y") +

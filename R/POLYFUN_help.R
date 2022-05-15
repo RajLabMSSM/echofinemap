@@ -1,8 +1,13 @@
-#' Display PolyFun help
+#' POLYFUN help
+#' 
+#' Display PolyFun help.
 #' @keywords internal
 #' @family polyfun
-#' @examples
-#' POLYFUN_help()
+#' 
+#' @source
+#' \code{
+#' echofinemap:::POLYFUN_help()
+#' }
 POLYFUN_help <- function(polyfun=NULL,
                          conda_env="echoR_mini"){
     polyfun <- POLYFUN_find_polyfun_folder(polyfun_path = polyfun)

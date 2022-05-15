@@ -2,15 +2,17 @@
 % Please edit documentation in R/POLYFUN_help.R
 \name{POLYFUN_help}
 \alias{POLYFUN_help}
-\title{Display PolyFun help}
+\title{POLYFUN help}
+\source{
+\code{
+echofinemap:::POLYFUN_help()
+}
+}
 \usage{
 POLYFUN_help(polyfun = NULL, conda_env = "echoR_mini")
 }
 \description{
-Display PolyFun help
-}
-\examples{
-POLYFUN_help()
+Display PolyFun help.
 }
 \seealso{
 Other polyfun: 

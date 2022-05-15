@@ -47,15 +47,31 @@ multifinemap_handler_method <- function(dat,
                        dat = dat,
                        LD_matrix = LD_matrix,
                        dataset_type = dataset_type,
-                       method="SUSIE",
+                       method = "SUSIE",
                        max_causal = n_causal,
                        sample_size = sample_size,
                        mode = "precomputed",
                        # mode = "non-parametric",
                        PP_threshold = PP_threshold,
-                       conda_env = conda_env)
+                       conda_env = conda_env,
+                       verbose = verbose)
         
-    }else if(finemap_method=="ABF"){
+    } else if(finemap_method=="POLYFUN_FINEMAP"){
+        #### PolyFun+SUSIE ####
+        dat <- POLYFUN(locus_dir = locus_dir,
+                       dat = dat,
+                       LD_matrix = LD_matrix,
+                       dataset_type = dataset_type,
+                       method = "FINEMAP",
+                       max_causal = n_causal,
+                       sample_size = sample_size,
+                       mode = "precomputed",
+                       # mode = "non-parametric",
+                       PP_threshold = PP_threshold,
+                       conda_env = conda_env, 
+                       verbose = verbose)
+        
+    } else if(finemap_method=="ABF"){
         #### ABF ####
         dat <- ABF(dat = dat,
                    PP_threshold = PP_threshold,

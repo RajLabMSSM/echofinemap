@@ -22,6 +22,7 @@ FINEMAP(
   prior_k = NULL,
   rescale_priors = TRUE,
   args_list = list(),
+  fill_NA = 0,
   verbose = TRUE
 )
 }
@@ -40,6 +41,9 @@ Users can also simply supply "finemap" if this command is linked to
 (e.g.: args_list = list("--n-iterations"=5000,"--sss"="")).
 Alternatively, can supply a string instead 
 (e.g.: args_list = "--n-iterations 5000 --sss").}
+
+\item{fill_NA}{Fill CS/PP values without fine-mapping results 
+(i.e. \code{NA}) with some default value (e.g. 0).}
 }
 \description{
 The stepwise conditional search starts with a causal configuration 

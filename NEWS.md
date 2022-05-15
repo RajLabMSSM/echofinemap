@@ -3,6 +3,8 @@
 ## New features
 
 * Updated GHA. 
+* `POLYFUN`:
+    - Can now use `FINEMAP` or `SUSIE` as a method. 
 
 ## Bug fixes
 

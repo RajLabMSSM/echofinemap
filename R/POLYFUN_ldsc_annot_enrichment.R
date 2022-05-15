@@ -56,13 +56,13 @@ POLYFUN_ldsc_annot_enrichment <- function(.results = "Data/GWAS/Nalls23andMe_201
     }
     
     
-    POLYFUN_get_annot_refs <- function(res,
-                                       supp_file="./echolocatoR/tools/polyfun/SuppTables.xlsx", sheet="S1"){
-        supp <- openxlsx::read.xlsx(supp_file,sheet = sheet)
-        supp_merge <- echodata::merge_robust(data.table::data.table(supp), res,
-                                                    by.x = "Annotation", by.y = "Category")
-        return(supp_merge)
-    }
+    # POLYFUN_get_annot_refs <- function(res,
+    #                                    supp_file="./echolocatoR/tools/polyfun/SuppTables.xlsx", sheet="S1"){
+    #     supp <- openxlsx::read.xlsx(supp_file,sheet = sheet)
+    #     supp_merge <- echodata::merge_robust(data.table::data.table(supp), res,
+    #                                                 by.x = "Annotation", by.y = "Category")
+    #     return(supp_merge)
+    # }
     # supp_merge <- POLYFUN_get_annot_refs(sig_res)
     # echodata::createDT(supp_merge[,c("Annotation","Reference","Prop._SNPs","Prop._h2")])
     return(res)

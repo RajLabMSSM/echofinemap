@@ -12,13 +12,8 @@ POLYFUN_functional_enrichment <- function(dat,
     base_url <- "/pd-omics/tools/polyfun/annotations/baselineLF2.2.UKB"
     chrom <- dat$CHR[1]
     annot.file <- list.files(base_url, pattern = paste0(".UKB.",chrom,".annot.parquet"), full.names = TRUE)
-    
-    library(reticulate)
-    echoconda::activate_env(conda_env = "echoR_mini")
-    # pd <- reticulate::import("pandas")
-    annot <- echodata::read_parquet(path = annot.file,
-                                  conda_env = "echoR_mini",
-                                  method = "pandas")
+      
+    annot <- echodata::read_parquet(path = annot.file)
     annot_names <- annot %>% dplyr::select(-c(SNP,CHR,BP,A1,A2)) %>% colnames()
     annot_DT <- echodata::merge_robust(dat,
                                               data.table::data.table(annot) %>%

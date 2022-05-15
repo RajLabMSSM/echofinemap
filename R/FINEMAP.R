@@ -17,11 +17,14 @@
 #' instead of the ones included in \pkg{echolocatoR}.
 #' Users can also simply supply "finemap" if this command is linked to
 #'  the executable.
+#' @param fill_NA Fill CS/PP values without fine-mapping results 
+#' (i.e. \code{NA}) with some default value (e.g. 0).
 #' @source \url{http://www.christianbenner.com}
 #' @family FINEMAP
 #' 
 #' @export
 #' @importFrom echodata get_sample_size
+#' @importFrom data.table :=
 #' @examples
 #' locus_dir <- file.path(tempdir(),echodata::locus_dir)
 #' dat <- echodata::BST1;
@@ -51,10 +54,12 @@ FINEMAP <- function(dat,
                     prior_k=NULL,
                     rescale_priors=TRUE,
                     args_list=list(),
+                    fill_NA=0,
                     verbose=TRUE){
   # n_causal=5; model="cond"; credset_thresh=.95; verbose=T;
   # finemap_version="1.3.1"; n_samples=NULL; args_list=list()
   
+  CS <- PP <- NULL;
   #### Add sample size ####
   if(is.null(n_samples)){
     ss_df <- echodata::get_sample_size(dat = dat,
@@ -171,5 +176,8 @@ FINEMAP <- function(dat,
     tmp_bool <- suppressWarnings(file.remove(tmp_files))
     tmp_bool <- suppressWarnings(file.remove(file.path(locus_dir,"FINEMAP")))
   }
+  #### Fill NA #### 
+  dat[is.na(CS),] <- 0
+  dat[is.na(PP),] <- 0
   return(dat)
 }

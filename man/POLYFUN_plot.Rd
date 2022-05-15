@@ -10,6 +10,7 @@ https://www.nature.com/articles/s41588-020-00735-5
 POLYFUN_plot(
   dat,
   LD_matrix,
+  plot_ld = TRUE,
   locus = NULL,
   subtitle = "PolyFun Comparison",
   conditions = c("SUSIE", "POLYFUN_SUSIE", "FINEMAP", "PAINTOR", "PAINTOR_Fairfax")
