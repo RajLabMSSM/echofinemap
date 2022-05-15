@@ -5,20 +5,21 @@
 #' @family finemapping functions
 #' @export
 #' @examples
-#' dat <- echodata::BST1
+#' dat <- echofinemap::drop_finemap_cols(dat = echodata::BST1)
 #' LD_matrix <- echodata::BST1_LD_matrix
 #' locus_dir <- file.path(tempdir(),echodata::locus_dir) 
 #' 
 #' dat2 <- echofinemap::multifinemap(dat = dat, 
 #'                                  locus_dir = locus_dir,
-#'                                  LD_matrix = LD_matrix)
+#'                                  LD_matrix = LD_matrix,
+#'                                  sample_size = )
 multifinemap <- function(dat,
                          locus_dir,
                          fullSS_path=NULL,
                          finemap_methods=c("ABF","SUSIE","FINEMAP"),
                          finemap_args=NULL,
                          dataset_type="GWAS",
-                         force_new_finemap=TRUE,
+                         force_new_finemap=FALSE,
                          LD_reference=NULL,
                          LD_matrix=NULL,
                          n_causal=5,
@@ -39,10 +40,10 @@ multifinemap <- function(dat,
     # nThread=1;verbose=TRUE
     start_FM <- Sys.time()
     set.seed(seed) 
-    #### Standardise colnames ####
-    dat <- echodata::mungesumstats_to_echolocatoR(
-        dat = dat,
-        standardise_colnames = TRUE)
+    #### Get sample size and standarize colnames at same time ####
+    dat <- echodata::get_sample_size(dat = dat, 
+                                     compute_n = sample_size, 
+                                     verbose = verbose) 
     ##  First, check if there's more than one fine-mapping method given.
     ## If so, switch to multi-finemap function.
     
@@ -72,6 +73,7 @@ multifinemap <- function(dat,
             finemap_methods = finemap_methods,
             finemap_args = finemap_args, 
             dataset_type = dataset_type,
+            force_new_finemap = force_new_finemap,
             LD_matrix = LD_matrix,
             n_causal = n_causal,
             sample_size = sample_size, 

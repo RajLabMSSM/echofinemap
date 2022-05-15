@@ -11,7 +11,7 @@ multifinemap(
   finemap_methods = c("ABF", "SUSIE", "FINEMAP"),
   finemap_args = NULL,
   dataset_type = "GWAS",
-  force_new_finemap = TRUE,
+  force_new_finemap = FALSE,
   LD_reference = NULL,
   LD_matrix = NULL,
   n_causal = 5,
@@ -31,13 +31,14 @@ multifinemap(
 Handle fine-mapping across multiple tools.
 }
 \examples{
-dat <- echodata::BST1
+dat <- echofinemap::drop_finemap_cols(dat = echodata::BST1)
 LD_matrix <- echodata::BST1_LD_matrix
 locus_dir <- file.path(tempdir(),echodata::locus_dir) 
 
 dat2 <- echofinemap::multifinemap(dat = dat, 
                                  locus_dir = locus_dir,
-                                 LD_matrix = LD_matrix)
+                                 LD_matrix = LD_matrix,
+                                 sample_size = )
 }
 \seealso{
 Other finemapping functions: 

@@ -2,8 +2,8 @@ test_that("multifinemap works", {
   
     dat <- echofinemap::drop_finemap_cols(echodata::BST1)
     LD_matrix <- echodata::BST1_LD_matrix
-    locus_dir <- file.path("~/Desktop",echodata::locus_dir)
-    fullSS_path <- echodata::example_fullSS(dataset = "Nalls2019")
+    locus_dir <- file.path(tempdir(),echodata::locus_dir)
+    fullSS_path <- echodata::example_fullSS()
     finemap_methods <- c("ABF","SUSIE","FINEMAP")
     
     run_tests <- function(dat,
@@ -11,6 +11,7 @@ test_that("multifinemap works", {
                           finemap_methods,
                           cs_sizes=NULL,
                           pp_sizes=NULL){
+        dat <- data.table::copy(dat)
         testthat::expect_gte(nrow(dat), nrow(dat2))
         testthat::expect_true(all(c(
             paste(finemap_methods,"CS",sep="."),
@@ -44,8 +45,7 @@ test_that("multifinemap works", {
     dat0 <- echofinemap::multifinemap(dat = dat,
                                       locus_dir = locus_dir, 
                                       LD_matrix = LD_matrix,
-                                      fullSS_path = fullSS_path,
-                                      sample_size = 100000,
+                                      fullSS_path = fullSS_path, 
                                       force_new_finemap = TRUE,
                                       n_causal = 1,
                                       finemap_methods = finemap_methods)
@@ -57,14 +57,16 @@ test_that("multifinemap works", {
     top_snp <- subset(dat0, Support==max(Support))
     testthat::expect_true(top_snp$Support==3)
     testthat::expect_true(top_snp$SNP=="rs4698412")
-    testthat::expect_true(all.equal(top_snp$mean.PP, 0.9999993))
+    testthat::expect_true(all.equal(
+        substr(as.character(top_snp$mean.PP), 1, 6), 
+        substr(as.character(0.9999993), 1, 6))
+    )
      
     #### Round 1 ####
     dat2 <- echofinemap::multifinemap(dat = dat,
                                      locus_dir = locus_dir, 
                                      LD_matrix = LD_matrix,
-                                     fullSS_path = fullSS_path,
-                                     sample_size = 100000,
+                                     fullSS_path = fullSS_path, 
                                      force_new_finemap = TRUE,
                                      finemap_methods = finemap_methods)
     run_tests(dat = dat,
@@ -77,24 +79,23 @@ test_that("multifinemap works", {
     dat3 <- echofinemap::multifinemap(dat = dat2,
                                       locus_dir = locus_dir,
                                       LD_matrix = LD_matrix,
-                                      fullSS_path = fullSS_path,
-                                      sample_size = 100000,
+                                      fullSS_path = fullSS_path, 
                                       n_causal = 10,
                                       finemap_methods = "SUSIE")
     run_tests(dat = dat, 
               dat2 = dat3,
               finemap_methods = finemap_methods, 
-              cs_sizes = c(1,6,5),
-              pp_sizes = c(1,6,5))
+              cs_sizes = c(1,5,5),
+              pp_sizes = c(1,5,5))
     
     
     #### Test LRRK2 #####
     dat <- echofinemap::drop_finemap_cols(echodata::LRRK2)[seq_len(100),]
     locus_dir <- file.path(tempdir(),"LRRK2")
-    
-    LD_list <- echoLD::load_or_create(query_dat = dat,
-                                      locus_dir = locus_dir, 
-                                      LD_reference = "1KGphase3")
+    ## Get LD from 1KG
+    LD_list <- echoLD::get_LD(query_dat = dat,
+                              locus_dir = locus_dir, 
+                              LD_reference = "1KGphase3")
     
     testthat::expect_equal(
         sum(grepl(paste(finemap_methods,collapse = "|"),colnames(dat))),0
@@ -102,9 +103,8 @@ test_that("multifinemap works", {
     dat4 <- echofinemap::multifinemap(dat = dat,
                                       locus_dir = file.path(tempdir(),"LRRK2"), 
                                       LD_matrix = LD_list$LD,
-                                      fullSS_path = fullSS_path,
-                                      sample_size = 100000,
-                                      # force_new_finemap = TRUE,
+                                      fullSS_path = fullSS_path, 
+                                      force_new_finemap = TRUE,
                                       finemap_methods = finemap_methods)
     run_tests(dat = dat,
               dat2 = dat4,

@@ -12,5 +12,6 @@ SUSIE_get_func(verbose = TRUE)
 \description{
 The authors of \pkg{susieR} merged \code{susie_ss} and \code{susie_bhat}
  into \code{susie_suff_stat} in 11/2019.
+ They then changed \code{susie_ss} to \code{susie_rss}.
 }
 \keyword{internal}

@@ -26,12 +26,12 @@ FINEMAP_import_data_cred <- function(locus_dir,
         ][1]
         if(length(n_causal.match)>0){ 
             cred_path <- n_causal.match
-            messager("Choosing ", basename(cred_path),
+            messager("Choosing", basename(cred_path),
                      "due to matching n_causal SNPs.",
                      v=verbose)
         }else {
             cred_path <- cred_path[1]
-            messager("Choosing ", basename(cred_path),"arbitarily.",
+            messager("Choosing", basename(cred_path),"arbitarily.",
                      v=verbose)
         } 
     }

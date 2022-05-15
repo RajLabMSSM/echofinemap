@@ -59,8 +59,6 @@ check_required_cols <- function(dat,
              " any of the supported fine-mapping methods.",
              "\nSee echofinemap::required_cols() for details."
              )
-    }
-    messager("Fine-mapping using",length(finemap_methods),"tool(s):",
-             paste(finemap_methods, collapse=", "),v=verbose)
+    } 
     return(finemap_methods)
 }

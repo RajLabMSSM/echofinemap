@@ -11,6 +11,7 @@ multifinemap_handler(
   finemap_methods,
   finemap_args = NULL,
   dataset_type,
+  force_new_finemap = FALSE,
   LD_matrix = NULL,
   n_causal = 5,
   sample_size = NULL,

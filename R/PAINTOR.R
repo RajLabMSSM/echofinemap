@@ -182,16 +182,16 @@ PAINTOR.prepare_LD.transethnic <- function(subset_path,
                                            fillNA = 0){
   messager("PAINTOR:: Preparing multi-ethnic LD files...")
   dat$CHR <- paste0("chr",dat$CHR)
+  locus_dir <- dirname(locus_dir)
   # Download ld matrices
   ld.mat.list <- lapply(1:length(QTL_datasets), function(i){
     qtl <- QTL_datasets[i]
     pop <- QTL_populations[i]
     messager("+ PAINTOR::",pop)
-    LD_matrix <- LD.load_or_create(locus_dir=locus_dir,
-                                   dat=dat,
-                                   remote_LD = TRUE,
+    LD_matrix <- echoLD::get_LD(locus_dir=locus_dir,
+                                  query_dat=dat, 
                                    LD_reference=LD_reference,
-                                   superpopulation=translate_population(superpopulation = pop),
+                                   superpopulation=pop,
                                    force_new_LD=force_new_LD,
                                    fillNA = fillNA)
     return(LD_matrix)
@@ -257,11 +257,11 @@ PAINTOR.prepare_LD <- function(subset_path,
   ## The output of PAINTOR will not be correct if there are mismatches of this type in the data.
   ##Please see wiki section 2a for instructions on how to use the LD utility provided with the software."
   messager("++ PAINTOR:: Creating LD Matrix File...")
+    locus_dir <- dirname(subset_path)
   dat <- data.table::fread(file.path(subset_path,"Multi-finemap/Multi-finemap_results.txt"), nThread = 1)
   if(is.null(LD_matrix)){
-    LD_matrix <- LD.load_or_create(locus_dir=locus_dir,
-                                   dat=dat,
-                                   remote_LD  = TRUE,
+    LD_matrix <- echoLD::get_LD(locus_dir=locus_dir,
+                                query_dat=dat, 
                                    force_new_LD = FALSE,
                                    LD_reference="1KG_Phase1",
                                    superpopulation="EUR")

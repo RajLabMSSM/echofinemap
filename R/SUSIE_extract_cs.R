@@ -3,7 +3,7 @@ SUSIE_extract_cs <- function(dat,
                              PP_threshold,
                              return_all_CS=TRUE,
                              verbose=TRUE){
-    messager("+ SUSIE:: Extracting Credible Sets...",v=verbose)
+    messager("+ SUSIE:: Extracting Credible Sets.",v=verbose)
     ## Get PIP
     dat$PP <- susieR::susie_get_pip(fitted_bhat)
     ## Get CS assignments

@@ -94,7 +94,11 @@ SUSIE <- function(dat,
     ss_df <- echodata::get_sample_size(dat = dat, 
                                        method = sample_size,
                                        verbose = verbose)
-    sample_size <- if("N" %in% colnames(ss_df)) max(ss_df$N, na.rm = TRUE)
+    sample_size <- if("NEFF" %in% colnames(ss_df)) {
+        max(ss_df$NEFF, na.rm = TRUE)
+    } else if ("N" %in% colnames(ss_df)){
+        max(ss_df$N, na.rm = TRUE)
+    }
     if(is.null(sample_size)) stop("sample_size==NULL")
   }
   messager("+ SUSIE:: sample_size=",

@@ -153,6 +153,7 @@ FINEMAP <- function(dat,
                                  dat = dat,
                                  credset_thresh = credset_thresh,
                                  results_file = ".cred",
+                                 n_causal = n_causal,
                                  finemap_version = finemap_version)
   # Remove tmp files
   if(remove_tmps){

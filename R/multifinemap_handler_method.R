@@ -7,7 +7,7 @@ multifinemap_handler_method <- function(dat,
                                         finemap_args=NULL,
                                         
                                         dataset_type="GWAS",
-                                        force_new_finemap=TRUE,
+                                        force_new_finemap=FALSE,
                                         LD_matrix=NULL,
                                         n_causal=5,
                                         conditioned_snps,
