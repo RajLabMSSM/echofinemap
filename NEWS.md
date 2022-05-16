@@ -5,6 +5,8 @@
 * Updated GHA. 
 * `POLYFUN`:
     - Can now use `FINEMAP` or `SUSIE` as a method. 
+* Use `Rfast` to speed up `SUSIE`.
+* `remove_na_rows`: Remove rows with NAs in tool-specific essential cols.
 
 ## Bug fixes
 
@@ -13,6 +15,7 @@
 * Test `FINEMAP` v1.4 and v1.3.1 on Linux. 
 * Actually pass `force_new_finemap` all the way down. 
 * Actually pass `n_causal` all the way down to `FINEMAP_process_results`.
+* Fill NAs in FINEMAP CS/PP. 
 
 # echofinemap 0.99.1
 

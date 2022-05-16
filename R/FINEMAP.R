@@ -17,8 +17,10 @@
 #' instead of the ones included in \pkg{echolocatoR}.
 #' Users can also simply supply "finemap" if this command is linked to
 #'  the executable.
-#' @param fill_NA Fill CS/PP values without fine-mapping results 
+#' @param fillNA Fill CS/PP values without fine-mapping results 
 #' (i.e. \code{NA}) with some default value (e.g. 0).
+#' @param nThread Number of threads to parallelise across.
+#' Passed to \code{"--n-threads"} in FINEMAP. 
 #' @source \url{http://www.christianbenner.com}
 #' @family FINEMAP
 #' 
@@ -50,16 +52,23 @@ FINEMAP <- function(dat,
                     remove_tmps=FALSE,
                     force_new=FALSE,
                     credset_thresh=.95,
-                    finemap_version="1.4", 
+                    finemap_version=package_version("1.4"), 
                     prior_k=NULL,
                     rescale_priors=TRUE,
                     args_list=list(),
-                    fill_NA=0,
+                    fillNA=0,
+                    nThread=1,
                     verbose=TRUE){
   # n_causal=5; model="cond"; credset_thresh=.95; verbose=T;
   # finemap_version="1.3.1"; n_samples=NULL; args_list=list()
   
   CS <- PP <- NULL;
+  
+  #### Remove rows with NAs ####
+  dat <- remove_na_rows(dat=dat, 
+                        cols = c("Effect","StdErr","SNP","MAF",
+                                 "CHR","POS","A1","A2"),
+                        verbose=verbose)
   #### Add sample size ####
   if(is.null(n_samples)){
     ss_df <- echodata::get_sample_size(dat = dat,
@@ -111,6 +120,7 @@ FINEMAP <- function(dat,
                      model=model,
                      master_path=master_path,
                      n_causal=n_causal,
+                     nThread=nThread,
                      args_list=args_list,
                      verbose=FALSE)
 
@@ -136,6 +146,7 @@ FINEMAP <- function(dat,
     #### Rerun if preferred version of FINEMAP fails ####
     FINEMAP_path <- FINEMAP_find_executable(version = "1.3.1",
                                             verbose  = FALSE)
+    finemap_version <- package_version("1.3.1")
     messager("Rerunning with FINEMAP v1.3.1.",v=verbose)
     msg <- FINEMAP_run(locus_dir=locus_dir,
                        FINEMAP_path=FINEMAP_path,
@@ -146,6 +157,7 @@ FINEMAP <- function(dat,
                        ## May not have the args that the user
                        ## was expecting due to version differences.
                        args_list=args_list,
+                       nThread=nThread,
                        verbose=FALSE)
     ## Note!: concatenating this output in rmarkdown
     ## can accidentally print many many lines.
@@ -177,7 +189,9 @@ FINEMAP <- function(dat,
     tmp_bool <- suppressWarnings(file.remove(file.path(locus_dir,"FINEMAP")))
   }
   #### Fill NA #### 
-  dat[is.na(CS),] <- 0
-  dat[is.na(PP),] <- 0
+  if(!is.null(fillNA)){
+      dat[is.na(CS),]$CS <- fillNA
+      dat[is.na(PP),]$PP <- fillNA
+  }
   return(dat)
 }

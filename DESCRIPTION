@@ -57,7 +57,8 @@ Suggests:
     ggpubr,
     ggrepel,
     patchwork,
-    purrr
+    purrr,
+    Rfast
 Remotes:
   github::RajLabMSSM/echodata,
   github::RajLabMSSM/echoLD,

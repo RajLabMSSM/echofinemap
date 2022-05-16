@@ -17,7 +17,7 @@ FINEMAP_process_results <- function(dat,
                                     credset_thresh=.95,
                                     pvalue_thresh=.05,
                                     n_causal=5,
-                                    finemap_version="1.4",
+                                    finemap_version=package_version("1.4"),
                                     results_file=".cred",
                                     nThread=1,
                                     sort_by_CS=TRUE,
@@ -39,16 +39,18 @@ FINEMAP_process_results <- function(dat,
     results_file <- FINEMAP_check_files(locus_dir, results_file)
     #### Process FINEMAP results ####
     if(results_file==".cred"){
-        data.cred <- FINEMAP_import_data_cred(locus_dir = locus_dir,
-                                              n_causal = n_causal,
-                                              verbose = verbose) 
+        data.cred <- FINEMAP_import_data_cred(
+            locus_dir = locus_dir, 
+            finemap_version = finemap_version,
+            verbose = verbose) 
         dat2 <- data.table::merge.data.table(data.table::data.table(dat),
                                             data.table::data.table(data.cred),
                                             by="SNP",
                                             all.x = TRUE)
     } else if (results_file==".snp"){
-        data.snp <- FINEMAP_import_data_snp(locus_dir = locus_dir,
-                                            verbose = verbose) 
+        data.snp <- FINEMAP_import_data_snp(
+            locus_dir = locus_dir,
+            verbose = verbose) 
         dat2 <- data.table::merge.data.table(data.table::data.table(dat),
                                             data.table::data.table(
                                                 subset(data.snp, 
@@ -59,8 +61,10 @@ FINEMAP_process_results <- function(dat,
                                             by.y="rsid",
                                             all.x = TRUE)
     } else if (results_file==".config"){
-        data.config <- FINEMAP_import_data_config(locus_dir = locus_dir,
-                                                  verbose = verbose)
+        data.config <- FINEMAP_import_data_config(
+            locus_dir = locus_dir,
+            finemap_version = finemap_version,
+            verbose = verbose)
         dat2 <- data.table::merge.data.table(data.table::data.table(dat),
                                             data.table::data.table(data.config),
                                             by="SNP",

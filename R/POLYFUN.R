@@ -46,6 +46,7 @@
 #' }
 #' @family polyfun 
 #' @export
+#' @importFrom data.table :=
 #' @examples 
 #' locus_dir <- file.path(tempdir(),echodata::locus_dir)
 #' dat <- echodata::BST1

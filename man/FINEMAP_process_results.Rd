@@ -19,7 +19,7 @@ FINEMAP_process_results(
   credset_thresh = 0.95,
   pvalue_thresh = 0.05,
   n_causal = 5,
-  finemap_version = "1.4",
+  finemap_version = package_version("1.4"),
   results_file = ".cred",
   nThread = 1,
   sort_by_CS = TRUE,

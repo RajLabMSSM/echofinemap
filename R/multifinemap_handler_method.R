@@ -90,7 +90,9 @@ multifinemap_handler_method <- function(dat,
                        credset_thresh = PP_threshold,
                        args_list = if("FINEMAP" %in% names(finemap_args)) {
                            finemap_args[["FINEMAP"]]
-                       } else {NULL}
+                       } else {NULL}, 
+                       nThread=nThread,
+                       verbose=verbose
                        )
         
         

@@ -26,6 +26,11 @@ ABF <- function(dat,
                 verbose=TRUE){
   SNP.PP <- PP <- snp <- NULL;
 
+  #### Remove rows with NAs ####
+  dat <- remove_na_rows(dat=dat, 
+                        cols = c("Effect","P",
+                                 "StdErr","SNP","MAF"),
+                        verbose=verbose)
   #### initialize list ####
   dataset <- list(beta = dat$Effect,
                   pvalues=dat$P,

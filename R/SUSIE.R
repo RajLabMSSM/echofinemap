@@ -89,6 +89,14 @@ SUSIE <- function(dat,
                   var_name="Expression",
                   verbose=TRUE){
   
+    if(!requireNamespace("Rfast")){
+        warning("Install Rfast to speed up susieR even further:\n",
+                "   install.packages('Rfast')")
+    }
+    #### Remove rows with NAs ####
+    dat <- remove_na_rows(dat=dat, 
+                          cols = c("Effect","StdErr","SNP","MAF"),
+                          verbose=verbose)
   #### sample_size ####
   if(is.null(sample_size)){
     ss_df <- echodata::get_sample_size(dat = dat, 

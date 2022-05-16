@@ -11,8 +11,7 @@
 #' 
 #' dat2 <- echofinemap::multifinemap(dat = dat, 
 #'                                  locus_dir = locus_dir,
-#'                                  LD_matrix = LD_matrix,
-#'                                  sample_size = )
+#'                                  LD_matrix = LD_matrix)
 multifinemap <- function(dat,
                          locus_dir,
                          fullSS_path=NULL,
@@ -54,8 +53,8 @@ multifinemap <- function(dat,
                                     compress = TRUE)
     ### If so, import the previous results
     if(file.exists(file_path) & force_new_finemap==FALSE){
-        messager("++ Previously multi-finemap results identified. Importing:",
-                 file_path, v=verbose)
+        messager("++ Previously multi-finemapped results identified.",
+                 "Importing:",file_path, v=verbose)
         dat2 <- data.table::fread(file_path, nThread=nThread)
     } else {
         ## If not, or if forcing new fine-mapping is set to TRUE, 

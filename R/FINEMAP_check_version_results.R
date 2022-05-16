@@ -1,6 +1,6 @@
 FINEMAP_check_version_results <- function(finemap_version,
                                           results_file){
-    if((!finemap_version %in% c("1.3.1","1.4")) &
+    if((finemap_version < "1.3.1") &
        any((results_file==".cred"))){
         messager(
             "WARNING: FINEMAP<1.3.1 does not produce .cred results files.\n",

@@ -5,6 +5,7 @@ FINEMAP_run <- function(locus_dir,
                         n_causal=5,
                         prior_k=NULL,
                         args_list=list(),
+                        nThread=1,
                         verbose=TRUE){
     model <- tolower(model)[1]
     # FINEMAP_path <- echofinemap:::FINEMAP_find_executable(version = "1.3.1")
@@ -14,6 +15,7 @@ FINEMAP_run <- function(locus_dir,
                  paste0("--",model),
                  "--in-files", master_path,
                  "--log",
+                 "--n-threads",nThread,
                  # Option to set the maximum number of allowed causal SNPs
                  # (Default is 5)
                  "--n-causal-snps",n_causal,

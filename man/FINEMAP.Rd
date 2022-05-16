@@ -18,11 +18,12 @@ FINEMAP(
   remove_tmps = FALSE,
   force_new = FALSE,
   credset_thresh = 0.95,
-  finemap_version = "1.4",
+  finemap_version = package_version("1.4"),
   prior_k = NULL,
   rescale_priors = TRUE,
   args_list = list(),
-  fill_NA = 0,
+  fillNA = 0,
+  nThread = 1,
   verbose = TRUE
 )
 }
@@ -42,8 +43,11 @@ Users can also simply supply "finemap" if this command is linked to
 Alternatively, can supply a string instead 
 (e.g.: args_list = "--n-iterations 5000 --sss").}
 
-\item{fill_NA}{Fill CS/PP values without fine-mapping results 
+\item{fillNA}{Fill CS/PP values without fine-mapping results 
 (i.e. \code{NA}) with some default value (e.g. 0).}
+
+\item{nThread}{Number of threads to parallelise across.
+Passed to \code{"--n-threads"} in FINEMAP.}
 }
 \description{
 The stepwise conditional search starts with a causal configuration 

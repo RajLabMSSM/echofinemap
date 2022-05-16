@@ -7,7 +7,7 @@
 https://www.nature.com/articles/s41588-020-00735-5
 }
 \usage{
-POLYFUN_h2_enrichment(h2_df, target_SNPs = NULL, fillNA = TRUE)
+POLYFUN_h2_enrichment(h2_df, target_SNPs = NULL, fillNA = 0)
 }
 \description{
 Run heritability enrichment tests

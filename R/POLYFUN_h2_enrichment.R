@@ -5,10 +5,12 @@
 #' @family polyfun
 POLYFUN_h2_enrichment <- function(h2_df,
                                   target_SNPs=NULL,
-                                  fillNA=TRUE){
+                                  fillNA=0){
     # Only consider SNPs that overlap between LDCS and GWAS results to make things fair
     # target_SNPs <- intersect(target_SNPs, h2_df$SNP)
-    if(fillNA) h2_df[is.na(h2_df$SNPVAR),"SNPVAR"] <- 0
+    if(!is.null(fillNA)) {
+        h2_df[is.na(h2_df$SNPVAR),"SNPVAR"] <- fillNA
+    }
     h2.target <- subset(h2_df, SNP %in% target_SNPs)
     if(nrow(h2.target)>0){
         # Calculate enrichment
