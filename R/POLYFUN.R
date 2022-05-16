@@ -34,6 +34,8 @@
 #' fine-mapping \code{method}.
 #' @inheritParams multifinemap
 #' @inheritParams SUSIE
+#' @inheritParams FINEMAP
+#' @inheritParams echodata::get_sample_size
 #' 
 #' @returns The same input SNP-wise
 #'  \code{dat} but with the following additional columns:
@@ -66,10 +68,12 @@ POLYFUN <- function(dat,
                     method=c("SUSIE","FINEMAP"),
                     dataset_type="GWAS",
                     max_causal=5,
-                    sample_size=NULL, 
+                    compute_n="ldsc", 
                     PP_threshold=.95,
                     rescale_priors=TRUE,
                     conda_env="echoR_mini",
+                    force_new=FALSE,
+                    nThread=1,
                     verbose=TRUE,
                     ...){
     # echoverseTemplate:::args2vars(POLYFUN)
@@ -104,7 +108,7 @@ POLYFUN <- function(dat,
                      LD_matrix=LD_matrix,
                      dataset_type=dataset_type,
                      max_causal=max_causal,
-                     sample_size=sample_size,
+                     compute_n=compute_n,
                      PP_threshold=PP_threshold, 
                      prior_weights=new_DT$POLYFUN_h2,
                      rescale_priors=rescale_priors, 
@@ -114,14 +118,18 @@ POLYFUN <- function(dat,
     #### Run FINEMAP ####
     if(method=="FINEMAP"){
         dat <- FINEMAP(dat=new_DT,
-                       locus_dir=locus_dir,
+                       ## Put results in their own subolder
+                       ## to avoid using FINEMAP results
+                       ## computed without PolyFun priors.
+                       locus_dir=file.path(locus_dir,"POLYFUN"),
                        LD_matrix=LD_matrix,
-                       n_samples=sample_size,
+                       compute_n=compute_n,
                        n_causal=max_causal,
                        credset_thresh=PP_threshold,
                        prior_k=new_DT$POLYFUN_h2,
-                       rescale_priors=rescale_priors,
-                       force_new = TRUE,
+                       rescale_priors=rescale_priors, 
+                       force_new=force_new,
+                       nThread=nThread,
                        verbose=verbose,
                        ...)
     }

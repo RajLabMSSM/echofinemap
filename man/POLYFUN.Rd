@@ -20,15 +20,19 @@ POLYFUN(
   method = c("SUSIE", "FINEMAP"),
   dataset_type = "GWAS",
   max_causal = 5,
-  sample_size = NULL,
+  compute_n = "ldsc",
   PP_threshold = 0.95,
   rescale_priors = TRUE,
   conda_env = "echoR_mini",
+  force_new = FALSE,
+  nThread = 1,
   verbose = TRUE,
   ...
 )
 }
 \arguments{
+\item{dat}{Fine-mapping results data.}
+
 \item{mode}{PolyFun can run in several different modes corresponding 
 to how SNP-wise prior causal probabilities (i.e. priors) are computed:
 \itemize{
@@ -56,12 +60,31 @@ Gathered from the "*.snpvar_constrained.gz" output files from PolyFun}.
 \item{max_causal}{The maximum number of non-zero effects 
 (and thus causal variants).}
 
+\item{compute_n}{How to compute per-SNP sample size (new column "N").
+\itemize{
+\item{\code{0}: }{N will not be computed.}
+\item{\code{>0}: }{If any number >0 is provided,
+that value will be set as N for every row.
+\strong{Note}: Computing N this way is incorrect and should be avoided
+if at all possible.}
+\item{\code{"sum"}: }{N will be computed as:
+cases (N_CAS) + controls (N_CON), so long as both columns are present}.
+\item{\code{"effective"}: }{N will be computed as effective sample size:
+cases (N_CAS) + controls (N_CON), so long as both columns are present}.
+}}
+
 \item{rescale_priors}{If prior probabilities are supplied,
 rescale them from 0-1 (i.e. \code{rescaled_priors = priors / sum(priors)}).}
 
-\item{verbose}{If \code{verbose = TRUE}, the algorithm's progress,
-and a summary of the optimization settings, are printed to the
-console.}
+\item{force_new}{If saved results already exist in the given
+\code{locus_dir}, skip re-running FINEMAP and use them 
+(default: \code{force_new}). 
+Set \code{TRUE} to ignore these files and re-run FINEMAP.}
+
+\item{nThread}{Number of threads to parallelise across.
+Passed to \code{"--n-threads"} in FINEMAP.}
+
+\item{verbose}{Print messages.}
 
 \item{...}{Additional arguments passed to the chosen 
 fine-mapping \code{method}.}

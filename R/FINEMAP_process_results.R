@@ -42,27 +42,27 @@ FINEMAP_process_results <- function(dat,
             credset_thresh = credset_thresh, 
             pvalue_thresh = pvalue_thresh,
             finemap_version = finemap_version,
-            verbose = verbose) 
-        dat <- data.table::merge.data.table(
-            data.table::data.table(dat),
-            data.table::data.table(data.cred),
-            by="SNP",
-            all.x = TRUE)
+            verbose = verbose)  
+       dat <- data.table::merge.data.table(
+           data.table::data.table(dat),
+           data.table::data.table(data.cred),
+           by="SNP",
+           all.x = TRUE) 
     } 
     #### Add marginal probabilities ####
     if (".snp" %in% file_options){
         data.snp <- FINEMAP_import_data_snp(
             credset_thresh = credset_thresh,
             locus_dir = locus_dir,
-            verbose = verbose) 
+            verbose = verbose)  
         dat <- data.table::merge.data.table(
             data.table::data.table(dat),
             data.table::data.table(
                 dplyr::select(data.snp,
                               SNP=rsid,
-                              PP.snp=prob)),
+                              PP_snp=prob)),
             by = "SNP", 
-            all.x = TRUE)
+            all.x = TRUE) 
     } 
     #### Add configuration probabilities ####
     if (".config" %in% file_options){
@@ -71,17 +71,25 @@ FINEMAP_process_results <- function(dat,
             credset_thresh = credset_thresh,
             pvalue_thresh = pvalue_thresh,
             finemap_version = finemap_version,
-            verbose = verbose)
-        dat <- data.table::merge.data.table(
-            data.table::data.table(dat),
-            data.table::data.table(data.config) %>%
-                dplyr::rename(PP.config=prob),
-            by="SNP",
-            all.x = TRUE)
+            verbose = verbose)  
+        if(nrow(data.config)>0){
+            dat <- data.table::merge.data.table(
+                data.table::data.table(dat),
+                data.table::data.table(data.config) %>%
+                    dplyr::rename(PP_config=prob),
+                by="SNP",
+                all.x = TRUE) 
+        }
     }
     #### Sort so that CS SNPs are at the top ####
-    if(sort_by_CS){ 
+    if(sort_by_CS){
         dat <- dplyr::arrange(dat, dplyr::desc(PP))
+    }
+    #### Ensure there's no duplicate rows ####
+    dup_snps <- sum(duplicated(dat$SNP), na.rm = TRUE)
+    if(dup_snps>0) {
+        stp <- paste(dup_snps,"duplicated SNPs found across rows.")
+        stop(stp)
     }
     return(dat)
 }

@@ -13,7 +13,7 @@
 #'  If \code{=0}, then the SNP was not part of any credible set. 
 #'  Some tools only produce one credible set per locus.}
 #' }
-#'
+#' @inheritParams echodata::get_sample_size
 #' @family finemapping functions
 #' @keywords internal 
 multifinemap_handler <- function(dat,
@@ -25,7 +25,7 @@ multifinemap_handler <- function(dat,
                                  force_new_finemap=FALSE,
                                  LD_matrix=NULL,
                                  n_causal=5,
-                                 sample_size=NULL,
+                                 compute_n="ldsc",
                                  conditioned_snps=NULL,
                                  PAINTOR_QTL_datasets=NULL,
                                  PP_threshold=.95,
@@ -33,11 +33,6 @@ multifinemap_handler <- function(dat,
                                  verbose=TRUE,
                                  nThread=1,
                                  conda_env="echoR_mini"){
-  # PAINTOR_QTL_datasets=NULL;PP_threshold=.95; effect_col="Effect";
-  #n_causal=5; sample_size=1000; stderr_col="StdErr"; pval_col="P"; 
-  #N_cases_col="N_cases"; N_controls_col="N_controls"; A1_col="A1"; 
-  #A2_col="A2";conditioned_snps=NULL;
-  
   messager("++ Fine-mapping using",length(finemap_methods),"tool(s):",
            paste(finemap_methods, collapse=", "),v=verbose)
   #### Subset dat/LD ####
@@ -60,7 +55,7 @@ multifinemap_handler <- function(dat,
         dataset_type = dataset_type,
         LD_matrix = LD_matrix,
         n_causal = n_causal,
-        sample_size = sample_size,
+        compute_n = compute_n,
         PAINTOR_QTL_datasets = PAINTOR_QTL_datasets,
         PP_threshold = PP_threshold,
         case_control = case_control,

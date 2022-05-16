@@ -23,6 +23,7 @@ path <- echofinemap::create_method_path(locus_dir = locus_dir,
 }
 \seealso{
 Other finemapping functions: 
+\code{\link{multifinemap_handler_method}()},
 \code{\link{multifinemap_handler}()},
 \code{\link{multifinemap}()}
 }

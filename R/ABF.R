@@ -1,8 +1,11 @@
 #' Fine-map with ABF
 #'
-#' Conduct statistical fine-mapping with approximate Bayes factor (ABF).
+#' Conduct statistical fine-mapping with Approximate Bayes Factor (ABF)
+#' via \link[coloc]{finemap.abf}.
 #'
+#' @inheritParams echodata::get_sample_size
 #' @inheritParams coloc::finemap.abf
+#' 
 #' @source \href{https://www.nature.com/articles/ng.2435}{
 #' JB Maller et al., Bayesian refinement of association signals for
 #'  14 loci in 3 common diseases. Nature Genetics. 44, 1294–1301 (2012).}
@@ -20,7 +23,7 @@
 #' dat2 <- echofinemap::ABF(dat=dat) 
 ABF <- function(dat,
                 PP_threshold=.95,
-                sample_size=NULL,
+                compute_n="ldsc",
                 sdY=NULL,
                 case_control=TRUE,
                 verbose=TRUE){
@@ -48,17 +51,11 @@ ABF <- function(dat,
   #### Add MAF ####
   if("MAF" %in% colnames(dat)) dataset$MAF <- dat$MAF;
   #### Add sample size ####
-  if(is.null(sample_size)){
-    ss_df <- echodata::get_sample_size(dat = dat,
-                                       method = sample_size,
-                                       force_new = FALSE,
-                                       verbose = verbose)
-    sample_size <- if("NEFF" %in% colnames(ss_df)) {
-        max(ss_df$NEFF, na.rm = TRUE)
-    } else if ("N" %in% colnames(ss_df)){
-        max(ss_df$N, na.rm = TRUE)
-    } else {NULL}
-  } 
+  sample_size <- echodata::get_sample_size(dat = dat,
+                                           compute_n = compute_n,
+                                           force_new = FALSE,
+                                           return_only = max,
+                                           verbose = verbose)
   dataset$N <- sample_size
   #### Run ABF ####
   messager("Running ABF.",v=verbose)

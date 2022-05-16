@@ -12,7 +12,11 @@ drop_finemap_cols(
 )
 }
 \arguments{
+\item{dat}{Fine-mapping results data.}
+
 \item{summary_cols}{Multi-tool summary columns to drop.}
+
+\item{verbose}{Print messages.}
 }
 \description{
 Drop all method-specific and/or multi-tool summary columns from data.

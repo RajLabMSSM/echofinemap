@@ -19,8 +19,14 @@
 #'  the executable.
 #' @param fillNA Fill CS/PP values without fine-mapping results 
 #' (i.e. \code{NA}) with some default value (e.g. 0).
+#' @param force_new If saved results already exist in the given
+#' \code{locus_dir}, skip re-running FINEMAP and use them 
+#' (default: \code{force_new}). 
+#' Set \code{TRUE} to ignore these files and re-run FINEMAP.
 #' @param nThread Number of threads to parallelise across.
 #' Passed to \code{"--n-threads"} in FINEMAP. 
+#' @inheritParams echodata::get_sample_size
+#' 
 #' @source \url{http://www.christianbenner.com}
 #' @family FINEMAP
 #' 
@@ -45,11 +51,11 @@ FINEMAP <- function(dat,
                     locus_dir=tempdir(),
                     LD_matrix,
                     FINEMAP_path=NULL,
-                    n_samples=NULL,
+                    compute_n="ldsc",
                     n_causal=5,# Max number of allowed causal SNPs
                     model="sss",
                     remove_tmps=FALSE,
-                    force_new=FALSE,
+                    force_new=TRUE,
                     credset_thresh=.95,
                     finemap_version=package_version("1.4.1"), 
                     prior_k=NULL,
@@ -70,47 +76,38 @@ FINEMAP <- function(dat,
                         cols = c("Effect","StdErr","SNP","MAF",
                                  "CHR","POS","A1","A2"),
                         verbose=verbose)
-  #### Add sample size ####
-  if(is.null(n_samples)){
-    ss_df <- echodata::get_sample_size(dat = dat,
-                                       method = n_samples,
+  #### Add sample size #### 
+  n_samples <- echodata::get_sample_size(dat = dat,
+                                       compute_n = compute_n,
                                        force_new = FALSE,
-                                       verbose = verbose)
-    if(!is.null(ss_df$N)) n_samples <-  max(ss_df$N, na.rm = TRUE);
-  }  
+                                       return_only = max,
+                                       verbose = verbose) 
   dir.create(locus_dir, showWarnings = FALSE, recursive = TRUE)
   #### Prepare priors ####
   prior_k <- prepare_priors(prior_weights=prior_k,
                             rescale_priors=rescale_priors,
                             dat=dat,
-                            verbose=verbose)
-  #### Setup files ####
-  master_path <- FINEMAP_construct_master(locus_dir = locus_dir,
-                                          n_samples = n_samples)
-  dat_paths <- FINEMAP_construct_data(locus_dir = locus_dir,
-                                      dat = dat,
-                                      LD_matrix = LD_matrix)
+                            verbose=verbose) 
   #### Use pre=existing results #### 
   dat_prev <- FINEMAP_check_existing_results(dat = dat,
                                              locus_dir = locus_dir,
                                              credset_thresh = credset_thresh,
                                              finemap_version = finemap_version,
-                                             master_path = master_path,
                                              force_new = force_new,
                                              verbose = verbose)
   if(!is.null(dat_prev)) return(dat_prev)
-  
-  ####  Command line example  ####
-  # cmd <- paste(FINEMAP_path," --sss --in-files",
-  # file.path(dirname(FINEMAP_path),
-  # "example","master"), "--dataset 1 --n-causal-snps 5")
-  
+  ### Setup files ####
+  master_path <- FINEMAP_construct_master(locus_dir = locus_dir,
+                                          n_samples = n_samples)
+  dat_paths <- FINEMAP_construct_data(locus_dir = locus_dir,
+                                      dat = dat,
+                                      LD_matrix = LD_matrix)
   #### Check FINEMAP exec ####
   if(is.null(FINEMAP_path)){
     FINEMAP_path <- FINEMAP_find_executable(version = finemap_version,
                                             verbose = verbose)
   }  
-  messager("User-defined FINEMAP path:",FINEMAP_path, v=verbose)
+  messager("FINEMAP path:",FINEMAP_path, v=verbose)
   finemap_version <- FINEMAP_check_version(FINEMAP_path = FINEMAP_path,
                                              verbose = verbose) 
   if(finemap_version<"1.4") nThread <- 1
@@ -200,6 +197,6 @@ FINEMAP <- function(dat,
       }
      
       dat[is.na(PP),]$PP <- fillNA
-  }
+  } 
   return(dat)
 }

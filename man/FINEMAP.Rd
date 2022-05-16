@@ -12,11 +12,11 @@ FINEMAP(
   locus_dir = tempdir(),
   LD_matrix,
   FINEMAP_path = NULL,
-  n_samples = NULL,
+  compute_n = "ldsc",
   n_causal = 5,
   model = "sss",
   remove_tmps = FALSE,
-  force_new = FALSE,
+  force_new = TRUE,
   credset_thresh = 0.95,
   finemap_version = package_version("1.4.1"),
   prior_k = NULL,
@@ -28,13 +28,33 @@ FINEMAP(
 )
 }
 \arguments{
+\item{dat}{Fine-mapping results data.}
+
 \item{FINEMAP_path}{Path to a custom FINEMAP executable to use
 instead of the ones included in \pkg{echolocatoR}.
 Users can also simply supply "finemap" if this command is linked to
  the executable.}
 
+\item{compute_n}{How to compute per-SNP sample size (new column "N").
+\itemize{
+\item{\code{0}: }{N will not be computed.}
+\item{\code{>0}: }{If any number >0 is provided,
+that value will be set as N for every row.
+\strong{Note}: Computing N this way is incorrect and should be avoided
+if at all possible.}
+\item{\code{"sum"}: }{N will be computed as:
+cases (N_CAS) + controls (N_CON), so long as both columns are present}.
+\item{\code{"effective"}: }{N will be computed as effective sample size:
+cases (N_CAS) + controls (N_CON), so long as both columns are present}.
+}}
+
 \item{model}{"cond" for stepwise conditional search, 
 "sss" for stochastic shotgun search.}
+
+\item{force_new}{If saved results already exist in the given
+\code{locus_dir}, skip re-running FINEMAP and use them 
+(default: \code{force_new}). 
+Set \code{TRUE} to ignore these files and re-run FINEMAP.}
 
 \item{finemap_version}{Which FINEMAP version to use (specify as a string).}
 
@@ -48,6 +68,8 @@ Alternatively, can supply a string instead
 
 \item{nThread}{Number of threads to parallelise across.
 Passed to \code{"--n-threads"} in FINEMAP.}
+
+\item{verbose}{Print messages.}
 }
 \description{
 The stepwise conditional search starts with a causal configuration 

@@ -2,7 +2,7 @@ POLYFUN_sample_size_arg <- function(fullSS_path,
                                     sample_size,
                                     nrows=1000,
                                     verbose=TRUE){
-    header <- echodata::get_header(file = fullSS_path)
+    header <- echodata::get_header(path = fullSS_path)
     if(any(c("N_cases") %in% header) &
        any(c("N_controls") %in% header) ){
         if(!is.null(sample_size)){

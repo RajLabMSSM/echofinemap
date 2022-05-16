@@ -6,6 +6,9 @@
 \usage{
 lfm(finemap_methods = NULL, verbose = TRUE)
 }
+\arguments{
+\item{verbose}{Print messages.}
+}
 \description{
 List all fine-mapping methods currently available in \pkg{echofinemap}.
 }

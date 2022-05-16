@@ -38,6 +38,7 @@
 #' @inheritParams susieR::susie_suff_stat
 #' @inheritParams susieR::susie_plot_iteration
 #' @inheritParams echoLD::get_LD
+#' @inheritParams echodata::get_sample_size
 #' 
 #' @source
 #' \href{https://stephenslab.github.io/susieR/}{GitHub}
@@ -62,7 +63,7 @@ SUSIE <- function(dat,
                   # susieR default max_causal=L=10
                   max_causal=5,
                   # susieR default sample_size=n=<missing>
-                  sample_size=NULL,
+                  compute_n="ldsc",
                   # susieR default prior_weights=NULL
                   prior_weights=NULL,
                   # susieR default PP_threshold=coverage=.95
@@ -97,20 +98,18 @@ SUSIE <- function(dat,
     dat <- remove_na_rows(dat=dat, 
                           cols = c("Effect","StdErr","SNP","MAF"),
                           verbose=verbose)
-  #### sample_size ####
-  if(is.null(sample_size)){
-    ss_df <- echodata::get_sample_size(dat = dat, 
-                                       method = sample_size,
-                                       verbose = verbose)
-    sample_size <- if("NEFF" %in% colnames(ss_df)) {
-        max(ss_df$NEFF, na.rm = TRUE)
-    } else if ("N" %in% colnames(ss_df)){
-        max(ss_df$N, na.rm = TRUE)
+    #### sample_size ####
+    sample_size <- echodata::get_sample_size(dat = dat,
+                                             compute_n = compute_n,
+                                             force_new = FALSE,
+                                             return_only = max,
+                                             verbose = verbose) 
+    if(is.null(sample_size)) {
+        stop("sample_size=NULL: must be valid integer.") 
     }
-    if(is.null(sample_size)) stop("sample_size==NULL")
-  }
-  messager("+ SUSIE:: sample_size=",
-           formatC(sample_size,big.mark = ","),v=verbose)
+    messager("+ SUSIE::",
+             paste0("sample_size=",formatC(sample_size,big.mark = ",")),
+             v=verbose)
   #### Get phenotype variance ####
   if(manual_var_y){
     var_y <- get_pheno_variance(dat = dat,

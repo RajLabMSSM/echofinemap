@@ -2,6 +2,7 @@
 #' 
 #' Handle fine-mapping across multiple tools.
 #' 
+#' @inheritParams echodata::get_sample_size
 #' @family finemapping functions
 #' @export
 #' @examples
@@ -22,7 +23,8 @@ multifinemap <- function(dat,
                          LD_reference=NULL,
                          LD_matrix=NULL,
                          n_causal=5,
-                         sample_size=NULL,
+                         compute_n="ldsc",
+                         standardise_headers=FALSE,
                          conditioned_snps=NULL,
                          PAINTOR_QTL_datasets=NULL,
                          PP_threshold=.95,
@@ -31,38 +33,33 @@ multifinemap <- function(dat,
                          conda_env="echoR_mini",
                          nThread=1,
                          seed=2022,
-                         verbose=TRUE){
-    # finemap_args=NULL;dataset_type="GWAS";force_new_finemap=TRUE;
-    # LD_reference=NULL;LD_matrix=NULL;n_causal=5;sample_size=NULL;
-    # conditioned_snps=NULL; PAINTOR_QTL_datasets=NULL;PP_threshold=.95;
-    # consensus_threshold=2;case_control=TRUE;conda_env="echoR_mini";
-    # nThread=1;verbose=TRUE
+                         verbose=TRUE){ 
     start_FM <- Sys.time()
-    set.seed(seed) 
-    #### Get sample size and standarize colnames at same time ####
-    dat <- echodata::get_sample_size(dat = dat, 
-                                     compute_n = sample_size, 
-                                     verbose = verbose) 
-    ##  First, check if there's more than one fine-mapping method given.
-    ## If so, switch to multi-finemap function.
-    
-    ## Next, see if fine-mapping has previously been done (with multi-finemap)
+    set.seed(seed)  
+    ## See if fine-mapping has previously been done.
     file_path <- create_method_path(locus_dir = locus_dir,
                                     LD_reference = LD_reference,
                                     finemap_method = "Multi-finemap",
                                     compress = TRUE)
-    ### If so, import the previous results
+    #### If so, import the previous results ####
     if(file.exists(file_path) & force_new_finemap==FALSE){
         messager("++ Previously multi-finemapped results identified.",
                  "Importing:",file_path, v=verbose)
         dat2 <- data.table::fread(file_path, nThread=nThread)
+    
+    ### Otherwise, continue fine-mapping ####
     } else {
+        ## Get sample size and standarize colnames at same time.
+        dat <- echodata::get_sample_size(
+            dat = dat, 
+            compute_n = compute_n,
+            standardise_headers = standardise_headers,
+            verbose = verbose) 
         ## If not, or if forcing new fine-mapping is set to TRUE, 
         ## fine-map using multiple tools
         finemap_methods <- check_required_cols(
             dat = dat,
-            finemap_methods = finemap_methods,
-            sample_size = sample_size,
+            finemap_methods = finemap_methods, 
             dataset_type = dataset_type,
             verbose = verbose)  
         dat2 <- multifinemap_handler(
@@ -75,7 +72,7 @@ multifinemap <- function(dat,
             force_new_finemap = force_new_finemap,
             LD_matrix = LD_matrix,
             n_causal = n_causal,
-            sample_size = sample_size, 
+            compute_n = compute_n, 
             conditioned_snps = conditioned_snps,
             PAINTOR_QTL_datasets = PAINTOR_QTL_datasets,
             PP_threshold = PP_threshold,

@@ -7,7 +7,6 @@
 check_required_cols(
   dat,
   finemap_methods = NULL,
-  sample_size = NULL,
   dataset_type = "GWAS",
   verbose = TRUE
 )
@@ -17,9 +16,6 @@ check_required_cols(
 data to fine-map.}
 
 \item{finemap_methods}{Fine-mapping methods to check.}
-
-\item{sample_size}{Manually-provided sample size 
-(will be used is "N" column not present in \code{dat}).}
 
 \item{dataset_type}{Dataset type ("GWAS" or "QTL").}
 

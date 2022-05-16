@@ -118,7 +118,6 @@ test_that("multifinemap works", {
                                   locus_dir = file.path(tempdir(),"LRR2K2"), 
                                   LD_matrix = echodata::BST1_LD_matrix,
                                   fullSS_path = fullSS_path,
-                                  sample_size = 100000,
                                   force_new_finemap = TRUE,
                                   finemap_methods = finemap_methods)
     ) 

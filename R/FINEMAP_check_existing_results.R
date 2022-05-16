@@ -2,10 +2,18 @@ FINEMAP_check_existing_results <- function(dat,
                                            locus_dir,
                                            credset_thresh,
                                            finemap_version,
-                                           master_path,
                                            force_new = FALSE,
                                            verbose = TRUE){
     
+    #### Delete old data ####
+    ## Avoids reading in files from old runs by accident.
+    finemap_dir <- file.path(locus_dir,"FINEMAP")
+    if(force_new){
+        if(file.exists(finemap_dir)) {
+            unlink(finemap_dir, recursive = TRUE, force = TRUE)
+        }
+    }
+    dir.create(finemap_dir, showWarnings = FALSE, recursive = TRUE)
     file_options <- FINEMAP_check_files(locus_dir = locus_dir) 
     if((length(file_options)>0) &&
        isFALSE(force_new)){

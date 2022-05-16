@@ -28,10 +28,14 @@ FINEMAP_import_log <- function(locus_dir,
     postPr <- FINEMAP_parse_k(pattern = "- Post-Pr(# of causal SNPs is k)*",
                               n_causal=n_causal)
     causal_k <- postPr[postPr$prob>=config_thresh,]$k
+    priorPr_k <- priorPr[priorPr$prob==max(priorPr$prob,na.rm = TRUE),]$k
+    postPr_k <- postPr[postPr$prob==max(postPr$prob,na.rm = TRUE),]$k
     return(list(
         priorPr=priorPr,
         postPr=postPr,
         causal_k=causal_k,
+        priorPr_k=priorPr_k,
+        postPr_k=postPr_k,
         n_causal=n_causal
     ))
 }

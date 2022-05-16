@@ -35,8 +35,6 @@ FINEMAP_find_executable <- function(FINEMAP_path=NULL,
                         storage_dir = save_dir) 
         utils::untar(tarfile = tgz,
                      exdir = dirname(tgz)) 
-    }  
-    version <- FINEMAP_check_version(FINEMAP_path=FINEMAP_path, 
-                                     verbose=TRUE) 
+    }
     return(FINEMAP_path)
 }

@@ -1,5 +1,8 @@
+#' Multi-finemap handler: select fine-mapping method 
+#' 
 #' @family finemapping functions
 #' @keywords internal
+#' @inheritParams echodata::get_sample_size
 multifinemap_handler_method <- function(dat,
                                         locus_dir,
                                         fullSS_path=NULL,
@@ -11,7 +14,7 @@ multifinemap_handler_method <- function(dat,
                                         LD_matrix=NULL,
                                         n_causal=5,
                                         conditioned_snps,
-                                        sample_size=NULL, 
+                                        compute_n="ldsc", 
                                         PAINTOR_QTL_datasets=NULL,
                                         PP_threshold=.95,
                                         case_control=TRUE,
@@ -32,12 +35,12 @@ multifinemap_handler_method <- function(dat,
     all_methods <- required_cols()$method
     # INITIATE FINE-MAPPING
     if(finemap_method=="SUSIE"){
-        #### SUSIE ####
+        #### method: SUSIE ####
         dat <- SUSIE(dat = dat,
                      dataset_type = dataset_type,
                      LD_matrix = LD_matrix,
                      max_causal = n_causal,
-                     sample_size = sample_size,
+                     compute_n = compute_n,
                      PP_threshold = PP_threshold,
                      verbose = verbose)
         
@@ -49,7 +52,7 @@ multifinemap_handler_method <- function(dat,
                        dataset_type = dataset_type,
                        method = "SUSIE",
                        max_causal = n_causal,
-                       sample_size = sample_size,
+                       compute_n = compute_n,
                        mode = "precomputed",
                        # mode = "non-parametric",
                        PP_threshold = PP_threshold,
@@ -64,7 +67,7 @@ multifinemap_handler_method <- function(dat,
                        dataset_type = dataset_type,
                        method = "FINEMAP",
                        max_causal = n_causal,
-                       sample_size = sample_size,
+                       compute_n = compute_n,
                        mode = "precomputed",
                        # mode = "non-parametric",
                        PP_threshold = PP_threshold,
@@ -75,7 +78,7 @@ multifinemap_handler_method <- function(dat,
         #### ABF ####
         dat <- ABF(dat = dat,
                    PP_threshold = PP_threshold,
-                   sample_size = sample_size,
+                   compute_n = compute_n,
                    case_control = case_control)
         
         
@@ -84,8 +87,11 @@ multifinemap_handler_method <- function(dat,
         dat <- FINEMAP(dat = dat,
                        locus_dir = locus_dir,
                        LD_matrix = LD_matrix,
-                       n_samples = sample_size,
-                       force_new = force_new_finemap,
+                       compute_n = compute_n,
+                       ## Keep as force_new=TRUE 
+                       ## to avoid accidentally reading in 
+                       ## FINEMAP results files from previous runs.
+                       # force_new = force_new_finemap,
                        n_causal = n_causal,
                        credset_thresh = PP_threshold,
                        args_list = if("FINEMAP" %in% names(finemap_args)) {

@@ -5,7 +5,7 @@ FINEMAP_import_data_config <- function(locus_dir,
                                        top_config_only=FALSE,
                                        return_max_causal=FALSE,
                                        verbose=TRUE){
-    prob <- pvalue <- NULL;
+    prob <- pvalue <- SNP <- NULL;
     # NOTES
     ## .config files: Gives all model results for all the configurations tested
     ## (regardless of whether they're over the 95% probability threshold)
@@ -32,13 +32,20 @@ FINEMAP_import_data_config <- function(locus_dir,
     #### Restructure config file #### 
     ## So that the same config probability
     ## is assigned to each SNP within that configuration.
-    config_dat_melt <- lapply(seq_len(nrow(config_dat)), function(i){
-        ROW <- config_dat[i,]
-        snps <- strsplit(ROW$config,",")[[1]]
-        data.table::data.table(SNP=snps, 
-                               prob=as.numeric(rep(ROW$prob,length(snps))),
-                               k=rep(length(snps),length(snps)))
-    }) %>% data.table::rbindlist() 
+    if(nrow(config_dat)==0){
+        config_dat_melt <- data.table::data.table(matrix(nrow = 0, ncol = 2))
+        colnames(config_dat_melt) <- c("SNP","prob")
+        config_dat_melt[,SNP:=as.character(SNP),]
+        config_dat_melt[,prob:=as.numeric(prob),]
+    } else {
+        config_dat_melt <- lapply(seq_len(nrow(config_dat)), function(i){
+            ROW <- config_dat[i,]
+            snps <- strsplit(ROW$config,",")[[1]]
+            data.table::data.table(SNP=snps, 
+                                   prob=as.numeric(rep(ROW$prob,length(snps))),
+                                   k=rep(length(snps),length(snps)))
+        }) %>% data.table::rbindlist() 
+    } 
     #### Post-process #####
     if(nrow(config_dat_melt)>0){
         ## "k" col was only added in FINEMAP >=1.4
@@ -51,7 +58,7 @@ FINEMAP_import_data_config <- function(locus_dir,
     } else {
         #### Report #### 
         messager("FINEMAP was unable to identify any credible sets at",
-                 paste0("PP>=",credset_thresh),v=verbose)
+                 paste0("PP>=",credset_thresh,"."),v=verbose)
     }
     #### Return ####
     if(return_max_causal){

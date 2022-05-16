@@ -2,8 +2,9 @@ FINEMAP_import_data_cred <- function(locus_dir,
                                      credset_thresh=.95,
                                      pvalue_thresh=.05,
                                      finemap_version=package_version("1.4.1"),
+                                     agg_func=function(x){mean(x,na.rm=TRUE)},
                                      verbose=TRUE){
-    CS <- PP <- NULL;
+    CS <- PP <- SNP <- NULL;
     
     # NOTES:
     ## .cred files: Conditional posterior probabilities that 
@@ -18,31 +19,34 @@ FINEMAP_import_data_cred <- function(locus_dir,
     ## as "data.cred" (without any suffix). 
     cred_path <- list.files(file.path(locus_dir,"FINEMAP"),
                             "^data.cred*", full.names = TRUE)
+    messager(length(cred_path),
+             "data.cred* file(s) found in the same subfolder.")
     #### Choose cred_path ####
     ## If multiple data.cred* files are in the same directory, search for the 
     ## one that matches the n_causal specified by the user.
     ## If none using that naming scheme is found, just pick one arbitrarily.
-    
-    #### Check is any configurations met the criterion ####
-    config_dat <- FINEMAP_import_data_config(locus_dir = locus_dir,
-                                             credset_thresh = credset_thresh,
-                                             finemap_version = finemap_version,
-                                             pvalue_thresh = pvalue_thresh,
-                                             top_config_only = FALSE,
-                                             verbose = FALSE) 
+     
     #### Continue ####
     ### Parse logs ####
     logs <- FINEMAP_import_log(locus_dir = locus_dir,
                                config_thresh = 0)
-    causal_k <- logs$causal_k
+    #### Select accepted k suffixes ###
+    ## IMPORTANT!: Whether you include data.cred* from all runs
+    ## or just the most recent one will affect the results.
+    ## Determining the correct file is a bit tricky.
+    ## Should either be postPr_k (optimized k determined by FINEMAP)
+    ## or n_causal (max number of causal SNPs specified by user). 
+    # causal_k <- logs$causal_k
+    # causal_k <- logs$n_causal
+    # causal_k <- logs$priorPr_k
+    causal_k <- logs$postPr_k
+    
     
     ## FINEMAP estimates the most likely number of causal SNPs.
     ## In FINEMAP >=v1.4, it names the data.cred file after the ESTIMATED
     ## number of causal SNPs 
     ## (not necessarily the number that the user specified). 
-    if(finemap_version>="1.4"){
-        messager(length(cred_path),
-                 "data.cred* file(s) found in the same subfolder.")
+    if(finemap_version>="1.4"){ 
         cred_path <- lapply(cred_path, function(cp){
             if(any(basename(cp)==paste0("data.cred",causal_k))){
                 return(cp)
@@ -57,6 +61,9 @@ FINEMAP_import_data_cred <- function(locus_dir,
         causal_k <- causal_k[seq_len(length(cred_path))]
         cred_path <- stats::setNames(cred_path, causal_k)
     } 
+    messager("Selected file based on postPr_k:",
+             paste(basename(cred_path),collapse = ","),
+             v=verbose)
     
     # !!IMPORTANT!!: Must include skip=index when reading in file, 
     ## because FINEMAP>=1.4 has additional comment rows before this, whereas 
@@ -80,9 +87,21 @@ FINEMAP_import_data_cred <- function(locus_dir,
             subset(!is.na(SNP)) 
         return(CS)
     }) %>% data.table::rbindlist()
-    cred_dat$k <- as.integer(cred_dat$k)
+    #### Ensure 1 line per SNP ####
+    cred_dat <- dplyr::group_by(cred_dat, SNP) %>%
+        dplyr::summarise(PP=agg_func(PP),
+                         CS=agg_func(CS),
+                         k=paste(k,collapse = ";")) %>%
+        data.table::data.table()
     
     #### Assign credible set number ####
+    #### Check is any configurations met the criterion ####
+    config_dat <- FINEMAP_import_data_config(locus_dir = locus_dir,
+                                             credset_thresh = credset_thresh,
+                                             finemap_version = finemap_version,
+                                             pvalue_thresh = pvalue_thresh,
+                                             top_config_only = FALSE,
+                                             verbose = FALSE) 
     if(nrow(config_dat)==0){ 
         ## If the configuration itself does not meet the PP threshold, 
         ## then none of the SNPs should be counted

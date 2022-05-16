@@ -17,14 +17,33 @@ in genetic epidemiology studies. American Journal of Human Genetics.
 ABF(
   dat,
   PP_threshold = 0.95,
-  sample_size = NULL,
+  compute_n = "ldsc",
   sdY = NULL,
   case_control = TRUE,
   verbose = TRUE
 )
 }
+\arguments{
+\item{dat}{Fine-mapping results data.}
+
+\item{compute_n}{How to compute per-SNP sample size (new column "N").
+\itemize{
+\item{\code{0}: }{N will not be computed.}
+\item{\code{>0}: }{If any number >0 is provided,
+that value will be set as N for every row.
+\strong{Note}: Computing N this way is incorrect and should be avoided
+if at all possible.}
+\item{\code{"sum"}: }{N will be computed as:
+cases (N_CAS) + controls (N_CON), so long as both columns are present}.
+\item{\code{"effective"}: }{N will be computed as effective sample size:
+cases (N_CAS) + controls (N_CON), so long as both columns are present}.
+}}
+
+\item{verbose}{Print messages.}
+}
 \description{
-Conduct statistical fine-mapping with approximate Bayes factor (ABF).
+Conduct statistical fine-mapping with Approximate Bayes Factor (ABF)
+via \link[coloc]{finemap.abf}.
 }
 \examples{
 dat <- echodata::LRRK2

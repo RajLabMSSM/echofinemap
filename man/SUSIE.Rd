@@ -14,7 +14,7 @@ SUSIE(
   LD_matrix,
   dataset_type = "GWAS",
   max_causal = 5,
-  sample_size = NULL,
+  compute_n = "ldsc",
   prior_weights = NULL,
   PP_threshold = 0.95,
   scaled_prior_variance = 0.001,
@@ -33,8 +33,23 @@ SUSIE(
 )
 }
 \arguments{
+\item{dat}{Fine-mapping results data.}
+
 \item{max_causal}{The maximum number of non-zero effects 
 (and thus causal variants).}
+
+\item{compute_n}{How to compute per-SNP sample size (new column "N").
+\itemize{
+\item{\code{0}: }{N will not be computed.}
+\item{\code{>0}: }{If any number >0 is provided,
+that value will be set as N for every row.
+\strong{Note}: Computing N this way is incorrect and should be avoided
+if at all possible.}
+\item{\code{"sum"}: }{N will be computed as:
+cases (N_CAS) + controls (N_CON), so long as both columns are present}.
+\item{\code{"effective"}: }{N will be computed as effective sample size:
+cases (N_CAS) + controls (N_CON), so long as both columns are present}.
+}}
 
 \item{prior_weights}{A vector of length p, in which each entry
 gives the prior probability that corresponding column of X has a

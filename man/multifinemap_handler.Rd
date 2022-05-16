@@ -14,7 +14,7 @@ multifinemap_handler(
   force_new_finemap = FALSE,
   LD_matrix = NULL,
   n_causal = 5,
-  sample_size = NULL,
+  compute_n = "ldsc",
   conditioned_snps = NULL,
   PAINTOR_QTL_datasets = NULL,
   PP_threshold = 0.95,
@@ -23,6 +23,24 @@ multifinemap_handler(
   nThread = 1,
   conda_env = "echoR_mini"
 )
+}
+\arguments{
+\item{dat}{Fine-mapping results data.}
+
+\item{compute_n}{How to compute per-SNP sample size (new column "N").
+\itemize{
+\item{\code{0}: }{N will not be computed.}
+\item{\code{>0}: }{If any number >0 is provided,
+that value will be set as N for every row.
+\strong{Note}: Computing N this way is incorrect and should be avoided
+if at all possible.}
+\item{\code{"sum"}: }{N will be computed as:
+cases (N_CAS) + controls (N_CON), so long as both columns are present}.
+\item{\code{"effective"}: }{N will be computed as effective sample size:
+cases (N_CAS) + controls (N_CON), so long as both columns are present}.
+}}
+
+\item{verbose}{Print messages.}
 }
 \description{
 Fine-mapping will be repeated on the same locus using each of the tools 
@@ -42,6 +60,7 @@ Each tools will have the following columns:
 \seealso{
 Other finemapping functions: 
 \code{\link{create_method_path}()},
+\code{\link{multifinemap_handler_method}()},
 \code{\link{multifinemap}()}
 }
 \concept{finemapping functions}
