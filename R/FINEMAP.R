@@ -55,7 +55,7 @@ FINEMAP <- function(dat,
                     n_causal=5,# Max number of allowed causal SNPs
                     model="sss",
                     remove_tmps=FALSE,
-                    force_new=TRUE,
+                    force_new=FALSE,
                     credset_thresh=.95,
                     finemap_version=package_version("1.4.1"), 
                     prior_k=NULL,
@@ -123,7 +123,8 @@ FINEMAP <- function(dat,
                      args_list=args_list,
                      verbose=FALSE)
 
-  #### Check if FINEMAP is giving an error due to `zstd` not being installed ####
+  ## Check if FINEMAP is giving an error due to `zstd` 
+  ## not being installed.
   if(any(attr(msg,"status")==134)){
       msg <- paste(
           "\n*********\n",

@@ -8,7 +8,7 @@ multifinemap_handler_method(
   dat,
   locus_dir,
   fullSS_path = NULL,
-  finemap_method = "SUSIE",
+  finemap_method,
   finemap_args = NULL,
   dataset_type = "GWAS",
   force_new_finemap = FALSE,

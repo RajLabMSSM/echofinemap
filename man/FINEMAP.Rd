@@ -16,7 +16,7 @@ FINEMAP(
   n_causal = 5,
   model = "sss",
   remove_tmps = FALSE,
-  force_new = TRUE,
+  force_new = FALSE,
   credset_thresh = 0.95,
   finemap_version = package_version("1.4.1"),
   prior_k = NULL,

@@ -6,7 +6,7 @@
 multifinemap_handler_method <- function(dat,
                                         locus_dir,
                                         fullSS_path=NULL,
-                                        finemap_method="SUSIE",
+                                        finemap_method,
                                         finemap_args=NULL,
                                         
                                         dataset_type="GWAS",
@@ -56,6 +56,7 @@ multifinemap_handler_method <- function(dat,
                        mode = "precomputed",
                        # mode = "non-parametric",
                        PP_threshold = PP_threshold,
+                       force_new = force_new_finemap,
                        conda_env = conda_env,
                        verbose = verbose)
         
@@ -71,6 +72,7 @@ multifinemap_handler_method <- function(dat,
                        mode = "precomputed",
                        # mode = "non-parametric",
                        PP_threshold = PP_threshold,
+                       force_new = force_new_finemap,
                        conda_env = conda_env, 
                        verbose = verbose)
         
@@ -79,7 +81,8 @@ multifinemap_handler_method <- function(dat,
         dat <- ABF(dat = dat,
                    PP_threshold = PP_threshold,
                    compute_n = compute_n,
-                   case_control = case_control)
+                   case_control = case_control,
+                   verbose = verbose)
         
         
     } else if(finemap_method=="FINEMAP"){
@@ -87,16 +90,13 @@ multifinemap_handler_method <- function(dat,
         dat <- FINEMAP(dat = dat,
                        locus_dir = locus_dir,
                        LD_matrix = LD_matrix,
-                       compute_n = compute_n,
-                       ## Keep as force_new=TRUE 
-                       ## to avoid accidentally reading in 
-                       ## FINEMAP results files from previous runs.
-                       # force_new = force_new_finemap,
+                       compute_n = compute_n,  
                        n_causal = n_causal,
                        credset_thresh = PP_threshold,
                        args_list = if("FINEMAP" %in% names(finemap_args)) {
                            finemap_args[["FINEMAP"]]
                        } else {NULL}, 
+                       force_new = force_new_finemap,
                        nThread=nThread,
                        verbose=verbose
                        )
