@@ -5,9 +5,9 @@ FINEMAP_check_version <- function(FINEMAP_path,
     out_split <- strsplit(grep("Welcome to FINEMAP",out,
                                value = TRUE)[1]," ")[[1]]
     finemap_version <- gsub("v","",out_split[grepl("v",out_split)])
-    messager("Inferred FINEMAP version =",
+    messager("Inferred FINEMAP version:",
              finemap_version,v=verbose)
-    return(finemap_version)
+    return(package_version(finemap_version))
 }
 
 

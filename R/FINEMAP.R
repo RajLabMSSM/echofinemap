@@ -40,10 +40,9 @@
 #'
 #' dat2 <- echofinemap::FINEMAP(dat=dat,
 #'                              locus_dir=locus_dir,
-#'                              LD_matrix=LD_matrix,
-#'                              finemap_version="1.3.1")
+#'                              LD_matrix=LD_matrix)
 FINEMAP <- function(dat,
-                    locus_dir,
+                    locus_dir=tempdir(),
                     LD_matrix,
                     FINEMAP_path=NULL,
                     n_samples=NULL,
@@ -52,18 +51,20 @@ FINEMAP <- function(dat,
                     remove_tmps=FALSE,
                     force_new=FALSE,
                     credset_thresh=.95,
-                    finemap_version=package_version("1.4"), 
+                    finemap_version=package_version("1.4.1"), 
                     prior_k=NULL,
                     rescale_priors=TRUE,
                     args_list=list(),
                     fillNA=0,
                     nThread=1,
                     verbose=TRUE){
-  # n_causal=5; model="cond"; credset_thresh=.95; verbose=T;
-  # finemap_version="1.3.1"; n_samples=NULL; args_list=list()
+  # echoverseTemplate:::source_all(packages = "dplyr")
+  # echoverseTemplate:::args2vars(FINEMAP)
   
   CS <- PP <- NULL;
-  
+  if(!methods::is(finemap_version,"package_version")){
+      finemap_version <- package_version(finemap_version)
+  }
   #### Remove rows with NAs ####
   dat <- remove_na_rows(dat=dat, 
                         cols = c("Effect","StdErr","SNP","MAF",
@@ -90,7 +91,8 @@ FINEMAP <- function(dat,
                                       dat = dat,
                                       LD_matrix = LD_matrix)
   #### Use pre=existing results #### 
-  dat_prev <- FINEMAP_check_existing_results(locus_dir = locus_dir,
+  dat_prev <- FINEMAP_check_existing_results(dat = dat,
+                                             locus_dir = locus_dir,
                                              credset_thresh = credset_thresh,
                                              finemap_version = finemap_version,
                                              master_path = master_path,
@@ -107,11 +109,11 @@ FINEMAP <- function(dat,
   if(is.null(FINEMAP_path)){
     FINEMAP_path <- FINEMAP_find_executable(version = finemap_version,
                                             verbose = verbose)
-  } else {
-    messager("User-defined FINEMAP path:",FINEMAP_path, v=verbose)
-    finemap_version <- FINEMAP_check_version(FINEMAP_path = FINEMAP_path,
-                                             verbose = verbose)
-  }
+  }  
+  messager("User-defined FINEMAP path:",FINEMAP_path, v=verbose)
+  finemap_version <- FINEMAP_check_version(FINEMAP_path = FINEMAP_path,
+                                             verbose = verbose) 
+  if(finemap_version<"1.4") nThread <- 1
   #### Run FINEMAP ####
   # NOTE: Must cd into the directory first,
   # or else FINEMAP won't be able to find the input files.
@@ -157,7 +159,8 @@ FINEMAP <- function(dat,
                        ## May not have the args that the user
                        ## was expecting due to version differences.
                        args_list=args_list,
-                       nThread=nThread,
+                       ### Must be 1 for older versions of FINEMAP
+                       nThread=1,
                        verbose=FALSE)
     ## Note!: concatenating this output in rmarkdown
     ## can accidentally print many many lines.
@@ -169,9 +172,8 @@ FINEMAP <- function(dat,
   dat <- FINEMAP_process_results(locus_dir = locus_dir,
                                  dat = dat,
                                  credset_thresh = credset_thresh,
-                                 results_file = ".cred",
-                                 n_causal = n_causal,
-                                 finemap_version = finemap_version)
+                                 finemap_version = finemap_version,
+                                 verbose = verbose)
   # Remove tmp files
   if(remove_tmps){
     messager("Removing temp files.",v=verbose)
@@ -190,7 +192,13 @@ FINEMAP <- function(dat,
   }
   #### Fill NA #### 
   if(!is.null(fillNA)){
-      dat[is.na(CS),]$CS <- fillNA
+      for(x in c("PP","CS","PP_snp","PP_config")){
+          if(x %in% names(dat) && 
+             sum(is.na(dat[[x]]))>0 ){
+              dat[is.na(dat[[x]]),x] <- fillNA 
+          }
+      }
+     
       dat[is.na(PP),]$PP <- fillNA
   }
   return(dat)

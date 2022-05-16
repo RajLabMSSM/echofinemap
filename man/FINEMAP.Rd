@@ -9,7 +9,7 @@
 \usage{
 FINEMAP(
   dat,
-  locus_dir,
+  locus_dir = tempdir(),
   LD_matrix,
   FINEMAP_path = NULL,
   n_samples = NULL,
@@ -18,7 +18,7 @@ FINEMAP(
   remove_tmps = FALSE,
   force_new = FALSE,
   credset_thresh = 0.95,
-  finemap_version = package_version("1.4"),
+  finemap_version = package_version("1.4.1"),
   prior_k = NULL,
   rescale_priors = TRUE,
   args_list = list(),
@@ -69,8 +69,7 @@ dat <- out$DT
 
 dat2 <- echofinemap::FINEMAP(dat=dat,
                              locus_dir=locus_dir,
-                             LD_matrix=LD_matrix,
-                             finemap_version="1.3.1")
+                             LD_matrix=LD_matrix)
 }
 \seealso{
 Other FINEMAP: 

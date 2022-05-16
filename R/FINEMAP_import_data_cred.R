@@ -1,13 +1,15 @@
 FINEMAP_import_data_cred <- function(locus_dir, 
                                      credset_thresh=.95,
                                      pvalue_thresh=.05,
-                                     finemap_version=package_version("1.3"),
+                                     finemap_version=package_version("1.4.1"),
                                      verbose=TRUE){
+    CS <- PP <- NULL;
+    
     # NOTES:
     ## .cred files: Conditional posterior probabilities that 
     ## a given variant is causal conditional on the other causal variants 
     ## in the region.
-    messager("Importing conditional probabilities (.cred)",
+    messager("Importing conditional probabilities (.cred file).",
              v=verbose)
     ## ---------------------------------------------------------##
     # !!IMPORTANT!!: Must search for .cred files without assuming 
@@ -27,55 +29,71 @@ FINEMAP_import_data_cred <- function(locus_dir,
                                              finemap_version = finemap_version,
                                              pvalue_thresh = pvalue_thresh,
                                              top_config_only = FALSE,
-                                             verbose = verbose) 
+                                             verbose = FALSE) 
     #### Continue ####
     ### Parse logs ####
-    logs <- FINEMAP_import_log(locus_dir = locus_dir)
+    logs <- FINEMAP_import_log(locus_dir = locus_dir,
+                               config_thresh = 0)
     causal_k <- logs$causal_k
     
     ## FINEMAP estimates the most likely number of causal SNPs.
     ## In FINEMAP >=v1.4, it names the data.cred file after the ESTIMATED
     ## number of causal SNPs 
     ## (not necessarily the number that the user specified). 
-    if(length(cred_path)>1){
+    if(finemap_version>="1.4"){
         messager(length(cred_path),
-                 "data.cred* files found in the same subfolder.")
+                 "data.cred* file(s) found in the same subfolder.")
+        cred_path <- lapply(cred_path, function(cp){
+            if(any(basename(cp)==paste0("data.cred",causal_k))){
+                return(cp)
+            } else{NULL}
+        }) %>% unlist() 
+        causal_k <- as.integer(gsub("data.cred","",basename(cred_path)))
+        cred_path <- stats::setNames(cred_path, causal_k)
+    } else {
         cred_path <- cred_path[
-            basename(cred_path)==paste0("data.cred",causal_k)
+            basename(cred_path)=="data.cred"
         ] 
-        messager("Selecting the data.cred* file with the greatest",
-                 "posterior probability of k causal SNPs:",
-                 basename(cred_path))
-    }
+        causal_k <- causal_k[seq_len(length(cred_path))]
+        cred_path <- stats::setNames(cred_path, causal_k)
+    } 
+    
     # !!IMPORTANT!!: Must include skip=index when reading in file, 
     ## because FINEMAP>=1.4 has additional comment rows before this, whereas 
     ## FINEMAP<=1.3.1 does not. 
-    cred_dat <-  data.table::fread(input = cred_path,
-                                    skip = "index", 
-                                    na.strings = c("<NA>","NA"),
-                                    nThread = 1)
-    select_cols <- paste0(c("cred","prob"),causal_k)
-    cred_dat <- cred_dat[,select_cols, with=FALSE]
-    data.table::setnames(cred_dat,c("SNP","PP"))
-    ## Assign credible set number 
-    if(nrow(config_dat)==0){
+    cred_dat <- lapply(names(cred_path), FUN = function(k){
+        d <- data.table::fread(input = cred_path[[k]],
+                          skip = "index", 
+                          na.strings = c("<NA>","NA"),
+                          nThread = 1)
+        # #### Restructure data to SNP-wise table format ####
+        cred_cols <- grep("cred*", colnames(d), value = TRUE)
+        prob_cols <- grep("prob*", colnames(d), value = TRUE)
+        CS <- lapply(seq_len(nrow(d)), function(i){
+            rsids <- d[i,cred_cols, with=FALSE]
+            PP_vals <- d[i,prob_cols, with=FALSE]
+            data.table::data.table(SNP=unname(t(rsids)[,1] ),
+                                   PP=unname(t(PP_vals)[,1]),
+                                   CS=d$index[i],
+                                   k=k) 
+        }) %>% data.table::rbindlist() %>%
+            subset(!is.na(SNP)) 
+        return(CS)
+    }) %>% data.table::rbindlist()
+    cred_dat$k <- as.integer(cred_dat$k)
+    
+    #### Assign credible set number ####
+    if(nrow(config_dat)==0){ 
+        ## If the configuration itself does not meet the PP threshold, 
+        ## then none of the SNPs should be counted
+        ## as part of the 95% credible set.
+        messager("No configurations were causal",
+                 paste0("at PP>=",credset_thresh,"."),v=verbose)
         cred_dat[,CS:=0]
     }else {
-        cred_dat <- dplyr::mutate(cred_dat, 
-                                  CS=ifelse(PP>=credset_thresh,1,0))
-    }  
-
-    # #### Restructure data to SNP-wise table format ####
-    # cred.cols <- grep("cred*", colnames(cred_dat), value = TRUE)
-    # prob.cols <- grep("prob*", colnames(cred_dat), value = TRUE)    
-    # CS <- lapply(seq_len(nrow(cred_dat)), function(i){
-    #     rsids <- subset(cred_dat, select=cred.cols)[i,]
-    #     PP_vals <- subset(cred_dat, select=prob.cols)[i,]
-    #     cred_sets <- data.table::data.table(SNP=unname(t(rsids)[,1] ),
-    #                                         PP=unname(t(PP_vals)[,1]),
-    #                                         CS=i)
-    #     return(cred_sets)
-    # }) %>% data.table::rbindlist() %>%
-    #     subset(!is.na(SNP))
+        ## If the conditional PP of the SNP does not meet the PP threshold,
+        ## then don't assign it to a 95% credible set.
+        cred_dat[CS<credset_thresh,] <- 0 
+    }   
     return(cred_dat)
 }

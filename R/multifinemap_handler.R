@@ -50,26 +50,24 @@ multifinemap_handler <- function(dat,
   for(i in seq_len(length(unique(finemap_methods)))){
     m <- unique(finemap_methods)[i];
     message("\n+++ Multi-finemap:: ",m," +++")
-    d <- tryCatch({ 
-      multifinemap_handler_method(
-         dat = dat2,
-         fullSS_path = fullSS_path,
-         locus_dir = locus_dir,
-         finemap_method = m,
-         finemap_args=finemap_args, 
-         force_new_finemap = force_new_finemap,
-         dataset_type = dataset_type,
-         LD_matrix = LD_matrix,
-         n_causal = n_causal,
-         sample_size = sample_size,
-         PAINTOR_QTL_datasets = PAINTOR_QTL_datasets,
-         PP_threshold = PP_threshold,
-         case_control = case_control,
-         conditioned_snps = conditioned_snps,
-         verbose = verbose,
-         nThread=nThread,
-         conda_env = conda_env)
-     }, error = function(e) {print(e); NULL}) 
+    d <- multifinemap_handler_method(
+        dat = dat2,
+        fullSS_path = fullSS_path,
+        locus_dir = locus_dir,
+        finemap_method = m,
+        finemap_args=finemap_args, 
+        force_new_finemap = force_new_finemap,
+        dataset_type = dataset_type,
+        LD_matrix = LD_matrix,
+        n_causal = n_causal,
+        sample_size = sample_size,
+        PAINTOR_QTL_datasets = PAINTOR_QTL_datasets,
+        PP_threshold = PP_threshold,
+        case_control = case_control,
+        conditioned_snps = conditioned_snps,
+        verbose = verbose,
+        nThread=nThread,
+        conda_env = conda_env)
     #### If fine-mapping worked, merge the results back into the data ####
     if(!is.null(d) && 
         nrow(d)>0 && 
@@ -79,7 +77,14 @@ multifinemap_handler <- function(dat,
         #### Add results to method-specific columns ####
         messager("++ Merging",m,"results with multi-finemap data.",v=verbose);
         value_var <- if(m=="COJO"){"Conditioned_Effect"}else{"PP"};
-        d <- subset(d, select = c("SNP","CS",value_var) );
+        extra_var <- if(m %in% c("FINEMAP","POLYFUN_FINEMAP")) {
+            c("k","PP_snp","PP_config")
+        } else {
+            NULL
+        }
+        select_cols <- c("SNP","CS",value_var,extra_var)
+        select_cols <- select_cols[select_cols %in% colnames(d)]
+        d <- subset(d, select = select_cols);
         ####  Rename columns according to method name ####
         cols <- colnames(d);
         colnames(d) <- c("SNP", paste(m, cols[seq(2,length(cols))], sep="." ));

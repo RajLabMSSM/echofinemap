@@ -7,6 +7,12 @@
     - Can now use `FINEMAP` or `SUSIE` as a method. 
 * Use `Rfast` to speed up `SUSIE`.
 * `remove_na_rows`: Remove rows with NAs in tool-specific essential cols.
+* Update `FINEMAP` to v1.4.1. 
+* Make separate columns for `FINEMAP` results:
+    - *PP*: Conditional PP (from .cred file(s))
+    - *PP_snp*: Marginal PP (from .snp file)
+    - *PP_config*: Configuration PP (from .config file)
+    - *k*: Optimized number of causal SNPs (<= `n_causal`).  
 
 ## Bug fixes
 
@@ -14,7 +20,7 @@
 * Fix `ABF`.
 * Test `FINEMAP` v1.4 and v1.3.1 on Linux. 
 * Actually pass `force_new_finemap` all the way down. 
-* Actually pass `n_causal` all the way down to `FINEMAP_process_results`.
+* Dynamically infer "data.cred*" file name. 
 * Fill NAs in FINEMAP CS/PP. 
 
 # echofinemap 0.99.1

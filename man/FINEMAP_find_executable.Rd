@@ -12,7 +12,7 @@ FINEMAP_find_executable(
   OS = NULL,
   save_dir = file.path(tools::R_user_dir(package = "echofinemap", which = "cache"),
     "FINEMAP"),
-  version = "1.4",
+  version = package_version("1.4.1"),
   verbose = TRUE
 )
 }

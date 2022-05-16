@@ -37,8 +37,7 @@ locus_dir <- file.path(tempdir(),echodata::locus_dir)
 
 dat2 <- echofinemap::multifinemap(dat = dat, 
                                  locus_dir = locus_dir,
-                                 LD_matrix = LD_matrix,
-                                 sample_size = )
+                                 LD_matrix = LD_matrix)
 }
 \seealso{
 Other finemapping functions: 

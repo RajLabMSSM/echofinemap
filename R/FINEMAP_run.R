@@ -15,7 +15,8 @@ FINEMAP_run <- function(locus_dir,
                  paste0("--",model),
                  "--in-files", master_path,
                  "--log",
-                 "--n-threads",nThread,
+                 ### Argument only available in FINEMAP >=1.4
+                 if(nThread>1) paste("--n-threads",nThread) else NULL,
                  # Option to set the maximum number of allowed causal SNPs
                  # (Default is 5)
                  "--n-causal-snps",n_causal,

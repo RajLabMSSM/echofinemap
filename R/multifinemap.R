@@ -92,9 +92,9 @@ multifinemap <- function(dat,
                              path = file_path)
     }
     end_FM <- Sys.time()
-    messager("+ Fine-mapping with '",
-             paste0(finemap_methods, collapse=", "),
-             "' completed:",v=verbose)
+    messager("+ Fine-mapping with",
+             paste0("'",paste0(finemap_methods, collapse=", "),"'"),
+             "completed:",v=verbose)
     print(round(end_FM-start_FM,2))
     return(dat2)
 }
