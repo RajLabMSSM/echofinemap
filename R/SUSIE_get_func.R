@@ -11,11 +11,11 @@ SUSIE_get_func <- function(verbose=TRUE){
     if(length(find("susie_bhat"))==0){
         messager("+ SUSIE:: Using `susie_rss()` from susieR",
                  paste0("v",susie_version),v=verbose) 
-        susie_func <- get("susie_suff_stat", asNamespace("susieR"))
-        # susie_func <- get("susie_rss", asNamespace("susieR"))
+        # susie_func <- get("susie_suff_stat", asNamespace("susieR"))
+        susie_func <- get("susie_rss", asNamespace("susieR")) 
     } else {
         messager("+ SUSIE:: Using `susie_bhat()` from susieR",
                  paste0("v",susie_version),v=verbose)
-        susie_func <- get("susie_bhat", asNamespace("susieR"))
+        susie_func <- get("susie_bhat", asNamespace("susieR")) 
     }
 }

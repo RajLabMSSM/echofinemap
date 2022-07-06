@@ -42,7 +42,7 @@ Imports:
     Matrix,
     piggyback,
     Ckmeans.1d.dp,
-    susieR (>= 0.9.0)
+    susieR (>= 0.12.0)
 Suggests:
     markdown,
     rmarkdown,

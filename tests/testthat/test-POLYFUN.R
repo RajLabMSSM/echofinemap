@@ -28,7 +28,7 @@ test_that("POLYFUN_SUSIE works", {
               cs_snps="rs10003136") 
     
     #### POLYFUN: FINEMAP #####
-    dat3 <- echofinemap:: POLYFUN(locus_dir=locus_dir,
+    dat3 <- echofinemap::POLYFUN(locus_dir=locus_dir,
                                  dat=dat,
                                  LD_matrix = LD_matrix, 
                                  method = "FINEMAP", 
@@ -36,7 +36,6 @@ test_that("POLYFUN_SUSIE works", {
     run_tests(datx=dat,
               daty=dat3,
               n_causal=5,
-              cs_snps=c("rs10007824","rs10008644",
-                        "rs4698412","rs6852450",
-                        "rs10001565"))
+              cs_snps=c("rs10003136","rs10018756","rs10019008",
+                        "rs4698412","rs6852450" ))
 })

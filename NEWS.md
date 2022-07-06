@@ -26,6 +26,10 @@
 * Actually pass `force_new_finemap` all the way down. 
 * Dynamically infer "data.cred*" file name. 
 * Fill NAs in FINEMAP CS/PP. 
+* `SUSIE`: 
+    - `susieR` v0.11 contained serious bugs that caused `susie_rss` to fail. 
+    This was fixed in v0.12 (which is now a version requirement for `echofinemap`). 
+    See here for details:  https://github.com/stephenslab/susieR/issues/167 
 
 # echofinemap 0.99.1
 

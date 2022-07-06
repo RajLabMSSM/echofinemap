@@ -22,7 +22,7 @@ SUSIE_run <- function(dat,
     #### Get the proper susie function ####
     susie_func <- SUSIE_get_func(verbose = verbose)
     
-    fitted_bhat <- susie_func(
+    fitted_bhat <- susie_func( 
         bhat = dat$Effect,
         shat = dat$StdErr,
         maf = if("MAF" %in% colnames(dat)) dat$MAF else NULL,
