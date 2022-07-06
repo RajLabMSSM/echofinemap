@@ -16,5 +16,4 @@ package-lock\.json$
 package\.json$
 
 ^images$
-inst/tools/polyfun/.git
 
