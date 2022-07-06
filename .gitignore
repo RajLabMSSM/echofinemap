@@ -43,3 +43,4 @@ vignettes/*.R
 *.knit.md
 # R Environment Variables
 .Renviron 
+packrat/lib*/

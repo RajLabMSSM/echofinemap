@@ -17,3 +17,5 @@ package\.json$
 
 ^images$
 
+^packrat/
+^\.Rprofile$

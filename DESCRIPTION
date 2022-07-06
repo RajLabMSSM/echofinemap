@@ -58,7 +58,8 @@ Suggests:
     ggrepel,
     patchwork,
     purrr,
-    Rfast
+    Rfast,
+    devtools
 Remotes:
   github::RajLabMSSM/echodata,
   github::RajLabMSSM/echoLD,

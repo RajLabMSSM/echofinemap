@@ -5,15 +5,15 @@
 \title{PolyFun: Initialize}
 \source{
 \code{
-BST1 <- echodata::BST1; locus_dir <- echodata::locus_dir;
-dat <- POLYFUN_initialize(locus_dir=locus_dir, dat=BST1)
+locus_dir <- echodata::locus_dir;
+dat <- POLYFUN_initialize(locus_dir=locus_dir)
 }
 }
 \usage{
-POLYFUN_initialize(locus_dir, dat = NULL, nThread = 1, verbose = TRUE)
+POLYFUN_initialize(locus_dir)
 }
 \description{
-Create output dir and import SNP data.frame.
+Create output dir.
 }
 \seealso{
 Other polyfun: 

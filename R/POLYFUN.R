@@ -81,7 +81,8 @@ POLYFUN <- function(dat,
     # echoverseTemplate:::args2vars(POLYFUN)
     
     SNP <- NULL;
-    
+    #### Install PolyFun ####
+    POLYFUN_install()
     method <- POLYFUN_check_method(method=method,
                                    verbose=verbose)
     polyfun <- POLYFUN_find_polyfun_folder(polyfun_path = polyfun)

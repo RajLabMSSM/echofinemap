@@ -25,7 +25,7 @@ POLYFUN_import_priors <- function(locus_dir,
     polyfun <- POLYFUN_find_polyfun_folder(polyfun_path = polyfun)
     dataset <- basename(dirname(locus_dir))
     locus <- basename(locus_dir)
-    PF.output.path <- file.path(locus_dir, "PolyFun")
+    PF.output.path <- POLYFUN_initialize(locus_dir=locus_dir) 
     snp_w_priors.file <- file.path(PF.output.path,
                                    "snps_with_priors.snpvar.tsv.gz")
     
@@ -37,11 +37,7 @@ POLYFUN_import_priors <- function(locus_dir,
                                       verbose = verbose)
         return(priors)
     } else {
-        if(is.null(dat)) stop("dat is a required argument in this condition.")
-        dat <- POLYFUN_initialize(dat=dat,
-                                  locus_dir=locus_dir,
-                                  verbose = verbose)
-        chrom <- dat$CHR[1]
+        if(is.null(dat)) stop("dat is a required argument in this condition.") 
         # [1]. Prepare input
         snp.path <- POLYFUN_prepare_snp_input(PF.output.path=PF.output.path,
                                               locus_dir=locus_dir,
