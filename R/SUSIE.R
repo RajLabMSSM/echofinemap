@@ -35,6 +35,7 @@
 #' fine-mapping algorithm learning the causal variants.
 #' \strong{WARNING!:} Making this plot can take a long time if there's
 #'  many iterations.
+#' @inheritParams multifinemap
 #' @inheritParams susieR::susie_suff_stat
 #' @inheritParams susieR::susie_plot_iteration
 #' @inheritParams echoLD::get_LD
@@ -65,7 +66,8 @@ SUSIE <- function(dat,
                   # susieR default sample_size=n=<missing>
                   compute_n="ldsc",
                   # susieR default prior_weights=NULL
-                  prior_weights=NULL,
+                  priors_col=NULL,
+                  rescale_priors=TRUE,
                   # susieR default PP_threshold=coverage=.95
                   PP_threshold=.95,
                   # PolyFun default: scaled_prior_variance=0.0001 
@@ -82,8 +84,7 @@ SUSIE <- function(dat,
                   # susieR default="optim"
                   estimate_prior_method="optim",
                   manual_var_y=FALSE,
-
-                  rescale_priors=TRUE,
+                  
                   plot_track_fit=FALSE,
                   return_all_CS=TRUE,
                   file_prefix=file.path(tempdir(),"SUSIE"),
@@ -118,18 +119,19 @@ SUSIE <- function(dat,
                                 verbose = verbose)
   } else {var_y <- rlang::missing_arg()}
   #### Filter SNPs to only those in LD ref ####
-  sub.out <- echoLD::subset_common_snps(LD_matrix=LD_matrix,
-                                dat=dat,
-                                fillNA = 0,
-                                verbose = verbose)
-  keep_i <- which(dat$SNP %in% sub.out$DT$SNP) ### Necessary to subset priors
+  sub.out <- echoLD::subset_common_snps(
+      LD_matrix=LD_matrix,
+      dat=dat,
+      fillNA = 0,
+      verbose = verbose)
   LD_matrix <- sub.out$LD
   dat <- sub.out$DT 
-  #### Prepare priors ####
-  prior_weights <- prepare_priors(prior_weights=prior_weights[keep_i],
-                                  rescale_priors=rescale_priors,
-                                  dat=dat,
-                                  verbose=verbose)
+  #### Prepare priors #### 
+  prior_weights <- prepare_priors(dat = dat, 
+                                  priors_col = priors_col, 
+                                  snp_col = "SNP",
+                                  rescale_priors = rescale_priors,
+                                  verbose = verbose)
   ## Ensure the matrix is of "symmetric" class (not just objectively symmetric)
   ## susieR will throw an error otherwise.
   LD_matrix <- Matrix::forceSymmetric(x = LD_matrix,

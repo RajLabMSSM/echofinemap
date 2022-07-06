@@ -115,7 +115,7 @@ test_that("multifinemap works", {
     #### Using an LD Panel from the wrong locus ####
     testthat::expect_error(
         echofinemap::multifinemap(dat = dat,
-                                  locus_dir = file.path(tempdir(),"LRR2K2"), 
+                                  locus_dir = file.path(tempdir(),"LRRK2"), 
                                   LD_matrix = echodata::BST1_LD_matrix,
                                   fullSS_path = fullSS_path,
                                   force_new_finemap = TRUE,

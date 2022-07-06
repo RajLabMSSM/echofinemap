@@ -19,7 +19,7 @@ FINEMAP(
   force_new = FALSE,
   credset_thresh = 0.95,
   finemap_version = package_version("1.4.1"),
-  prior_k = NULL,
+  priors_col = NULL,
   rescale_priors = TRUE,
   args_list = list(),
   fillNA = 0,
@@ -58,6 +58,9 @@ Set \code{TRUE} to ignore these files and re-run FINEMAP.}
 
 \item{finemap_version}{Which FINEMAP version to use (specify as a string).}
 
+\item{priors_col}{[Optional] Name of the a column in 
+\code{dat} to extract SNP-wise prior probabilities from.}
+
 \item{args_list}{A named list of additional arguments to pass to FINEMAP
 (e.g.: args_list = list("--n-iterations"=5000,"--sss"="")).
 Alternatively, can supply a string instead 
@@ -82,9 +85,6 @@ a higher posterior model probability.
 locus_dir <- file.path(tempdir(),echodata::locus_dir)
 dat <- echodata::BST1;
 LD_matrix <- echodata::BST1_LD_matrix
-
-dir.create(file.path(locus_dir,"FINEMAP"),
- showWarnings = FALSE, recursive = TRUE)
 out <- echoLD::subset_common_snps(LD_matrix, dat)
 LD_matrix <- out$LD
 dat <- out$DT

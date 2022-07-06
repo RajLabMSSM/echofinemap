@@ -19,6 +19,7 @@ multifinemap_handler(
   PAINTOR_QTL_datasets = NULL,
   PP_threshold = 0.95,
   case_control = TRUE,
+  priors_col = NULL,
   verbose = TRUE,
   nThread = 1,
   conda_env = "echoR_mini"
@@ -39,6 +40,9 @@ cases (N_CAS) + controls (N_CON), so long as both columns are present}.
 \item{\code{"effective"}: }{N will be computed as effective sample size:
 cases (N_CAS) + controls (N_CON), so long as both columns are present}.
 }}
+
+\item{priors_col}{[Optional] Name of the a column in 
+\code{dat} to extract SNP-wise prior probabilities from.}
 
 \item{verbose}{Print messages.}
 }

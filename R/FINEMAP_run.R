@@ -7,7 +7,12 @@ FINEMAP_run <- function(locus_dir,
                         args_list=list(),
                         nThread=1,
                         verbose=TRUE){
+    
+    messager("Running FINEMAP.",v=verbose)
     model <- tolower(model)[1]
+    ## '--n-causal-snps' cannot be used 
+    ## together with '--prior-k'!
+    if(!is.null(prior_k)) n_causal <- NULL
     # FINEMAP_path <- echofinemap:::FINEMAP_find_executable(version = "1.3.1")
     # fm <- echoconda::import_cli(path = FINEMAP_path)
     cmd <- paste("cd",locus_dir,"&&",
@@ -19,9 +24,11 @@ FINEMAP_run <- function(locus_dir,
                  if(nThread>1) paste("--n-threads",nThread) else NULL,
                  # Option to set the maximum number of allowed causal SNPs
                  # (Default is 5)
-                 "--n-causal-snps",n_causal,
-                 if(!all(is.null(prior_k))){
-                     paste("--prior-k",paste(prior_k,collapse = ","))
+                 if(!is.null(n_causal)) {
+                     paste("--n-causal-snps",n_causal)
+                 } else {NULL},
+                 if(!is.null(prior_k)){
+                     "--prior-k"
                  }else{NULL},
                  collapse_args(args_list)
     )

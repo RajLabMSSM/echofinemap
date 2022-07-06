@@ -2,8 +2,9 @@ POLYFUN_import_priors_handler <- function(dat,
                                           mode,
                                           out.path,
                                           locus_dir,
-                                          conda_env){  
-    SNPVAR <- NULL;
+                                          conda_env,
+                                          force_new_priors=FALSE){  
+    SNPVAR <- SNP <- NULL;
     
     mode <- POLYFUN_check_mode(mode)
     chrom <- unique(dat$CHR) 
@@ -18,7 +19,7 @@ POLYFUN_import_priors_handler <- function(dat,
     if (mode=="precomputed"){ 
         priors <- POLYFUN_import_priors(locus_dir=locus_dir,
                                         dat=dat,
-                                        force_new_priors=FALSE,
+                                        force_new_priors=force_new_priors,
                                         conda_env=conda_env) 
     #### ~~~~~~~~ Approach 2 ~~~~~~~~ #####
     } else if (mode=="parametric"){
@@ -43,8 +44,11 @@ POLYFUN_import_priors_handler <- function(dat,
         stop(stp2)
     } 
     ##### Ensure formatting is correct ####
-    priors <- dplyr::select(priors, SNP, POLYFUN_h2=SNPVAR) %>%
+    priors <- dplyr::select(priors, SNP, POLYFUN.h2=SNPVAR) %>%
         data.table::data.table() %>%
         dplyr::mutate(SNP=as.character(SNP))
-    return(priors)
+    merged_dat <- echodata::merge_robust(x = dat,
+                                         y = priors,
+                                         by="SNP")
+    return(merged_dat)
 }

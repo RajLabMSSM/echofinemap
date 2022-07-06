@@ -41,7 +41,7 @@ ABF <- function(dat,
                   varbeta = dat$StdErr^2, 
                   snp = dat$SNP)
   if(case_control){ 
-    dataset$s <- dat$proportion_cases 
+    dataset$s <- mean(dat$proportion_cases, na.rm = TRUE) 
     dataset$type <- "cc"
   } else{
     dataset$type <- "quant" 

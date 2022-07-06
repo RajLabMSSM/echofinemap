@@ -5,13 +5,22 @@ FINEMAP_import_log <- function(locus_dir,
                            full.names = TRUE) 
     l <- readLines(log_path)
     #### Max number of causal SNPs set by user #####
-    n_causal <- as.integer(
-        trimws(
-            strsplit(
-                grep("- n-causal-snps*",l, value = TRUE),
-                ":")[[1]][2]
+    n_causal <- NULL
+    l0 <- grep("- n-causal-snps*",l, value = TRUE)
+    if(length(l0)>0){
+        n_causal <- as.integer(
+            trimws(
+                strsplit(l0,":")[[1]][2]
+            )
         )
-    )
+    } else {
+        data.k_path <- file.path(locus_dir,"FINEMAP","data.k")
+        if(file.exists(data.k_path)){
+            data.k <- data.table::fread(data.k_path, nrows = 1)
+            n_causal <- ncol(data.k)
+        }  
+    } 
+    
     #### Get post-probabilities of each number of causal SNPs ####
     FINEMAP_parse_k <- function(pattern,
                                 n_causal){

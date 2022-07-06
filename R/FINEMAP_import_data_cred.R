@@ -10,8 +10,6 @@ FINEMAP_import_data_cred <- function(locus_dir,
     ## .cred files: Conditional posterior probabilities that 
     ## a given variant is causal conditional on the other causal variants 
     ## in the region.
-    messager("Importing conditional probabilities (.cred file).",
-             v=verbose)
     ## ---------------------------------------------------------##
     # !!IMPORTANT!!: Must search for .cred files without assuming 
     ## exact file names, because in FINEMAP>=1.4 CS file started being saved 
@@ -65,6 +63,8 @@ FINEMAP_import_data_cred <- function(locus_dir,
              paste(basename(cred_path),collapse = ","),
              v=verbose)
     
+    messager("Importing conditional probabilities (.cred file).",
+             v=verbose)
     # !!IMPORTANT!!: Must include skip=index when reading in file, 
     ## because FINEMAP>=1.4 has additional comment rows before this, whereas 
     ## FINEMAP<=1.3.1 does not. 

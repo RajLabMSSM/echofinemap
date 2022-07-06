@@ -5,6 +5,8 @@
 * Updated GHA. 
 * `POLYFUN`:
     - Can now use `FINEMAP` or `SUSIE` as a method. 
+    - Change column "POLYFUN_h2" --> "POLYFUN.h2" 
+    to make consistent with other cols. 
 * Use `Rfast` to speed up `SUSIE`.
 * `remove_na_rows`: Remove rows with NAs in tool-specific essential cols.
 * Update `FINEMAP` to v1.4.1. 
@@ -13,11 +15,13 @@
     - *PP_snp*: Marginal PP (from .snp file)
     - *PP_config*: Configuration PP (from .config file)
     - *k*: Optimized number of causal SNPs (<= `n_causal`).  
+* Got `FINEMAP` to use priors via `data.k` file. 
 
 ## Bug fixes
 
 * Switch SUSIE method from `susie_suff_stat` to `susie_rss` for parameter consistency. 
 * Fix `ABF`.
+    - Use mean `proportion_cases`
 * Test `FINEMAP` v1.4 and v1.3.1 on Linux. 
 * Actually pass `force_new_finemap` all the way down. 
 * Dynamically infer "data.cred*" file name. 

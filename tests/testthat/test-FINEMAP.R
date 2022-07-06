@@ -1,5 +1,6 @@
 test_that("FINEMAP works", {
   
+    set.seed(1234)
     locus_dir <- file.path(tempdir(),echodata::locus_dir)
     dat <- echodata::BST1;
     LD_matrix <- echodata::BST1_LD_matrix
@@ -10,7 +11,7 @@ test_that("FINEMAP works", {
     dat <- out$DT
     
     #### FINEMAP with different params ####  
-    dat2 <- echofinemap::FINEMAP(dat=dat,
+    dat2 <- echofinemap:: FINEMAP(dat=dat,
                                 locus_dir=locus_dir,
                                 LD_matrix=LD_matrix,
                                 finemap_version="1.4")
@@ -18,6 +19,7 @@ test_that("FINEMAP works", {
     dat3 <- echofinemap::FINEMAP(dat=dat,
                                  locus_dir=locus_dir,
                                  LD_matrix=LD_matrix,
+                                 force_new = FALSE,
                                  finemap_version="1.3.1")
     
     dat4 <- echofinemap::FINEMAP(dat=dat,

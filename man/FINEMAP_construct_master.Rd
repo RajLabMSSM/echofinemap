@@ -16,8 +16,9 @@ master_path <- echofinemap:::FINEMAP_construct_master(locus_dir=locus_dir,
 FINEMAP_construct_master(
   locus_dir,
   n_samples,
+  dir = "FINEMAP",
   dataset_number = 1,
-  file.k = NA,
+  data.k_path = NULL,
   verbose = TRUE
 )
 }

@@ -2,6 +2,8 @@
 #' 
 #' Handle fine-mapping across multiple tools.
 #' 
+#' @param priors_col [Optional] Name of the a column in 
+#' \code{dat} to extract SNP-wise prior probabilities from.
 #' @inheritParams echodata::get_sample_size
 #' @family finemapping functions
 #' @export
@@ -30,6 +32,7 @@ multifinemap <- function(dat,
                          PP_threshold=.95,
                          consensus_threshold=2,
                          case_control=TRUE,
+                         priors_col=NULL,
                          conda_env="echoR_mini",
                          nThread=1,
                          seed=2022,
@@ -77,6 +80,7 @@ multifinemap <- function(dat,
             PAINTOR_QTL_datasets = PAINTOR_QTL_datasets,
             PP_threshold = PP_threshold,
             case_control = case_control,
+            priors_col = priors_col,
             verbose = verbose,
             nThread = nThread,
             conda_env = conda_env)

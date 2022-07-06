@@ -13,8 +13,9 @@
 #' }
 FINEMAP_construct_master <- function(locus_dir,
                                      n_samples,
+                                     dir="FINEMAP",
                                      dataset_number=1,
-                                     file.k=NA,
+                                     data.k_path=NULL,
                                      verbose=TRUE){
     messager("Constructing master file.",v=verbose)
     # For full list of parameters: http://www.christianbenner.com
@@ -26,14 +27,20 @@ FINEMAP_construct_master <- function(locus_dir,
                "data.cred", # [optional output]
                "data.log"# [optional output]
     )
-    if(!is.na(file.k)){ files <- append(files, file.k) }
-    paths_list <- paste(c(file.path("FINEMAP",files),n_samples),
+    paths_list <- paste(c(file.path(dir,files),n_samples),
                         collapse = ";")
+    #### Add priors file (if used) ####
+    if(!is.null(data.k_path)){ 
+        paths_list <- paste(paths_list, 
+                            file.path(dir,basename(data.k_path)),sep=";")
+        header <- paste(header,"k",sep = ";")
+    }
     # Write master file
     dir.create(file.path(locus_dir, "FINEMAP"), 
                recursive = TRUE, showWarnings  = FALSE)
     master_path <- file.path(locus_dir,"FINEMAP","master")
-    data.table::fwrite(list(header,paths_list), master_path,
+    data.table::fwrite(x = list(header,paths_list), 
+                       file = master_path,
                        quote=FALSE, sep="\n")
     return(master_path)
 }

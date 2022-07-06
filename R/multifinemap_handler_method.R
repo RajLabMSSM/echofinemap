@@ -2,6 +2,7 @@
 #' 
 #' @family finemapping functions
 #' @keywords internal
+#' @inheritParams multifinemap
 #' @inheritParams echodata::get_sample_size
 multifinemap_handler_method <- function(dat,
                                         locus_dir,
@@ -18,6 +19,7 @@ multifinemap_handler_method <- function(dat,
                                         PAINTOR_QTL_datasets=NULL,
                                         PP_threshold=.95,
                                         case_control=TRUE,
+                                        priors_col=NULL,
                                         
                                         verbose=TRUE,
                                         nThread=1,
@@ -54,6 +56,7 @@ multifinemap_handler_method <- function(dat,
                        max_causal = n_causal,
                        compute_n = compute_n,
                        mode = "precomputed",
+                       priors_col = priors_col,
                        # mode = "non-parametric",
                        PP_threshold = PP_threshold,
                        force_new = force_new_finemap,

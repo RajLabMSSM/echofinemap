@@ -22,6 +22,7 @@ multifinemap(
   PP_threshold = 0.95,
   consensus_threshold = 2,
   case_control = TRUE,
+  priors_col = NULL,
   conda_env = "echoR_mini",
   nThread = 1,
   seed = 2022,
@@ -45,6 +46,9 @@ cases (N_CAS) + controls (N_CON), so long as both columns are present}.
 }}
 
 \item{standardise_headers}{Standardise headers first.}
+
+\item{priors_col}{[Optional] Name of the a column in 
+\code{dat} to extract SNP-wise prior probabilities from.}
 
 \item{verbose}{Print messages.}
 }

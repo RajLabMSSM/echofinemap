@@ -43,12 +43,13 @@
 #' \item{"CS" : }{Credible Set of putative causal SNPs.}
 #' \item{"PP" : }{Posterior (Inclusion) Probability of each SNP being causal, 
 #' or belonging to the causal Credible Set.}
-#' \item{"POLYFUN_h2" : }{The normalized heritability (h^2) used as  
+#' \item{"POLYFUN.h2" : }{The normalized heritability (h^2) used as  
 #' prior probabilities during fine-mapping.} 
 #' }
 #' @family polyfun 
 #' @export
 #' @importFrom data.table :=
+#' @importFrom stats setNames
 #' @examples 
 #' locus_dir <- file.path(tempdir(),echodata::locus_dir)
 #' dat <- echodata::BST1
@@ -76,8 +77,10 @@ POLYFUN <- function(dat,
                     nThread=1,
                     verbose=TRUE,
                     ...){
+    # echoverseTemplate:::source_all(packages = "dplyr")
     # echoverseTemplate:::args2vars(POLYFUN)
-    SNP <- SNPVAR <- NULL;
+    
+    SNP <- NULL;
     
     method <- POLYFUN_check_method(method=method,
                                    verbose=verbose)
@@ -88,36 +91,29 @@ POLYFUN <- function(dat,
     ## Sometimes SNP gets turned into logical?
     dat[,SNP:=as.character(SNP)] 
     #### Import priors ####
-    priors <- POLYFUN_import_priors_handler(dat = dat, 
-                                            mode = mode, 
-                                            out.path = out.path, 
-                                            locus_dir = locus_dir, 
-                                            conda_env = conda_env)
-    #### Prepare data ####
-    merged_dat <- echodata::merge_robust(x = dat,
-                                         y = priors,
-                                         by="SNP") 
-    sub.out <- echoLD::subset_common_snps(LD_matrix = LD_matrix,
-                                          dat = merged_dat,
-                                          verbose = verbose)
-    LD_matrix <- sub.out$LD
-    new_DT <- sub.out$DT
+    if((!"POLYFUN.h2" %in% names(dat)) | isTRUE(force_new)){
+        dat <- POLYFUN_import_priors_handler(dat = dat, 
+                                             mode = mode, 
+                                             out.path = out.path, 
+                                             locus_dir = locus_dir, 
+                                             conda_env = conda_env)
+    } 
     #### Run SUSIE ####
     if(method=="SUSIE"){
-        dat <- SUSIE(dat=new_DT,
+        dat <- SUSIE(dat=dat,
                      LD_matrix=LD_matrix,
                      dataset_type=dataset_type,
                      max_causal=max_causal,
                      compute_n=compute_n,
                      PP_threshold=PP_threshold, 
-                     prior_weights=new_DT$POLYFUN_h2,
+                     priors_col="POLYFUN.h2",
                      rescale_priors=rescale_priors, 
-                     verbose=verbose, 
-                     ...) 
+                     verbose=verbose,
+                     ...)
     } 
     #### Run FINEMAP ####
     if(method=="FINEMAP"){
-        dat <- FINEMAP(dat=new_DT,
+        dat <- FINEMAP(dat=dat,
                        ## Put results in their own subolder
                        ## to avoid using FINEMAP results
                        ## computed without PolyFun priors.
@@ -126,7 +122,7 @@ POLYFUN <- function(dat,
                        compute_n=compute_n,
                        n_causal=max_causal,
                        credset_thresh=PP_threshold,
-                       prior_k=new_DT$POLYFUN_h2,
+                       priors_col="POLYFUN.h2",
                        rescale_priors=rescale_priors, 
                        force_new=force_new,
                        nThread=nThread,

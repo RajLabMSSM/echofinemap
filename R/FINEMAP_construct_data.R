@@ -33,17 +33,17 @@ FINEMAP_construct_data <- function(dat,
     if(!"A1" %in% colnames(dat)) {
         dat$A1 <- "A"; 
         messager("Optional A1 col missing.",
-                 "Replacing with all 'A's.")
+                 "Replacing with all 'A's.",v=verbose)
     }
     if(!"A2" %in% colnames(dat)) {
         dat$A2 <- "T";  
         messager("Optional A2 col missing.",
-                 "Replacing with all 'T's.")
+                 "Replacing with all 'T's.",v=verbose)
     }
     if(!"MAF" %in% colnames(dat)) {
         dat$MAF <- .1; 
-        messager(" + FINEMAP:: Optional MAF col missing.",
-                 "Replacing with all '.1's")
+        messager("Optional MAF col missing.",
+                 "Replacing with all '.1's",v=verbose)
     };
     #### Construct files #####
     messager("Constructing data.z file.",v=verbose)
@@ -74,11 +74,10 @@ FINEMAP_construct_data <- function(dat,
     ####### data.ld #######
     messager("Constructing data.ld file.",v=verbose)
     ## The order of the SNPs in the dataset.ld must correspond to
-    ## the order of variants in dataset.z.
-    # load(file.path(locus_dir,"plink","LD_matrix.RData"))
-    
+    ## the order of variants in dataset.z. 
     # Filter
-    data.z <- subset(data.z, rsid %in% rownames(LD_matrix))
+    keep_i <- data.z$rsid %in% rownames(LD_matrix) 
+    data.z <- data.z[keep_i,]
     ## This filters AND sorts LD_matrix by the order of rsids in data.z
     LD_filt <- LD_matrix[data.z$rsid, data.z$rsid]
     
@@ -89,20 +88,24 @@ FINEMAP_construct_data <- function(dat,
         # data.z
         data.z_path <- file.path(locus_dir,"FINEMAP","data.z")
         data.table::fwrite(data.z, data.z_path, sep = " ",
-                           nThread = 1)
+                           nThread = nThread)
         # Sys.chmod(data.z_path, "777", use_umask = FALSE)
         # data.ld
         data.ld_path <- file.path(locus_dir,"FINEMAP","data.ld")
         data.table::fwrite(data.table:::as.data.table.matrix(LD_filt),
                            data.ld_path, sep=" ", 
                            quote = FALSE, col.names = FALSE,
-                           nThread = 1)
+                           nThread = nThread)
         # Sys.chmod(data.ld_path, "777", use_umask = FALSE)
     } else {
         messager(
             "WARNING: + FINEMAP:: Summary statistics file (data.z)",
-            "and LD matrix (data.ld) must contain the same number of SNPs.")}
+            "and LD matrix (data.ld) must contain the same number of SNPs.",
+            v=verbose)
+    }
     #### Return ####
-    return(c("Zscore_path"=data.z_path,
-             "LD_path"=data.ld_path))
+    return(list("data.z"=data.z,
+                "data.z_path"=data.z_path,
+                "data.ld"=LD_filt,
+                "data.ld_path"=data.ld_path))
 }

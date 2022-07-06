@@ -36,7 +36,7 @@ POLYFUN_plot <- function(dat,
         scale_y_continuous(limits = c(0,max(-log10(dat$P))*1.1)) +
         
         # PolyFun priors
-        ggplot(dat, aes(x=Mb, y=POLYFUN_h2, color=POLYFUN_h2)) +
+        ggplot(dat, aes(x=Mb, y=POLYFUN.h2, color=POLYFUN.h2)) +
         scale_color_viridis_c(limits=c(0,1), breaks=c(0,.5,1)) +
         geom_point() +
         # ylim(0,1) +

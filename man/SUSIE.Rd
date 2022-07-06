@@ -15,7 +15,8 @@ SUSIE(
   dataset_type = "GWAS",
   max_causal = 5,
   compute_n = "ldsc",
-  prior_weights = NULL,
+  priors_col = NULL,
+  rescale_priors = TRUE,
   PP_threshold = 0.95,
   scaled_prior_variance = 0.001,
   estimate_residual_variance = FALSE,
@@ -24,7 +25,6 @@ SUSIE(
   max_iter = 100,
   estimate_prior_method = "optim",
   manual_var_y = FALSE,
-  rescale_priors = TRUE,
   plot_track_fit = FALSE,
   return_all_CS = TRUE,
   file_prefix = file.path(tempdir(), "SUSIE"),
@@ -51,9 +51,11 @@ cases (N_CAS) + controls (N_CON), so long as both columns are present}.
 cases (N_CAS) + controls (N_CON), so long as both columns are present}.
 }}
 
-\item{prior_weights}{A vector of length p, in which each entry
-gives the prior probability that corresponding column of X has a
-nonzero effect on the outcome, y.}
+\item{priors_col}{[Optional] Name of the a column in 
+\code{dat} to extract SNP-wise prior probabilities from.}
+
+\item{rescale_priors}{If prior probabilities are supplied,
+rescale them from 0-1 (i.e. \code{rescaled_priors = priors / sum(priors)}).}
 
 \item{scaled_prior_variance}{The prior variance, divided by
 \code{var(y)} (or by \code{(1/(n-1))yty} for
@@ -91,9 +93,6 @@ likelihood at the specified prior variance is compared to the
 likelihood at a variance of zero, and the setting with the larger
 likelihood is retained.}
 
-\item{rescale_priors}{If prior probabilities are supplied,
-rescale them from 0-1 (i.e. \code{rescaled_priors = priors / sum(priors)}).}
-
 \item{plot_track_fit}{Record each iteration and make a GIF of the
 fine-mapping algorithm learning the causal variants.
 \strong{WARNING!:} Making this plot can take a long time if there's
@@ -103,9 +102,7 @@ fine-mapping algorithm learning the causal variants.
 specified, the plot, or plots, will be saved to a temporary
 directory generated using \code{\link{tempdir}}.}
 
-\item{verbose}{If \code{verbose = TRUE}, the algorithm's progress,
-and a summary of the optimization settings, are printed to the
-console.}
+\item{verbose}{Print messages.}
 }
 \description{
 Sum of Single Effects (SuSiE): Iterative Bayesian Step-wise Selection.

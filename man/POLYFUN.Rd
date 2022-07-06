@@ -96,7 +96,7 @@ The same input SNP-wise
 \item{"CS" : }{Credible Set of putative causal SNPs.}
 \item{"PP" : }{Posterior (Inclusion) Probability of each SNP being causal, 
 or belonging to the causal Credible Set.}
-\item{"POLYFUN_h2" : }{The normalized heritability (h^2) used as  
+\item{"POLYFUN.h2" : }{The normalized heritability (h^2) used as  
 prior probabilities during fine-mapping.} 
 }
 }

@@ -24,7 +24,8 @@
 #' (default: \code{force_new}). 
 #' Set \code{TRUE} to ignore these files and re-run FINEMAP.
 #' @param nThread Number of threads to parallelise across.
-#' Passed to \code{"--n-threads"} in FINEMAP. 
+#' Passed to \code{"--n-threads"} in FINEMAP.
+#' @inheritParams multifinemap 
 #' @inheritParams echodata::get_sample_size
 #' 
 #' @source \url{http://www.christianbenner.com}
@@ -37,9 +38,6 @@
 #' locus_dir <- file.path(tempdir(),echodata::locus_dir)
 #' dat <- echodata::BST1;
 #' LD_matrix <- echodata::BST1_LD_matrix
-#' 
-#' dir.create(file.path(locus_dir,"FINEMAP"),
-#'  showWarnings = FALSE, recursive = TRUE)
 #' out <- echoLD::subset_common_snps(LD_matrix, dat)
 #' LD_matrix <- out$LD
 #' dat <- out$DT
@@ -58,7 +56,7 @@ FINEMAP <- function(dat,
                     force_new=FALSE,
                     credset_thresh=.95,
                     finemap_version=package_version("1.4.1"), 
-                    prior_k=NULL,
+                    priors_col=NULL,
                     rescale_priors=TRUE,
                     args_list=list(),
                     fillNA=0,
@@ -68,6 +66,7 @@ FINEMAP <- function(dat,
   # echoverseTemplate:::args2vars(FINEMAP)
   
   CS <- PP <- NULL;
+  
   if(!methods::is(finemap_version,"package_version")){
       finemap_version <- package_version(finemap_version)
   }
@@ -82,12 +81,7 @@ FINEMAP <- function(dat,
                                        force_new = FALSE,
                                        return_only = max,
                                        verbose = verbose) 
-  dir.create(locus_dir, showWarnings = FALSE, recursive = TRUE)
-  #### Prepare priors ####
-  prior_k <- prepare_priors(prior_weights=prior_k,
-                            rescale_priors=rescale_priors,
-                            dat=dat,
-                            verbose=verbose) 
+  dir.create(locus_dir, showWarnings = FALSE, recursive = TRUE) 
   #### Use pre=existing results #### 
   dat_prev <- FINEMAP_check_existing_results(dat = dat,
                                              locus_dir = locus_dir,
@@ -95,13 +89,33 @@ FINEMAP <- function(dat,
                                              finemap_version = finemap_version,
                                              force_new = force_new,
                                              verbose = verbose)
-  if(!is.null(dat_prev)) return(dat_prev)
+  if(!is.null(dat_prev)) return(dat_prev) 
+  #### Subset data ####
+  sub.out <- echoLD::subset_common_snps(LD_matrix = LD_matrix,
+                                        dat = dat,
+                                        verbose = verbose)
+  LD_matrix <- sub.out$LD
+  dat <- sub.out$DT 
+  remove(sub.out)
+  #### Prepare priors #### 
+  prior_k <- prepare_priors(dat = dat, 
+                            priors_col = priors_col, 
+                            snp_col = "SNP",
+                            rescale_priors = rescale_priors,
+                            verbose = verbose)
   ### Setup files ####
+  data.k_path <- FINEMAP_construct_datak(prior_k=prior_k, 
+                                         locus_dir=locus_dir,
+                                         n_causal=n_causal,
+                                         verbose=verbose)
   master_path <- FINEMAP_construct_master(locus_dir = locus_dir,
-                                          n_samples = n_samples)
-  dat_paths <- FINEMAP_construct_data(locus_dir = locus_dir,
+                                          n_samples = n_samples,
+                                          data.k_path = data.k_path,
+                                          verbose = verbose)
+  dat_out <- FINEMAP_construct_data(locus_dir = locus_dir,
                                       dat = dat,
-                                      LD_matrix = LD_matrix)
+                                      LD_matrix = LD_matrix,
+                                      verbose = verbose)   
   #### Check FINEMAP exec ####
   if(is.null(FINEMAP_path)){
     FINEMAP_path <- FINEMAP_find_executable(version = finemap_version,
@@ -109,8 +123,32 @@ FINEMAP <- function(dat,
   }  
   messager("FINEMAP path:",FINEMAP_path, v=verbose)
   finemap_version <- FINEMAP_check_version(FINEMAP_path = FINEMAP_path,
-                                             verbose = verbose) 
-  if(finemap_version<"1.4") nThread <- 1
+                                           verbose = verbose) 
+  dylib_msg <- paste(
+      "\n*********\n",
+      "Error detected:",
+      "'dyld: Library not loaded: /usr/local/lib/libzstd.1.dylib'\n",
+      "If you are using Mac OS, please install Zstandard\n",
+      "(https://facebook.github.io/zstd/).\n",
+      "e.g. `brew install zstd`\n\n",
+      
+      "Also, ensure that you have gcc v8 installed,\n",
+      "as FINEMAP v1.4 is only compatible with this version.\n\n",
+      
+      "If Zstandard is already installed and this error persists,\n",
+      "please see the main FINEMAP website for additional support\n",
+      "(http://www.christianbenner.com).",
+      "\n*********\n\n"
+  )
+  if(length(finemap_version)==0){
+      warning(dylib_msg)
+      finemap_version <- package_version("1.3.1")
+      FINEMAP_path <- FINEMAP_find_executable(version = "1.3.1",
+                                              verbose  = verbose)
+  }
+  if(finemap_version<"1.4") {
+      nThread <- 1
+  }
   #### Run FINEMAP ####
   # NOTE: Must cd into the directory first,
   # or else FINEMAP won't be able to find the input files.
@@ -118,31 +156,15 @@ FINEMAP <- function(dat,
                      FINEMAP_path=FINEMAP_path,
                      model=model,
                      master_path=master_path,
-                     n_causal=n_causal,
-                     nThread=nThread,
+                     n_causal=n_causal, 
+                     prior_k=prior_k,
                      args_list=args_list,
-                     verbose=FALSE)
-
+                     nThread=nThread,
+                     verbose=verbose)
   ## Check if FINEMAP is giving an error due to `zstd` 
   ## not being installed.
-  if(any(attr(msg,"status")==134)){
-      msg <- paste(
-          "\n*********\n",
-          "Error detected:",
-          "'dyld: Library not loaded: /usr/local/lib/libzstd.1.dylib'\n",
-          "If you are using Mac OS, please install Zstandard\n",
-          "(https://facebook.github.io/zstd/).\n",
-          "e.g. `brew install zstd`\n\n",
-          
-          "Also, ensure that you have gcc v8 installed,\n",
-          "as FINEMAP v1.4 is only compatible with this version.\n\n",
-          
-          "If Zstandard is already installed and this error persists,\n",
-          "please see the main FINEMAP website for additional support\n",
-          "(http://www.christianbenner.com).",
-          "\n*********\n\n"
-      )
-    warning(msg)
+  if(any(attr(msg,"status")==134)){ 
+    warning(dylib_msg)
     #### Rerun if preferred version of FINEMAP fails ####
     FINEMAP_path <- FINEMAP_find_executable(version = "1.3.1",
                                             verbose  = FALSE)
@@ -159,7 +181,7 @@ FINEMAP <- function(dat,
                        args_list=args_list,
                        ### Must be 1 for older versions of FINEMAP
                        nThread=1,
-                       verbose=FALSE)
+                       verbose=verbose)
     ## Note!: concatenating this output in rmarkdown
     ## can accidentally print many many lines.
     if(verbose) try({cat(paste(msg, collapse = "\n"))})

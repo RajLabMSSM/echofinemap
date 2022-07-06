@@ -14,6 +14,7 @@
 #'  Some tools only produce one credible set per locus.}
 #' }
 #' @inheritParams echodata::get_sample_size
+#' @inheritParams multifinemap
 #' @family finemapping functions
 #' @keywords internal 
 multifinemap_handler <- function(dat,
@@ -30,6 +31,7 @@ multifinemap_handler <- function(dat,
                                  PAINTOR_QTL_datasets=NULL,
                                  PP_threshold=.95,
                                  case_control=TRUE,
+                                 priors_col=NULL,
                                  verbose=TRUE,
                                  nThread=1,
                                  conda_env="echoR_mini"){
@@ -60,6 +62,7 @@ multifinemap_handler <- function(dat,
         PP_threshold = PP_threshold,
         case_control = case_control,
         conditioned_snps = conditioned_snps,
+        priors_col = priors_col,
         verbose = verbose,
         nThread=nThread,
         conda_env = conda_env)

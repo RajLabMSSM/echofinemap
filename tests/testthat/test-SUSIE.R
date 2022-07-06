@@ -1,5 +1,6 @@
 test_that("SUSIE works", {
   
+    set.seed(1234)
     dat <- echodata::BST1
     LD_matrix <- echodata::BST1_LD_matrix
     
@@ -39,10 +40,10 @@ test_that("SUSIE works", {
     run_tests(dat = dat, dat2 = dat5, credset = 5)
     
     #### prior_weights #### 
-    prior_weights <- rep(seq_len(4),nrow(dat)/4) # Made up random weights
+    dat$pw <- rep(seq_len(4),nrow(dat)/4) # Made up random weights
     dat6 <- echofinemap::SUSIE(dat=dat, 
                                LD_matrix=LD_matrix,
-                               prior_weights = prior_weights,
+                               priors_col = "pw",
                                max_causal = 5)
     run_tests(dat = dat, dat2 = dat6, credset = 5)
 })

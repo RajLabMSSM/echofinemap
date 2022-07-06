@@ -29,7 +29,8 @@ POLYFUN_import_priors <- function(locus_dir,
     snp_w_priors.file <- file.path(PF.output.path,
                                    "snps_with_priors.snpvar.tsv.gz")
     
-    if((file.exists(snp_w_priors.file)) & force_new_priors==FALSE){ 
+    if((file.exists(snp_w_priors.file)) &&
+       isFALSE(force_new_priors)){ 
         #### Import existing priors ####
         priors <- POLYFUN_read_priors(snp_w_priors.file = snp_w_priors.file,
                                       nThread = nThread, 
