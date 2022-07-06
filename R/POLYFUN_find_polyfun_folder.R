@@ -9,7 +9,7 @@
 #' }
 POLYFUN_find_polyfun_folder <- function(polyfun_path=NULL){
     if(is.null(polyfun_path)){
-        polyfun_path <- system.file("tools/polyfun",
+        polyfun_path <- system.file("tools/polyfun", 
                                     package = "echofinemap")
     }
     if(polyfun_path=="") stop("Cannot find polyfun_path.")
