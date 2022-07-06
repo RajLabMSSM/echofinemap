@@ -3,6 +3,7 @@
 export(ABF)
 export(FINEMAP)
 export(POLYFUN)
+export(POLYFUN_help)
 export(SUSIE)
 export(check_required_cols)
 export(create_method_path)

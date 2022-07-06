@@ -7,6 +7,8 @@
     - Can now use `FINEMAP` or `SUSIE` as a method. 
     - Change column "POLYFUN_h2" --> "POLYFUN.h2" 
     to make consistent with other cols. 
+    - Automatically installs itself from the GitHub submodule.
+    - `POLYFUN_help` now exported. 
 * Use `Rfast` to speed up `SUSIE`.
 * `remove_na_rows`: Remove rows with NAs in tool-specific essential cols.
 * Update `FINEMAP` to v1.4.1. 

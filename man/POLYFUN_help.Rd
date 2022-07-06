@@ -3,16 +3,23 @@
 \name{POLYFUN_help}
 \alias{POLYFUN_help}
 \title{POLYFUN help}
-\source{
-\code{
-echofinemap:::POLYFUN_help()
-}
-}
 \usage{
 POLYFUN_help(polyfun = NULL, conda_env = "echoR_mini")
 }
+\arguments{
+\item{polyfun}{[Optional] Path to PolyFun executable.}
+
+\item{conda_env}{Conda environment name.}
+}
+\value{
+PolyFun help message as character vector.
+}
 \description{
-Display PolyFun help.
+Display PolyFun help. 
+Will automatically install PolyFun if has not been installed already.
+}
+\examples{
+echofinemap::POLYFUN_help()
 }
 \seealso{
 Other polyfun: 
@@ -36,4 +43,3 @@ Other polyfun:
 \code{\link{POLYFUN}()}
 }
 \concept{polyfun}
-\keyword{internal}
