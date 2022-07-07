@@ -7,7 +7,7 @@
 PAINTOR.merge_results(
   dat,
   paintor.results,
-  PP_threshold = 0.5,
+  credset_thresh = 0.5,
   multi_finemap_col_name = "PAINTOR"
 )
 }

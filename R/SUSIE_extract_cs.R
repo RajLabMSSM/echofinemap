@@ -1,6 +1,6 @@
 SUSIE_extract_cs <- function(dat,
                              fitted_bhat,
-                             PP_threshold,
+                             credset_thresh,
                              return_all_CS=TRUE,
                              verbose=TRUE){
     messager("+ SUSIE:: Extracting Credible Sets.",v=verbose)
@@ -20,7 +20,7 @@ SUSIE_extract_cs <- function(dat,
     }
     # Assign each SNP a CS group if it meets the PP threshold
     dat$CS <- lapply(dat$SNP, function(x){
-        if(x %in% names(CS_dict) & subset(dat, SNP==x)$PP>=PP_threshold){
+        if(x %in% names(CS_dict) & subset(dat, SNP==x)$PP>=credset_thresh){
             CS_dict[[x]]
         } else{0}}) %>% unlist()
     return(dat)

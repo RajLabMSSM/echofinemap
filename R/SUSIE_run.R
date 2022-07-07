@@ -16,7 +16,7 @@ SUSIE_run <- function(dat,
                       estimate_prior_method,
                       estimate_residual_variance,
                       prior_weights,
-                      PP_threshold,
+                      credset_thresh,
                       plot_track_fit,
                       verbose=TRUE){
     #### Get the proper susie function ####
@@ -76,7 +76,7 @@ SUSIE_run <- function(dat,
         
         # A p vector of prior probability that each element is non-zero
         prior_weights = prior_weights,
-        coverage = PP_threshold,
+        coverage = credset_thresh,
         track_fit = plot_track_fit,
         
         verbose  = FALSE)

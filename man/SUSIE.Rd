@@ -17,7 +17,7 @@ SUSIE(
   compute_n = "ldsc",
   priors_col = NULL,
   rescale_priors = TRUE,
-  PP_threshold = 0.95,
+  credset_thresh = 0.95,
   scaled_prior_variance = 0.001,
   estimate_residual_variance = FALSE,
   estimate_prior_variance = TRUE,
@@ -47,8 +47,12 @@ that value will be set as N for every row.
 if at all possible.}
 \item{\code{"sum"}: }{N will be computed as:
 cases (N_CAS) + controls (N_CON), so long as both columns are present}.
-\item{\code{"effective"}: }{N will be computed as effective sample size:
-cases (N_CAS) + controls (N_CON), so long as both columns are present}.
+\item{\code{"ldsc"}: }{N will be computed as effective sample size:
+Neff =(N_CAS+N_CON)*(N_CAS/(N_CAS+N_CON)) / mean((N_CAS/(N_CAS+N_CON))(N_CAS+N_CON)==max(N_CAS+N_CON))}
+\item{\code{"giant"}: }{N will be computed as effective sample size:
+Neff = 2 / (1/N_CAS + 1/N_CON)}.
+\item{\code{"metal"}: }{N will be computed as effective sample size:
+Neff = 4 / (1/N_CAS + 1/N_CON)}.
 }}
 
 \item{priors_col}{[Optional] Name of the a column in 
@@ -56,6 +60,10 @@ cases (N_CAS) + controls (N_CON), so long as both columns are present}.
 
 \item{rescale_priors}{If prior probabilities are supplied,
 rescale them from 0-1 (i.e. \code{rescaled_priors = priors / sum(priors)}).}
+
+\item{credset_thresh}{The minimum mean Posterior Probability
+(across all fine-mapping methods used) of SNPs to be included in 
+the "mean.CS" column.}
 
 \item{scaled_prior_variance}{The prior variance, divided by
 \code{var(y)} (or by \code{(1/(n-1))yty} for

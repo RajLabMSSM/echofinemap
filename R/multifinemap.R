@@ -5,6 +5,7 @@
 #' @param priors_col [Optional] Name of the a column in 
 #' \code{dat} to extract SNP-wise prior probabilities from.
 #' @inheritParams echodata::get_sample_size
+#' @inheritParams echodata::find_consensus_snps
 #' @family finemapping functions
 #' @export
 #' @examples
@@ -29,8 +30,8 @@ multifinemap <- function(dat,
                          standardise_headers=FALSE,
                          conditioned_snps=NULL,
                          PAINTOR_QTL_datasets=NULL,
-                         PP_threshold=.95,
-                         consensus_threshold=2,
+                         credset_thresh=.95,
+                         consensus_thresh=2,
                          case_control=TRUE,
                          priors_col=NULL,
                          conda_env="echoR_mini",
@@ -78,7 +79,7 @@ multifinemap <- function(dat,
             compute_n = compute_n, 
             conditioned_snps = conditioned_snps,
             PAINTOR_QTL_datasets = PAINTOR_QTL_datasets,
-            PP_threshold = PP_threshold,
+            credset_thresh = credset_thresh,
             case_control = case_control,
             priors_col = priors_col,
             verbose = verbose,
@@ -86,8 +87,8 @@ multifinemap <- function(dat,
             conda_env = conda_env)
         dat2 <- echodata::find_consensus_snps(
             dat = dat2,
-            credset_thresh = PP_threshold,
-            consensus_thresh = consensus_threshold,
+            credset_thresh = credset_thresh,
+            consensus_thresh = consensus_thresh,
             verbose = verbose)
         save_finemap_results(dat = dat2, 
                              path = file_path)
@@ -96,6 +97,6 @@ multifinemap <- function(dat,
     messager("+ Fine-mapping with",
              paste0("'",paste0(finemap_methods, collapse=", "),"'"),
              "completed:",v=verbose)
-    print(round(end_FM-start_FM,2))
+    round(difftime(end_FM,start_FM,units = "min"),2)
     return(dat2)
 }

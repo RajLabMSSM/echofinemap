@@ -7,7 +7,8 @@
 drop_finemap_cols(
   dat,
   finemap_methods = NULL,
-  summary_cols = c("Support", "Consensus_SNP"),
+  summary_cols = c("Support", "Consensus_SNP", "mean.PP"),
+  generic_cols = c("CS", "PP", "k", "PP_snp", "PP_config"),
   verbose = TRUE
 )
 }

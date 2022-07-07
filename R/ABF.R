@@ -22,7 +22,7 @@
 #' dat <- echodata::LRRK2
 #' dat2 <- echofinemap::ABF(dat=dat) 
 ABF <- function(dat,
-                PP_threshold=.95,
+                credset_thresh=.95,
                 compute_n="ldsc",
                 sdY=NULL,
                 case_control=TRUE,
@@ -67,7 +67,7 @@ ABF <- function(dat,
     dplyr::arrange(dplyr::desc(PP)) %>% 
     # Any SNPs with a PP greater than the set threshold 
     # get included in the credible set
-    dplyr::mutate(CS = ifelse(PP >= PP_threshold, 1, 0)) 
+    dplyr::mutate(CS = ifelse(PP >= credset_thresh, 1, 0)) 
   #### Merge ABF results with input data ####
   res <- echodata::merge_robust(
     x=data.table::data.table(dat), 

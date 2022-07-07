@@ -68,8 +68,8 @@ SUSIE <- function(dat,
                   # susieR default prior_weights=NULL
                   priors_col=NULL,
                   rescale_priors=TRUE,
-                  # susieR default PP_threshold=coverage=.95
-                  PP_threshold=.95,
+                  # susieR default credset_thresh=coverage=.95
+                  credset_thresh=.95,
                   # PolyFun default: scaled_prior_variance=0.0001 
                   # susieR default: scaled_prior_variance=0.2
                   scaled_prior_variance=0.001, 
@@ -149,7 +149,7 @@ SUSIE <- function(dat,
     estimate_prior_method=estimate_prior_method,
     estimate_residual_variance=estimate_residual_variance,
     prior_weights=prior_weights,
-    PP_threshold=PP_threshold,
+    credset_thresh=credset_thresh,
     plot_track_fit=plot_track_fit,
     verbose=verbose)
   #### Animated plot track ####
@@ -159,7 +159,7 @@ SUSIE <- function(dat,
                    file_prefix=file_prefix)
   dat <- SUSIE_extract_cs(dat=dat,
                           fitted_bhat=fitted_bhat,
-                          PP_threshold=PP_threshold,
+                          credset_thresh=credset_thresh,
                           return_all_CS=return_all_CS,
                           verbose=verbose)
   return(dat)

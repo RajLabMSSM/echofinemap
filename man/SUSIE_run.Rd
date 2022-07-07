@@ -16,7 +16,7 @@ SUSIE_run(
   estimate_prior_method,
   estimate_residual_variance,
   prior_weights,
-  PP_threshold,
+  credset_thresh,
   plot_track_fit,
   verbose = TRUE
 )

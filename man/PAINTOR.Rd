@@ -20,7 +20,7 @@ PAINTOR(
   ROADMAP_search = NA,
   chromatin_state = "TssA",
   use_annotations = FALSE,
-  PP_threshold = 0.95,
+  credset_thresh = 0.95,
   consensus_thresh = 2,
   multi_finemap_col_name = "PAINTOR",
   trim_gene_limits = FALSE,

@@ -82,7 +82,7 @@ FINEMAP_process_results <- function(dat,
         }
     }
     #### Sort so that CS SNPs are at the top ####
-    if(sort_by_CS){
+    if(sort_by_CS & ("CS" %in% colnames(dat))){
         dat <- dplyr::arrange(dat, dplyr::desc(PP))
     }
     #### Ensure there's no duplicate rows ####

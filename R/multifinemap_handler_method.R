@@ -4,6 +4,7 @@
 #' @keywords internal
 #' @inheritParams multifinemap
 #' @inheritParams echodata::get_sample_size
+#' @inheritParams echodata::find_consensus_snps
 multifinemap_handler_method <- function(dat,
                                         locus_dir,
                                         fullSS_path=NULL,
@@ -17,7 +18,7 @@ multifinemap_handler_method <- function(dat,
                                         conditioned_snps,
                                         compute_n="ldsc", 
                                         PAINTOR_QTL_datasets=NULL,
-                                        PP_threshold=.95,
+                                        credset_thresh=.95,
                                         case_control=TRUE,
                                         priors_col=NULL,
                                         
@@ -43,7 +44,7 @@ multifinemap_handler_method <- function(dat,
                      LD_matrix = LD_matrix,
                      max_causal = n_causal,
                      compute_n = compute_n,
-                     PP_threshold = PP_threshold,
+                     credset_thresh = credset_thresh,
                      verbose = verbose)
         
     } else if(finemap_method=="POLYFUN_SUSIE"){
@@ -56,7 +57,7 @@ multifinemap_handler_method <- function(dat,
                        max_causal = n_causal,
                        compute_n = compute_n,
                        mode = "precomputed", #"non-parametric",
-                       PP_threshold = PP_threshold,
+                       credset_thresh = credset_thresh,
                        force_new = force_new_finemap,
                        conda_env = conda_env,
                        verbose = verbose)
@@ -71,7 +72,7 @@ multifinemap_handler_method <- function(dat,
                        max_causal = n_causal,
                        compute_n = compute_n, 
                        mode = "precomputed", #"non-parametric",
-                       PP_threshold = PP_threshold,
+                       credset_thresh = credset_thresh,
                        force_new = force_new_finemap,
                        conda_env = conda_env, 
                        verbose = verbose)
@@ -79,7 +80,7 @@ multifinemap_handler_method <- function(dat,
     } else if(finemap_method=="ABF"){
         #### ABF ####
         dat <- ABF(dat = dat,
-                   PP_threshold = PP_threshold,
+                   credset_thresh = credset_thresh,
                    compute_n = compute_n,
                    case_control = case_control,
                    verbose = verbose)
@@ -92,7 +93,7 @@ multifinemap_handler_method <- function(dat,
                        LD_matrix = LD_matrix,
                        compute_n = compute_n,  
                        n_causal = n_causal,
-                       credset_thresh = PP_threshold,
+                       credset_thresh = credset_thresh,
                        args_list = if("FINEMAP" %in% names(finemap_args)) {
                            finemap_args[["FINEMAP"]]
                        } else {NULL}, 
@@ -103,8 +104,7 @@ multifinemap_handler_method <- function(dat,
         
         
     } else if("COJO" %in% finemap_method){
-        #### COJO ####
-        conditioned_snps <- subset(dat, leadSNP==TRUE)$SNP
+        #### COJO #### 
         dat <- COJO(dat = dat,
                     locus_dir = locus_dir,
                     fullSS_path = fullSS_path,
@@ -122,16 +122,16 @@ multifinemap_handler_method <- function(dat,
                        locus=basename(locus_dir),
                        n_causal=n_causal,
                        use_annotations=FALSE,
-                       PP_threshold=PP_threshold,
+                       credset_thresh=credset_thresh,
                        GWAS_populations="EUR",
                        LD_matrix=LD_matrix,
                        force_new_LD=FALSE)
     } else {
         stp <- paste(
-            "finemap_methods must be one or more of:\n",
-            paste()
+            "finemap_methods must be one or more of:",
+            paste("\n -",lfm(),collapse = "")
         )
-        stop()
+        stop(stp)
     }
     return(dat)
 }

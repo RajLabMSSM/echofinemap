@@ -10,14 +10,14 @@ multifinemap_handler(
   fullSS_path = NULL,
   finemap_methods,
   finemap_args = NULL,
-  dataset_type,
+  dataset_type = "GWAS",
   force_new_finemap = FALSE,
   LD_matrix = NULL,
   n_causal = 5,
   compute_n = "ldsc",
   conditioned_snps = NULL,
   PAINTOR_QTL_datasets = NULL,
-  PP_threshold = 0.95,
+  credset_thresh = 0.95,
   case_control = TRUE,
   priors_col = NULL,
   verbose = TRUE,
@@ -37,9 +37,17 @@ that value will be set as N for every row.
 if at all possible.}
 \item{\code{"sum"}: }{N will be computed as:
 cases (N_CAS) + controls (N_CON), so long as both columns are present}.
-\item{\code{"effective"}: }{N will be computed as effective sample size:
-cases (N_CAS) + controls (N_CON), so long as both columns are present}.
+\item{\code{"ldsc"}: }{N will be computed as effective sample size:
+Neff =(N_CAS+N_CON)*(N_CAS/(N_CAS+N_CON)) / mean((N_CAS/(N_CAS+N_CON))(N_CAS+N_CON)==max(N_CAS+N_CON))}
+\item{\code{"giant"}: }{N will be computed as effective sample size:
+Neff = 2 / (1/N_CAS + 1/N_CON)}.
+\item{\code{"metal"}: }{N will be computed as effective sample size:
+Neff = 4 / (1/N_CAS + 1/N_CON)}.
 }}
+
+\item{credset_thresh}{The minimum mean Posterior Probability
+(across all fine-mapping methods used) of SNPs to be included in 
+the "mean.CS" column.}
 
 \item{priors_col}{[Optional] Name of the a column in 
 \code{dat} to extract SNP-wise prior probabilities from.}

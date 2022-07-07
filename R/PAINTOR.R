@@ -494,14 +494,14 @@ PAINTOR.process_results <- function(PT_results_path,
 #'  @keywords internal
 PAINTOR.merge_results <- function(dat,
                                   paintor.results,
-                                  PP_threshold=.5,
+                                  credset_thresh=.5,
                                   multi_finemap_col_name="PAINTOR"){
   messager("PAINTOR:: Merging PAINTOR results with multi-finemap file.")
   merged_DT <- echodata::merge_robust(dat, paintor.results[,c("RSID","Posterior_Prob")],
                                              by.x="SNP", by.y="RSID", all.x = TRUE)
   PP.col.name <- paste0(multi_finemap_col_name,".PP")
   names(merged_DT)[names(merged_DT) == "Posterior_Prob"] <- PP.col.name
-  merged_DT[,paste0(multi_finemap_col_name,".CS")] <- ifelse(subset(merged_DT,select=PP.col.name) > PP_threshold, 1, 0)
+  merged_DT[,paste0(multi_finemap_col_name,".CS")] <- ifelse(subset(merged_DT,select=PP.col.name) > credset_thresh, 1, 0)
   messager("PAINTOR:: Credible Set size =",sum(subset(merged_DT, select=paste0(multi_finemap_col_name,".CS")),na.rm=TRUE))
   return(merged_DT)
 }
@@ -681,7 +681,7 @@ PAINTOR <- function(dat=NULL,
                     ROADMAP_search=NA,
                     chromatin_state="TssA",
                     use_annotations=FALSE,
-                    PP_threshold=.95,
+                    credset_thresh=.95,
                     consensus_thresh=2,
                     multi_finemap_col_name="PAINTOR",
                     trim_gene_limits=FALSE,
@@ -697,7 +697,7 @@ PAINTOR <- function(dat=NULL,
   # Note: All file formats are assumed to be single space delimited.
 
   ## Quick setup
-  # chromatin_state="TssA"; paintor_path = "./echolocatoR/tools/PAINTOR_V3.0";  QTL_datasets = c("Fairfax_2014_IFN","Fairfax_2014_LPS24");locus_name=NA; locus="LRRK2";  no_annotations=F;  XGR_dataset=NA; ROADMAP_search="monocyte"; n_causal=5; dat=NA; multi_finemap_col_name="PAINTOR_Fairfax";  PP_threshold=.95; QTL_datasets=c("MESA_CAU","MESA_HIS"); trim_gene_limits=T; multi_finemap_col_name <- "PAINTOR_MESA_transethnic"; QTL_populations = c("CAU","HIS"); GWAS_populations="EUR"; use_annotations=F; force_new_LD=F; force_new_subset=F; LD_reference="1KG_Phase1"; GWAS_datasets = "Nalls23andMe_2019";
+  # chromatin_state="TssA"; paintor_path = "./echolocatoR/tools/PAINTOR_V3.0";  QTL_datasets = c("Fairfax_2014_IFN","Fairfax_2014_LPS24");locus_name=NA; locus="LRRK2";  no_annotations=F;  XGR_dataset=NA; ROADMAP_search="monocyte"; n_causal=5; dat=NA; multi_finemap_col_name="PAINTOR_Fairfax";  credset_thresh=.95; QTL_datasets=c("MESA_CAU","MESA_HIS"); trim_gene_limits=T; multi_finemap_col_name <- "PAINTOR_MESA_transethnic"; QTL_populations = c("CAU","HIS"); GWAS_populations="EUR"; use_annotations=F; force_new_LD=F; force_new_subset=F; LD_reference="1KG_Phase1"; GWAS_datasets = "Nalls23andMe_2019";
 
   # if(is.na(GWAS_dataset_name)){
   #   GWAS_dataset_name <- basename(dirname(subset_path));
@@ -857,10 +857,10 @@ PAINTOR <- function(dat=NULL,
 
   merged_DT <- PAINTOR.merge_results(dat = dat.P,
                                      paintor.results = paintor.results,
-                                     PP_threshold = PP_threshold,
+                                     credset_thresh = credset_thresh,
                                      multi_finemap_col_name = multi_finemap_col_name)
   merged_DT <- echodata::find_consensus_snps(merged_DT,
-                                   credset_thresh = PP_threshold,
+                                   credset_thresh = credset_thresh,
                                    consensus_thresh = consensus_thresh)
 
   # Update Consensus SNP col and Summarise

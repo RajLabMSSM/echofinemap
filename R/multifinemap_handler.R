@@ -14,6 +14,7 @@
 #'  Some tools only produce one credible set per locus.}
 #' }
 #' @inheritParams echodata::get_sample_size
+#' @inheritParams echodata::find_consensus_snps
 #' @inheritParams multifinemap
 #' @family finemapping functions
 #' @keywords internal 
@@ -22,14 +23,14 @@ multifinemap_handler <- function(dat,
                                  fullSS_path=NULL,
                                  finemap_methods,
                                  finemap_args=NULL,
-                                 dataset_type,
+                                 dataset_type="GWAS",
                                  force_new_finemap=FALSE,
                                  LD_matrix=NULL,
                                  n_causal=5,
                                  compute_n="ldsc",
                                  conditioned_snps=NULL,
                                  PAINTOR_QTL_datasets=NULL,
-                                 PP_threshold=.95,
+                                 credset_thresh=.95,
                                  case_control=TRUE,
                                  priors_col=NULL,
                                  verbose=TRUE,
@@ -59,7 +60,7 @@ multifinemap_handler <- function(dat,
         n_causal = n_causal,
         compute_n = compute_n,
         PAINTOR_QTL_datasets = PAINTOR_QTL_datasets,
-        PP_threshold = PP_threshold,
+        credset_thresh = credset_thresh,
         case_control = case_control,
         conditioned_snps = conditioned_snps,
         priors_col = priors_col,

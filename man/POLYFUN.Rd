@@ -21,7 +21,7 @@ POLYFUN(
   dataset_type = "GWAS",
   max_causal = 5,
   compute_n = "ldsc",
-  PP_threshold = 0.95,
+  credset_thresh = 0.95,
   rescale_priors = TRUE,
   conda_env = "echoR_mini",
   force_new = FALSE,
@@ -69,9 +69,17 @@ that value will be set as N for every row.
 if at all possible.}
 \item{\code{"sum"}: }{N will be computed as:
 cases (N_CAS) + controls (N_CON), so long as both columns are present}.
-\item{\code{"effective"}: }{N will be computed as effective sample size:
-cases (N_CAS) + controls (N_CON), so long as both columns are present}.
+\item{\code{"ldsc"}: }{N will be computed as effective sample size:
+Neff =(N_CAS+N_CON)*(N_CAS/(N_CAS+N_CON)) / mean((N_CAS/(N_CAS+N_CON))(N_CAS+N_CON)==max(N_CAS+N_CON))}
+\item{\code{"giant"}: }{N will be computed as effective sample size:
+Neff = 2 / (1/N_CAS + 1/N_CON)}.
+\item{\code{"metal"}: }{N will be computed as effective sample size:
+Neff = 4 / (1/N_CAS + 1/N_CON)}.
 }}
+
+\item{credset_thresh}{The minimum mean Posterior Probability
+(across all fine-mapping methods used) of SNPs to be included in 
+the "mean.CS" column.}
 
 \item{rescale_priors}{If prior probabilities are supplied,
 rescale them from 0-1 (i.e. \code{rescaled_priors = priors / sum(priors)}).}
