@@ -112,6 +112,19 @@ test_that("multifinemap works", {
               cs_sizes = c(1,2,5),
               pp_sizes = c(1,2,5))
 
+    #### Test polyfun ##### 
+    dat5 <- echofinemap::multifinemap(dat = dat,
+                                      locus_dir = file.path(tempdir(),"LRRK2"), 
+                                      LD_matrix = LD_list$LD,
+                                      fullSS_path = fullSS_path, 
+                                      force_new_finemap = TRUE,
+                                      finemap_methods =  c("SUSIE","POLYFUN_SUSIE"))
+    run_tests(dat = dat,
+              dat2 = dat5,
+              finemap_methods = c("SUSIE","POLYFUN_SUSIE"), 
+              cs_sizes = c(2,2),
+              pp_sizes = c(2,2))
+    
     #### Using an LD Panel from the wrong locus ####
     testthat::expect_error(
         echofinemap::multifinemap(dat = dat,
