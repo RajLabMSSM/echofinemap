@@ -1,9 +1,10 @@
 #' Install PolyFun
 #' 
 #' Install PolyFun (if not already installed) from the GitHub submodule.
-#' @keywords internal
+#' @export
 #' @param force_new Force a new installation 
 #' even when PolyFun is already installed. 
+#' @returns Null.
 POLYFUN_install <- function(force_new=FALSE){
    POLYFUN_installed <- function(){
        dirs <- grep("polyfun", 

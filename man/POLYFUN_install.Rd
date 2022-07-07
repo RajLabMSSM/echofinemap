@@ -10,7 +10,9 @@ POLYFUN_install(force_new = FALSE)
 \item{force_new}{Force a new installation 
 even when PolyFun is already installed.}
 }
+\value{
+Null.
+}
 \description{
 Install PolyFun (if not already installed) from the GitHub submodule.
 }
-\keyword{internal}
