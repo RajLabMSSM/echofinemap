@@ -13,12 +13,7 @@ drop_finemap_cols <- function(dat,
                               finemap_methods = NULL, 
                               summary_cols = c("Support",
                                                "Consensus_SNP",
-                                               "mean.PP"),
-                              generic_cols = c("CS",
-                                               "PP",
-                                               "k",
-                                               "PP_snp",
-                                               "PP_config"),
+                                               "mean\\.PP"), 
                               verbose = TRUE){
     if(is.null(finemap_methods)) {
         finemap_methods <- lfm()
@@ -26,8 +21,7 @@ drop_finemap_cols <- function(dat,
     #### Find existing cols #####
     drop_cols <- grep(colnames(dat), 
                       pattern = paste(c(paste0("^",finemap_methods),
-                                        summary_cols,
-                                        generic_cols),
+                                        summary_cols),
                                       collapse = "|"),value = TRUE)  
     dat2 <- data.table::copy(dat)
     #### Drop existing cols and report #####

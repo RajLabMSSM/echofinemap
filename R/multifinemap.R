@@ -58,7 +58,7 @@ multifinemap <- function(dat,
             dat = dat, 
             compute_n = compute_n,
             standardise_headers = standardise_headers,
-            verbose = verbose) 
+            verbose = verbose)  
         ## If not, or if forcing new fine-mapping is set to TRUE, 
         ## fine-map using multiple tools
         finemap_methods <- check_required_cols(
