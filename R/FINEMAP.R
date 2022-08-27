@@ -75,7 +75,7 @@
 #' @examples
 #' locus_dir <- file.path(tempdir(),echodata::locus_dir)
 #' dat <- echodata::BST1;
-#' LD_matrix <- echodata::BST1_LD_matrix
+#' LD_matrix <- echofinemap::drop_finemap_cols(echodata::BST1_LD_matrix)
 #' out <- echoLD::subset_common_snps(LD_matrix, dat)
 #' LD_matrix <- out$LD
 #' dat <- out$DT
@@ -164,16 +164,12 @@ FINEMAP <- function(dat,
                                            verbose = verbose) 
   dylib_msg <- paste(
       "\n*********\n",
-      "Error detected:",
-      "'dyld: Library not loaded: /usr/local/lib/libzstd.1.dylib'\n",
-      "If you are using Mac OS, please install Zstandard\n",
-      "(https://facebook.github.io/zstd/).\n",
-      "e.g. `brew install zstd`\n\n",
+      "System dependency error detected:",
+      "If you are using Mac OS, please make sure you have the",
+      "following software installed using brew:", 
+      "e.g. `brew install zstd libomp gcc`",
       
-      "Also, ensure that you have gcc v8 installed,\n",
-      "as FINEMAP v1.4 is only compatible with this version.\n\n",
-      
-      "If Zstandard is already installed and this error persists,\n",
+      "If this error persists,\n",
       "please see the main FINEMAP website for additional support\n",
       "(http://www.christianbenner.com).",
       "\n*********\n\n"

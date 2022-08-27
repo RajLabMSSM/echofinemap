@@ -6,7 +6,8 @@
 #' @importFrom utils untar
 #' @keywords internal
 #' @source
-#' \url{http://www.christianbenner.com}
+#' \href{http://www.christianbenner.com}{FINEMAP site}
+#' \href{https://support.bioconductor.org/p/9141978/}{Similar dynlib error in R}
 #' @examples
 #' FINEMAP_path <- echofinemap:::FINEMAP_find_executable(version="1.3.1")
 FINEMAP_find_executable <- function(FINEMAP_path=NULL,
@@ -23,6 +24,7 @@ FINEMAP_find_executable <- function(FINEMAP_path=NULL,
     # messager("+ Using FINEMAP",paste0("v",version),v=verbose)
     if(OS=="osx"){
         exec <- paste0("finemap_v",version,"_MacOSX")
+        gcc_df <- setup_gcc(verbose = verbose)
     } else{
         exec <- paste0("finemap_v",version,"_x86_64")
     }   

@@ -4,7 +4,8 @@
 \alias{FINEMAP_find_executable}
 \title{Find FINEMAP executable}
 \source{
-\url{http://www.christianbenner.com}
+\href{http://www.christianbenner.com}{FINEMAP site}
+\href{https://support.bioconductor.org/p/9141978/}{Similar dynlib error in R}
 }
 \usage{
 FINEMAP_find_executable(

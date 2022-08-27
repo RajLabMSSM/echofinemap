@@ -131,7 +131,7 @@ the user-supplied \code{n_causal} argument.
 \examples{
 locus_dir <- file.path(tempdir(),echodata::locus_dir)
 dat <- echodata::BST1;
-LD_matrix <- echodata::BST1_LD_matrix
+LD_matrix <- echofinemap::drop_finemap_cols(echodata::BST1_LD_matrix)
 out <- echoLD::subset_common_snps(LD_matrix, dat)
 LD_matrix <- out$LD
 dat <- out$DT
