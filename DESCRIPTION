@@ -65,7 +65,7 @@ Remotes:
   github::RajLabMSSM/echoLD,
   github::RajLabMSSM/echoannot,
   github::RajLabMSSM/echoconda
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1.9000
 VignetteBuilder: knitr
 License: GPL-3
 Config/testthat/edition: 3

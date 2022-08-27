@@ -9,9 +9,9 @@ POLYFUN_h2_enrichment_SNPgroups_plot(
   snp_groups = c("GWAS lead", "UCS", "Consensus (-PolyFun)", "Consensus"),
   comparisons_filter = function(x) {
      if ("Consensus" \%in\% x) 
-        
-    return(x)
- },
+         return(x)
+
+    },
   method = "wilcox.test",
   remove_outliers = TRUE,
   title = "S-LDSC heritability enrichment",

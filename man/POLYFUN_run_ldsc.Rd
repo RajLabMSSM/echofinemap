@@ -19,8 +19,8 @@ POLYFUN_run_ldsc(
   chrom = "all",
   compute_ldscores = FALSE,
   allow_missing_SNPs = TRUE,
- 
-    munged_path = "/sc/arion/projects/pd-omics/tools/polyfun/Nalls23andMe_2019.sumstats_munged.parquet",
+  munged_path =
+    "/sc/arion/projects/pd-omics/tools/polyfun/Nalls23andMe_2019.sumstats_munged.parquet",
   ref.prefix = "/sc/arion/projects/pd-omics/data/1000_Genomes/Phase1/1000G.mac5eur.",
   freq.prefix = "/sc/arion/projects/pd-omics/tools/polyfun/1000G_frq/1000G.mac5eur.",
   conda_env = "echoR_mini",

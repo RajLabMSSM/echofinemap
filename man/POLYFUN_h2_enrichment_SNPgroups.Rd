@@ -10,8 +10,8 @@ https://www.nature.com/articles/s41588-020-00735-5
 POLYFUN_h2_enrichment_SNPgroups(
   merged_dat,
   chrom = "*",
- 
-    ldsc_dir = "/sc/arion/projects/pd-omics/brian/Fine_Mapping/Data/GWAS/Nalls23andMe_2019/_genome_wide/PolyFun/output",
+  ldsc_dir =
+    "/sc/arion/projects/pd-omics/brian/Fine_Mapping/Data/GWAS/Nalls23andMe_2019/_genome_wide/PolyFun/output",
   ldsc_suffix = "*.snpvar_constrained.gz",
   save_enrich = FALSE,
   nThread = 1

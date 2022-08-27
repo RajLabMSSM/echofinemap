@@ -8,8 +8,8 @@ https://www.nature.com/articles/s41588-020-00735-5
 }
 \usage{
 POLYFUN_ldsc_annot_enrichment(
- 
-    .results = "Data/GWAS/Nalls23andMe_2019/_genome_wide/PolyFun/output/PD_GWAS_LDSC/PD_GWAS_LDSC.results",
+  .results =
+    "Data/GWAS/Nalls23andMe_2019/_genome_wide/PolyFun/output/PD_GWAS_LDSC/PD_GWAS_LDSC.results",
   show_plot = TRUE,
   save_plot = FALSE,
   title = "LDSC Heritability Enrichment",

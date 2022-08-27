@@ -4,8 +4,46 @@
 #' containing the SNP with the lowest P-value alone and then iteratively 
 #' adds to the causal configuration the SNP given the highest 
 #' posterior model probability until no further SNP yields
-#' a higher posterior model probability.
-#'
+#' a higher posterior model probability.\cr\cr
+#' \bold{Output coumns}\cr
+#' Note that not not all versions of \code{FINEMAP} will necessarily 
+#' have all of these columns, 
+#' but "PP" and "CS" will always be present regardless of version. 
+#' \itemize{
+#' \item{\emph{PP} : \cr}{
+#' Per-SNP conditional posterior probability (PP), 
+#'  after conditioning on the other SNPs 
+#'  within its respective Credible Set (CS).
+#'  If a given SNP is present in more than one CS, 
+#'  each row will be a list of PP (one per CS).
+#'  These PP were extracted from \emph{.cred} file(s).
+#'  SNPs that were not within the CS are designated \code{NA}.
+#' }
+#' \item{\emph{CS} : \cr}{
+#' The Credible Set (CS) that a given SNP belongs to.
+#'  If a given SNP is present in more than one CS, 
+#'  each row will be a list of CS id numbers (one per CS).
+#'  These CS were extracted from \emph{.cred} file(s).
+#' }
+#' \item{\emph{PP_snp} : \cr}{
+#' Per-SNP marginal posterior inclusion probability (PIP), 
+#'  which is the probability that a given SNP is in the Credible Set (CS).
+#'  These PIP were extracted from \emph{.snp} file(s).
+#'  Only SNPs that were excluded from the fine-mapping input. 
+#' (e.g. due to not overlapping with the LD panel) are designated \code{NA}.
+#' } 
+#' \item{\emph{PP_config} : \cr}{
+#' Per-CS posterior probability (PP) that a given Credible Set (CS) 
+#'  (i.e. "configuration" of SNPs) is causal.
+#'  These PP were extracted from \emph{.config} file(s).
+#'  Only SNPs that were not within any CS are designated \code{NA}.
+#' }   
+#' \item{\emph{k} : \cr}{
+#' Optimized number of causal SNPs, which can be less than or equal to 
+#' the user-supplied \code{n_causal} argument.
+#'  These values were extracted from \emph{.log} file(s).
+#' } 
+#' } 
 #' @param model "cond" for stepwise conditional search, 
 #' "sss" for stochastic shotgun search.
 #' @param finemap_version Which FINEMAP version to use (specify as a string).

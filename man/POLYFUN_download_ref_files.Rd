@@ -5,8 +5,8 @@
 \title{Download 1000 Genomes reference files}
 \usage{
 POLYFUN_download_ref_files(
- 
-    alkes_url = "https://data.broadinstitute.org/alkesgroup/LDSCORE/1000G_Phase1_plinkfiles.tgz",
+  alkes_url =
+    "https://data.broadinstitute.org/alkesgroup/LDSCORE/1000G_Phase1_plinkfiles.tgz",
   results_dir = "./results",
   force_overwrite = FALSE,
   download_method = "wget",
