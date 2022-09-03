@@ -49,7 +49,7 @@ FINEMAP_import_data_cred <- function(locus_dir,
             if(any(basename(cp)==paste0("data.cred",causal_k))){
                 return(cp)
             } else{NULL}
-        }) %>% unlist() 
+        }) |> unlist() 
         causal_k <- as.integer(gsub("data.cred","",basename(cred_path)))
         cred_path <- stats::setNames(cred_path, causal_k)
     } else {
@@ -83,15 +83,15 @@ FINEMAP_import_data_cred <- function(locus_dir,
                                    PP=unname(t(PP_vals)[,1]),
                                    CS=d$index[i],
                                    k=k) 
-        }) %>% data.table::rbindlist() %>%
+        }) |> data.table::rbindlist() |>
             subset(!is.na(SNP)) 
         return(CS)
-    }) %>% data.table::rbindlist()
+    }) |> data.table::rbindlist()
     #### Ensure 1 line per SNP ####
-    cred_dat <- dplyr::group_by(cred_dat, SNP) %>%
+    cred_dat <- dplyr::group_by(cred_dat, SNP) |>
         dplyr::summarise(PP=agg_func(PP),
                          CS=agg_func(CS),
-                         k=paste(k,collapse = ";")) %>%
+                         k=paste(k,collapse = ";")) |>
         data.table::data.table()
     
     #### Assign credible set number ####

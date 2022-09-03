@@ -103,15 +103,44 @@ multifinemap_handler_method <- function(dat,
                        )
         
         
-    } else if("COJO" %in% finemap_method){
-        #### COJO #### 
+    } else if("COJO_stepwise" %in% finemap_method){
+        #### COJO_stepwise #### 
         dat <- COJO(dat = dat,
                     locus_dir = locus_dir,
                     fullSS_path = fullSS_path,
                     conditioned_snps = conditioned_snps,
-                    conditional_analysis = TRUE,
-                    stepwise_procedure = FALSE 
-        )
+                    run_stepwise = TRUE,
+                    run_conditional = FALSE,
+                    run_joint = FALSE,
+                    full_genome = TRUE,
+                    credset_thresh = credset_thresh,
+                    verbose = verbose)
+        
+    } else if("COJO_conditional" %in% finemap_method){
+        #### COJO_conditional #### 
+        dat <- COJO(dat = dat,
+                    locus_dir = locus_dir,
+                    fullSS_path = fullSS_path,
+                    conditioned_snps = conditioned_snps,
+                    run_stepwise = FALSE,
+                    run_conditional = TRUE,
+                    run_joint = FALSE,
+                    full_genome = FALSE,
+                    credset_thresh = credset_thresh,
+                    verbose = verbose)
+        
+    } else if("COJO_joint" %in% finemap_method){
+        #### COJO_conditional #### 
+        dat <- COJO(dat = dat,
+                    locus_dir = locus_dir,
+                    fullSS_path = fullSS_path,
+                    conditioned_snps = conditioned_snps,
+                    run_stepwise = FALSE,
+                    run_conditional = FALSE,
+                    run_joint = TRUE,
+                    full_genome = TRUE,
+                    credset_thresh = credset_thresh,
+                    verbose = verbose)
         
     } else if("PAINTOR" %in% finemap_method) {
         #### PAINTOR ####

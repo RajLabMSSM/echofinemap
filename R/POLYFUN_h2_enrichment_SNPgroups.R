@@ -19,7 +19,7 @@ POLYFUN_h2_enrichment_SNPgroups <- function(merged_dat,
                                             save_enrich=FALSE,
                                             nThread=1){
     # Gather your heritability
-    ldsc.files <- list.files(ldsc_dir, pattern = ldsc_suffix, full.names = TRUE) %>%
+    ldsc.files <- list.files(ldsc_dir, pattern = ldsc_suffix, full.names = TRUE) |>
         grep(pattern = paste0(".",chrom,"."), value = TRUE)
     h2_DF <- rbind_filelist(ldsc.files)
     
@@ -132,7 +132,7 @@ POLYFUN_h2_enrichment_SNPgroups <- function(merged_dat,
                                           Finemap.consensus))
         res <- cbind(Locus=locus, res)
         return(res)
-    }, mc.cores = nThread) %>% data.table::rbindlist(fill = TRUE)
+    }, mc.cores = nThread) |> data.table::rbindlist(fill = TRUE)
     
     if(save_enrich!=FALSE){
         messager("POLFUN:: Saving enrichment results ==>",save_enrich)

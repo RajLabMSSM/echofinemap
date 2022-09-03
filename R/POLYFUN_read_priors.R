@@ -4,7 +4,6 @@
 #'  Handles PolyFun version differences in file formatting
 #'   (see \href{https://github.com/RajLabMSSM/echolocatoR/issues/80}{here}).
 #' @keywords internal 
-#' @importFrom dplyr %>%
 #' @importFrom data.table fread
 POLYFUN_read_priors <- function(snp_w_priors.file,
                                 nThread=1,
@@ -20,10 +19,10 @@ POLYFUN_read_priors <- function(snp_w_priors.file,
     } else {
         messager("++ Importing precomputed priors.",v=verbose) 
         if("SNP_x" %in% colnames(priors)){
-            priors <- priors %>% dplyr::rename(SNP=SNP_x)
+            priors <- priors |> dplyr::rename(SNP=SNP_x)
         }
         if("SNP_y" %in% colnames(priors)){
-            priors <- priors %>% dplyr::select(-SNP_y)
+            priors <- priors |> dplyr::select(-SNP_y)
         }
         return(priors)
     } 

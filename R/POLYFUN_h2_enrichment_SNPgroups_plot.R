@@ -33,13 +33,13 @@ POLYFUN_h2_enrichment_SNPgroups_plot <- function(RES,
         outliers <- boxplot(RES$h2.enrichment, plot=FALSE)$out
         RES <- RES[-which(RES$h2.enrichment %in% outliers),]
     }
-    plot_dat <- subset(RES, SNP_group %in% snp_groups) %>%
+    plot_dat <- subset(RES, SNP_group %in% snp_groups) |>
         dplyr::mutate(SNP_group=factor(SNP_group, levels=names(colorDict), ordered = TRUE))
     snp.groups <- unique(plot_dat$SNP_group)
     comparisons <- utils::combn(x = as.character(snp.groups),
                                 m=2,
                                 FUN = comparisons_filter,
-                                simplify  = FALSE) %>% purrr::compact()
+                                simplify  = FALSE) |> purrr::compact()
     pb <- ggplot(data = plot_dat, aes(x=SNP_group, y=h2.enrichment, fill=SNP_group)) +
         geom_jitter(alpha=.1,width = .25, show.legend = FALSE, shape=16, height=0) +
         geom_violin(alpha=.6, show.legend  = FALSE) +

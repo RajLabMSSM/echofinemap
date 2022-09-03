@@ -4,6 +4,7 @@
 #' @family FINEMAP
 #' @importFrom tools R_user_dir
 #' @importFrom utils untar
+#' @importFrom echodata get_os
 #' @keywords internal
 #' @source
 #' \href{http://www.christianbenner.com}{FINEMAP site}
@@ -20,7 +21,7 @@ FINEMAP_find_executable <- function(FINEMAP_path=NULL,
                                     ),
                                     version=package_version("1.4.1"),
                                     verbose=TRUE){
-    if(is.null(OS)) OS <- get_os()
+    if(is.null(OS)) OS <- echodata::get_os()
     # messager("+ Using FINEMAP",paste0("v",version),v=verbose)
     if(OS=="osx"){
         exec <- paste0("finemap_v",version,"_MacOSX")

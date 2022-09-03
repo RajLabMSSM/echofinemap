@@ -14,7 +14,7 @@ POLYFUN_gather_annot_proportions <- function(base_url="/sc/arion/projects/pd-omi
             return(annot_prop)
         }, mc.cores = 4)
         
-        annot_PROP_DF <- do.call("cbind",annot_PROP) %>% `colnames<-`(paste0("chr",1:length(annot_PROP)))
+        annot_PROP_DF <- do.call("cbind",annot_PROP) |> `colnames<-`(paste0("chr",1:length(annot_PROP)))
         write.csv(annot_PROP_DF, file = prop.file)
     } else {
         annot_PROP_DF <- read.csv(prop.file, row.names = 1)

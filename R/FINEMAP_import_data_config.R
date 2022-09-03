@@ -44,7 +44,7 @@ FINEMAP_import_data_config <- function(locus_dir,
             data.table::data.table(SNP=snps, 
                                    prob=as.numeric(rep(ROW$prob,length(snps))),
                                    k=rep(length(snps),length(snps)))
-        }) %>% data.table::rbindlist() 
+        }) |> data.table::rbindlist() 
     } 
     #### Post-process #####
     if(nrow(config_dat_melt)>0){

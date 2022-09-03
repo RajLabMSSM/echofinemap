@@ -5,7 +5,6 @@
 #' @family general
 #' @keywords internal
 #' @importFrom data.table fread rbindlist
-#' @importFrom dplyr %>%
 rbind_filelist <- function(file.list,
                            nThread=1,
                            verbose=TRUE){
@@ -13,6 +12,6 @@ rbind_filelist <- function(file.list,
         messager(x, v = verbose)
         dat <- data.table::fread(x)
         return(dat)
-    }, mc.cores = nThread) %>% data.table::rbindlist(fill=TRUE)
+    }, mc.cores = nThread) |> data.table::rbindlist(fill=TRUE)
     return(merged.dat)
 }

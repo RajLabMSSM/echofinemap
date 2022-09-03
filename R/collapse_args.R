@@ -10,7 +10,7 @@ collapse_args <- function(args_list){
     } else {
       args_str <- lapply(names(args_list), function(x){
         paste(x, args_list[[x]])
-      }) %>% paste(collapse=" ")
+      }) |> paste(collapse=" ")
       return(args_str)
     }
   }

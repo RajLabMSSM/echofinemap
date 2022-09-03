@@ -22,6 +22,6 @@ SUSIE_extract_cs <- function(dat,
     dat$CS <- lapply(dat$SNP, function(x){
         if(x %in% names(CS_dict) & subset(dat, SNP==x)$PP>=credset_thresh){
             CS_dict[[x]]
-        } else{0}}) %>% unlist()
+        } else{0}}) |> unlist()
     return(dat)
 }

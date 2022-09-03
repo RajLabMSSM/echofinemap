@@ -27,8 +27,8 @@ FINEMAP_import_log <- function(locus_dir,
         i <- grep(pattern = pattern, l)
         pr <- data.frame(pr=trimws(gsub("[(]|[)]","",
                                         grep("^-",l[seq(i,i+n_causal+2)], 
-                                             invert = TRUE, value = TRUE)))) %>%
-            tidyr::separate(col = "pr",sep = "->", into = c("k","prob")) %>%
+                                             invert = TRUE, value = TRUE)))) |>
+            tidyr::separate(col = "pr",sep = "->", into = c("k","prob")) |>
             dplyr::mutate_all(as.numeric)
         return(pr)
     }

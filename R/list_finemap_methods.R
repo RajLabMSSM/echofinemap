@@ -5,8 +5,8 @@
 #' @export
 #' @examples 
 #' finemap_methods <- echofinemap::list_finemap_methods()
-lfm <- list_finemap_methods <- function(finemap_methods=NULL,
-                                        verbose=TRUE){
+lfm <- list_finemap_methods <- function(finemap_methods = NULL,
+                                        verbose = TRUE){
     d <- required_cols() 
     if(is.null(finemap_methods)) finemap_methods <- d$method 
     skip_methods <- finemap_methods[!finemap_methods %in% d$method]

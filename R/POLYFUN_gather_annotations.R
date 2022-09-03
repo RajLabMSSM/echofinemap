@@ -23,7 +23,7 @@ POLYFUN_gather_annotations <- function(chromosomes=c(1:22),
             annot_df <- subset(annot_df, SNP %in% subset_snps)
         }
         return(data.table::data.table(annot_df))
-    }) %>% data.table::rbindlist()
+    }) |> data.table::rbindlist()
     return(annot_DT)
 }
 

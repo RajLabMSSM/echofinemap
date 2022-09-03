@@ -68,7 +68,7 @@ PAINTOR.create_locusFile <- function(subset_path,
                                         use_saved=TRUE,
                                         output_path=output_path)
   # Get the party started using the GWAS file
-  dat <- data.table::fread(subset_path, nThread = 1) %>%
+  dat <- data.table::fread(subset_path, nThread = 1) |>
     dplyr::mutate(CHR=paste0("chr",CHR),
                   RSID=SNP,
                   ZSCORE.P1=Zscore(x = Effect, z.info = z.info.gwas))
@@ -149,7 +149,7 @@ PAINTOR.create_locusFile.QTL <- function(dat,
   }
   # Remove the un-zscored cols
   z.cols <- grep("ZSCORE.P",colnames(locus_DT), value=TRUE)
-  locus_DT <- locus_DT %>% dplyr::select(CHR, POS, RSID=SNP, z.cols) %>%
+  locus_DT <- locus_DT |> dplyr::select(CHR, POS, RSID=SNP, z.cols) |>
     dplyr::mutate(CHR=paste0("chr",CHR))
   ## Remove NAs (PAINTOR doesn't tolerate missing values)
   if(NA_method[1]=="fill"){
@@ -216,7 +216,7 @@ PAINTOR.prepare_LD.transethnic <- function(subset_path,
     .LD_file <- file.path(PT_results_path, paste0(locus_name,".ld",i))
     messager("+ PAINTOR::",pop)
     LD_matrix <- ld.mat.list[[i]]
-    ld.mat <- LD_matrix[shared.snps, shared.snps] %>% data.table::data.table()
+    ld.mat <- LD_matrix[shared.snps, shared.snps] |> data.table::data.table()
     messager("++ PAINTOR::",paste(dim(ld.mat),collapse=" x "),"LD matrix.")
     # sum(is.na(ld.mat)); sum(abs(ld.mat)==Inf); sum(is.null(abs(ld.mat)))
     ## Write
@@ -229,7 +229,7 @@ PAINTOR.prepare_LD.transethnic <- function(subset_path,
                        nThread = 1)
 
     return(.LD_file)
-  }) %>% unlist()
+  }) |> unlist()
 
   if(!is.null(GWAS_populations)){
     messager("PAINTOR:: Identifying refrence pop for GWAS LD.")
@@ -269,7 +269,7 @@ PAINTOR.prepare_LD <- function(subset_path,
 
   ## Make sure SNPs are in the same order as the Locus File
   .LD_file <- file.path(PT_results_path, paste0(locus_name,".ld1"))
-  ld.mat <- LD_matrix[locus_DT$RSID, locus_DT$RSID] %>%
+  ld.mat <- LD_matrix[locus_DT$RSID, locus_DT$RSID] |>
     data.table::as.data.table()
   ## Write
   messager("++ PAINTOR:: Writing LD file to ==> ",.LD_file)
@@ -482,7 +482,7 @@ PAINTOR.survey_annotation <- function(PT_results_path,
 PAINTOR.process_results <- function(PT_results_path,
                                     locus_name="Locus1"){
   paintor.results <- data.table::fread(file.path(PT_results_path, paste0(locus_name,".results.txt")),
-                                       nThread = 1) %>%
+                                       nThread = 1) |>
     arrange(desc(Posterior_Prob))
   return(data.table::data.table(paintor.results))
 }
@@ -522,7 +522,7 @@ PAINTOR.run <- function(paintor_path=NULL,
   PT.start <- Sys.time()
   # Enumerate or mcmc sampling
   method_command <- ifelse(method=="enumerate", paste("-enumerate",n_causal),"-mcmc")
-  .LD_suffixes <- lapply(.LD_file.paths, function(x){tail(strsplit(x, "[.]")[[1]], 1) }) %>% unlist()
+  .LD_suffixes <- lapply(.LD_file.paths, function(x){tail(strsplit(x, "[.]")[[1]], 1) }) |> unlist()
   ## RUN
   # https://github.com/gkichaev/PAINTOR_V3.0/wiki/3.-Running-Software-and-Suggested-Pipeline
   cmd <- paste(
@@ -622,7 +622,7 @@ PAINTOR.import_QTL_DT <- function(QTL_datasets,
       messager("PAINTOR:: Creating subset file for",locus)
       qtl.dat <- data.table::fread(fullSS_path, nThread = 1)
       ## Remove the "locus" column bc it confuses subsetting functions
-      # qtl.dat <- dplyr::select(qtl.dat, select = -locus) %>%
+      # qtl.dat <- dplyr::select(qtl.dat, select = -locus) |>
       #   subset(gene_name==locus)
       data.table::fwrite(qtl.dat, subset_path, sep="\t")
       dat <- preprocess_subset(locus = locus,
@@ -635,23 +635,23 @@ PAINTOR.import_QTL_DT <- function(QTL_datasets,
                                      tstat_col = "statistic",
                                      stderr_col = "calculate",
                                      A1_col = "ref",
-                                     A2_col = "alt")  %>%
+                                     A2_col = "alt")  |>
         data.table::data.table()
     }
     dat <- cbind(Dataset=qtl, dat)
     return(dat)
-  }) %>% data.table::rbindlist()
+  }) |> data.table::rbindlist()
   # Trim by coordinates
   if(trim_gene_limits){
     QTL.dat <- echodata:::gene_trimmer(dat = QTL.dat, gene = locus)
   }
   # Spread data
-  lead.snps <- (QTL.dat %>% dplyr::group_by(Dataset) %>% top_n(n=1, wt=-P))
+  lead.snps <- (QTL.dat |> dplyr::group_by(Dataset) |> top_n(n=1, wt=-P))
   QTL.dat$Dataset <- paste(QTL.dat$Dataset,metric,sep=".")
   QTL.spread <-  tidyr::spread(
     data = data.frame(QTL.dat)[,c("Dataset","CHR","POS","SNP",
                                   "leadSNP","A1","A2",metric)],
-                               key="Dataset", value = metric) %>%
+                               key="Dataset", value = metric) |>
     data.table::data.table()
 
   # Find lead SNP for each QTL condition
@@ -738,9 +738,9 @@ PAINTOR <- function(dat=NULL,
       colnames(dat)[-1] <- paste0("GWAS.",colnames(dat)[-1])
       dat <- echodata::merge_robust(dat, qtl_DT, by="SNP")
       # Flip alleles
-      dat <- dat %>%
+      dat <- dat |>
         dplyr::mutate(GWAS.t_stat = ifelse((GWAS.A1!=A1 & GWAS.A2!=A2),
-                                           -GWAS.t_stat,GWAS.t_stat)) %>%
+                                           -GWAS.t_stat,GWAS.t_stat)) |>
         data.table::data.table()
       # Rename GWAS cols
       colnames(dat) <- gsub("GWAS.",paste0(GWAS_datasets[1],"."),colnames(dat))
@@ -865,7 +865,7 @@ PAINTOR <- function(dat=NULL,
 
   # Update Consensus SNP col and Summarise
   # merged_DT <- echodata::find_consensus_snps(merged_DT, support_thresh = 2)
-  # top_snps <- (dat %>% arrange(desc(Support)))[,c("SNP","Support","Consensus_SNP")] %>% head(10)
+  # top_snps <- (dat |> arrange(desc(Support)))[,c("SNP","Support","Consensus_SNP")] |> head(10)
   # data.table::fwrite(merged_DT, mfm_path, nThread = 1, sep="\t")
 
   # PLOT
@@ -963,7 +963,7 @@ transethnic_plot <- function(merged_DT,
     geom_point(dat=subset(dat, Support>0),
                shape=1, size=6, color="green") +
     ggrepel::geom_label_repel(dat=subset(dat, PAINTOR_MESA_transethnic.CS>0,
-                                         select=c("SNP","CHR","POS","Mb","leadSNP","PAINTOR_MESA_transethnic.PP")) %>% unique(), aes(label=SNP),
+                                         select=c("SNP","CHR","POS","Mb","leadSNP","PAINTOR_MESA_transethnic.PP")) |> unique(), aes(label=SNP),
                               alpha=0.8, point.padding = 1, color="green") +
     theme_classic() +
     facet_grid(PAINTOR.label~.) +

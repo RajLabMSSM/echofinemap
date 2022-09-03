@@ -1,3 +1,18 @@
+# echofinemap 0.99.3
+
+## New features
+
+* `COJO`:
+    - Now working with *echoverse*.
+    - Added 3 COJO modes to list of finemapping methods:
+        `run_stepwise`,`run_conditional`,`run_joint`
+    - Automated installation of GCTA.
+
+## Bug fixes
+
+* `FINEMAP`: Figured out solution to get FINEMAP v1.4 working on Mac. 
+    Instructions in messages now updated.
+
 # echofinemap 0.99.2
 
 ## New features

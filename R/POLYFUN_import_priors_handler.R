@@ -25,7 +25,7 @@ POLYFUN_import_priors_handler <- function(dat,
     } else if (mode=="parametric"){
         ldsc.files <- list.files(out.path, 
                                  pattern = "*.snpvar_ridge_constrained.gz",
-                                 full.names = TRUE) %>%
+                                 full.names = TRUE) |>
             grep(pattern = paste0(".",chrom,"."),
                  value = TRUE, fixed=TRUE)
         priors <- rbind_filelist(ldsc.files)
@@ -33,7 +33,7 @@ POLYFUN_import_priors_handler <- function(dat,
     } else if (mode=="non-parametric"){
         ldsc.files <- list.files(out.path, 
                                  pattern = "*.snpvar_constrained.gz",
-                                 full.names = TRUE) %>%  
+                                 full.names = TRUE) |>  
             base::grep(pattern = paste0(".",chrom,"."), 
                        value = TRUE, fixed = TRUE)
         priors <- rbind_filelist(ldsc.files)
@@ -44,8 +44,8 @@ POLYFUN_import_priors_handler <- function(dat,
         stop(stp2)
     } 
     ##### Ensure formatting is correct ####
-    priors <- dplyr::select(priors, SNP, POLYFUN.h2=SNPVAR) %>%
-        data.table::data.table() %>%
+    priors <- dplyr::select(priors, SNP, POLYFUN.h2=SNPVAR) |>
+        data.table::data.table() |>
         dplyr::mutate(SNP=as.character(SNP))
     merged_dat <- echodata::merge_robust(x = dat,
                                          y = priors,

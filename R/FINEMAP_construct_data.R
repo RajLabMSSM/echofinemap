@@ -47,7 +47,7 @@ FINEMAP_construct_data <- function(dat,
     };
     #### Construct files #####
     messager("Constructing data.z file.",v=verbose)
-    data.z <- dat %>% dplyr::select(rsid=SNP,
+    data.z <- dat |> dplyr::select(rsid=SNP,
                                     chromosome=CHR,
                                     position=POS,
                                     allele1=A1,
@@ -67,7 +67,7 @@ FINEMAP_construct_data <- function(dat,
     cols_to_be_rectified <- names(data.z)[
         vapply(data.z, is.character, logical(1))
     ]
-    data.z <- data.z %>%
+    data.z <- data.z |>
         dplyr::mutate_at(.vars = dplyr::all_of(cols_to_be_rectified),
                          .funs = trimws )
     

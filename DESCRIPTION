@@ -1,7 +1,7 @@
 Package: echofinemap
 Type: Package
 Title: echoverse module: Fine-mapping functions
-Version: 0.99.2
+Version: 0.99.3
 Authors@R: 
     c(person(given = "Brian",
            family = "Schilder",
@@ -59,12 +59,14 @@ Suggests:
     patchwork,
     purrr,
     Rfast,
-    devtools
+    devtools,
+    genetics.binaRies
 Remotes:
   github::RajLabMSSM/echodata,
   github::RajLabMSSM/echoLD,
   github::RajLabMSSM/echoannot,
-  github::RajLabMSSM/echoconda
+  github::RajLabMSSM/echoconda,
+  github::MRCIEU/genetics.binaRies
 RoxygenNote: 7.2.1.9000
 VignetteBuilder: knitr
 License: GPL-3

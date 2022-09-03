@@ -14,7 +14,7 @@
 #' in genetic epidemiology studies. American Journal of Human Genetics. 
 #' 81, 208–227 (2007).} 
 #' @export
-#' @importFrom dplyr %>% rename arrange desc
+#' @importFrom dplyr rename arrange desc
 #' @importFrom echodata get_sample_size
 #' @importFrom coloc finemap.abf
 #' @importFrom data.table data.table
@@ -62,9 +62,9 @@ ABF <- function(dat,
   res <- coloc::finemap.abf(dataset = dataset)
 
   #### Post-process results ####
-  res <- subset(res, snp!="null") %>%
-    dplyr::rename(SNP=snp, PP=SNP.PP) %>%
-    dplyr::arrange(dplyr::desc(PP)) %>% 
+  res <- subset(res, snp!="null") |>
+    dplyr::rename(SNP=snp, PP=SNP.PP) |>
+    dplyr::arrange(dplyr::desc(PP)) |> 
     # Any SNPs with a PP greater than the set threshold 
     # get included in the credible set
     dplyr::mutate(CS = ifelse(PP >= credset_thresh, 1, 0)) 
@@ -73,6 +73,6 @@ ABF <- function(dat,
     x=data.table::data.table(dat), 
     y=data.table::data.table(subset(res, select=c("SNP","PP","CS"))),
     on="SNP")
-  res <- res %>% dplyr::arrange(dplyr::desc(PP))
+  res <- res |> dplyr::arrange(dplyr::desc(PP))
   return(res)
 }

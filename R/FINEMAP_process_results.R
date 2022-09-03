@@ -5,7 +5,7 @@
 #' @family FINEMAP
 #' @keywords internal
 #' @source \url{http://www.christianbenner.com}
-#' @importFrom dplyr %>% arrange desc
+#' @importFrom dplyr arrange desc
 #' @source 
 #' \code{
 #' locus_dir <- file.path(tempdir(), echodata::locus_dir)
@@ -75,7 +75,7 @@ FINEMAP_process_results <- function(dat,
         if(nrow(data.config)>0){
             dat <- data.table::merge.data.table(
                 data.table::data.table(dat),
-                data.table::data.table(data.config) %>%
+                data.table::data.table(data.config) |>
                     dplyr::rename(PP_config=prob),
                 by="SNP",
                 all.x = TRUE) 

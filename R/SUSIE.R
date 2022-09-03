@@ -47,7 +47,6 @@
 #' Publication}
 #' 
 #' @importFrom echoLD subset_common_snps
-#' @importFrom dplyr %>% 
 #' @importFrom stats setNames
 #' @importFrom rlang missing_arg
 #' @importFrom Matrix forceSymmetric

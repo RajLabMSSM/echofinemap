@@ -3,43 +3,207 @@
 \name{COJO}
 \alias{COJO}
 \title{Run \emph{GCTA-COJO}}
+\source{
+\href{https://yanglab.westlake.edu.cn/software/gcta/#COJO}{
+COJO documentation}
+\href{https://doi.org/10.1016/j.ajhg.2010.11.011}{Publication 1}
+\href{https://doi.org/10.1038/ng.2213}{Publication 2}
+}
 \usage{
 COJO(
   dat,
-  fullSS_path,
   locus_dir,
-  conditioned_snps,
-  excluded_snps = "",
-  min_MAF = 0,
-  GCTA_path = system.file("tools/gcta_1.92.1beta5_mac/bin", "gcta64", package =
-    "echolocatoR"),
-  bfiles = "plink_tmp/plink",
-  stepwise_procedure = TRUE,
-  conditional_analysis = TRUE,
-  snp_col = "SNP",
-  freq_col = "Freq",
-  effect_col = "Effect",
-  stderr_col = "StdErr",
-  pval_col = "P",
-  A1_col = "A1",
-  A2_col = "A2",
-  full_genome = F
+  bfile = file.path(locus_dir, "LD/plink"),
+  fullSS_path = NULL,
+  conditioned_snps = NULL,
+  exclude = NULL,
+  prefix = "cojo",
+  run_stepwise = TRUE,
+  run_conditional = FALSE,
+  run_joint = FALSE,
+  credset_thresh = 0.95,
+  freq_cutoff = 0.1,
+  compute_n = "ldsc",
+  colmap = echodata::construct_colmap(),
+  full_genome = FALSE,
+  gcta_path = echoconda::find_executables_remote(tool = "gcta")[[1]],
+  verbose = TRUE,
+  ...
 )
+}
+\arguments{
+\item{dat}{Fine-mapping results data.}
+
+\item{bfile}{Input PLINK binary PED files, e.g. test.fam, 
+test.bim and test.bed (see PLINK user manual for details).}
+
+\item{exclude}{Specify a list of SNPs to be excluded from the analysis.}
+
+\item{run_stepwise}{\code{--cojo-slct}:
+Perform a stepwise model selection procedure
+to select independently associated SNPs.
+Results will be saved in a \emph{*.jma} file
+with additional file \emph{*.jma.ldr} showing
+the LD correlations between the SNPs.}
+
+\item{run_conditional}{\code{--cojo-cond}: 
+Perform association analysis of the included SNPs conditional on the given
+ list of SNPs. Results will be saved in a \emph{*.cma}. 
+ The conditional SNP effects (i.e. bC) will be labelled as "NA" if 
+ the multivariate correlation between the SNP in question and all
+ the covariate SNPs is > 0.9.}
+
+\item{run_joint}{\code{--cojo-joint}: 
+Fit all the included SNPs to estimate their joint 
+effects without model selection. Results will be saved in a 
+\emph{*.jma} file with additional file \emph{*.jma.ldr}.}
+
+\item{credset_thresh}{The minimum mean Posterior Probability
+(across all fine-mapping methods used) of SNPs to be included in 
+the "mean.CS" column.}
+
+\item{compute_n}{How to compute per-SNP sample size (new column "N").
+\itemize{
+\item{\code{0}: }{N will not be computed.}
+\item{\code{>0}: }{If any number >0 is provided,
+that value will be set as N for every row.
+\strong{Note}: Computing N this way is incorrect and should be avoided
+if at all possible.}
+\item{\code{"sum"}: }{N will be computed as:
+cases (N_CAS) + controls (N_CON), so long as both columns are present}.
+\item{\code{"ldsc"}: }{N will be computed as effective sample size:
+Neff =(N_CAS+N_CON)*(N_CAS/(N_CAS+N_CON)) / mean((N_CAS/(N_CAS+N_CON))(N_CAS+N_CON)==max(N_CAS+N_CON))}.
+\item{\code{"giant"}: }{N will be computed as effective sample size:
+Neff = 2 / (1/N_CAS + 1/N_CON)}.
+\item{\code{"metal"}: }{N will be computed as effective sample size:
+Neff = 4 / (1/N_CAS + 1/N_CON)}.
+}}
+
+\item{verbose}{Print messages.}
+
+\item{...}{
+  Arguments passed on to \code{\link[=COJO_args]{COJO_args}}
+  \describe{
+    \item{\code{cojo_file}}{Input the summary-level statistics 
+from a meta-analysis GWAS (or a single GWAS).}
+    \item{\code{out}}{Specify output root filename.}
+    \item{\code{cojo_slct}}{Perform a stepwise model selection procedure to select 
+independently associated SNPs. Results will be saved in a 
+*.jma file with additional file *.jma.ldr showing the LD 
+correlations between the SNPs.}
+    \item{\code{cojo_cond}}{Perform association analysis of the included
+SNPs conditional on the given list of SNPs. 
+Results will be saved in a *.cma. The conditional SNP effects 
+(i.e. bC) will be labelled as "NA" if the
+ multivariate correlation between the SNP in question and
+  all the covariate SNPs is > 0.9.}
+    \item{\code{cojo_joint}}{Fit all the included SNPs to estimate their joint effects 
+without model selection. Results will be saved in a
+ *.jma file with additional file *.jma.ldr showing the 
+ LD correlations between the SNPs.}
+    \item{\code{maf}}{Exclude SNPs with minor allele frequency (MAF) 
+less than a specified value, e.g. 0.01.}
+    \item{\code{max_maf}}{Include SNPs with MAF less than a specified value, e.g. 0.1.}
+    \item{\code{cojo_top_SNPs}}{Perform a stepwise model selection procedure 
+to select a fixed number of independently associated SNPs without 
+a p-value threshold. The output format is the same as that 
+from \code{--cojo-slct}.}
+    \item{\code{cojo_p}}{Threshold p-value to declare a genome-wide significant hit.
+The default value is 5e-8 if not specified. 
+This option is only valid in conjunction with the option \code{--cojo-slct}.
+Note: it will be extremely time-consuming if you set 
+a very low significance level, e.g. 5e-3.}
+    \item{\code{cojo_wind}}{Specify a distance d (in Kb unit).
+It is assumed that SNPs more than d Kb away from each other are in 
+complete linkage equilibrium. The default value is 10000 Kb (i.e. 10 Mb) 
+if not specified.}
+    \item{\code{cojo_collinear}}{During the model selection procedure, 
+the program will check the collinearity between the SNPs that
+ have already been selected and a SNP to be tested. 
+ The testing SNP will not be selected if its multiple regression R2 
+ on the selected SNPs is greater than the cutoff value. 
+ By default, the cutoff value is 0.9 if not specified.}
+    \item{\code{diff_freq}}{To check the difference in allele frequency of 
+each SNP between the GWAS summary datasets and the LD reference sample. 
+SNPs with allele frequency differences greater than the specified 
+threshold value will be excluded from the analysis. The default value is 0.2.}
+    \item{\code{cojo_gc}}{If this option is specified, p-values will be adjusted 
+by the genomic control method. By default, the genomic 
+inflation factor will be calculated from the summary-level statistics 
+of all the SNPs unless you specify a value, e.g. \code{--cojo-gc 1.05}.}
+  }}
 }
 \description{
 Main function to run either the conditional stepwise procedure (genome-wide)
 or the conditional analysis (locus-specific) from \emph{GCTA-COJO}.
 }
-\seealso{
-Other COJO
-\url{https://www.nature.com/articles/ng.2213}
-\url{https://www.cell.com/ajhg/fulltext/S0002-9297(10)00598-7}
-\url{https://cnsgenomics.com/software/gcta/#Overview}: 
-\code{\link{COJO.stepwise}()},
-\code{\link{get_stepwise_results}()},
-\code{\link{process_COJO_results}()}
+\details{
+\href{http://cnsgenomics.com/software/gcta/#COJO}{\strong{Documentation}}\cr
+Columns are SNP, the effect allele, the other allele, 
+frequency of the effect allele,
+effect size, standard error, p-value and sample size.
+The headers are not keywords and will be omitted by the program.
+Important: "A1" needs to be the effect allele
+with "A2" being the other allele and "freq" 
+should be the frequency of "A1".'\cr
+Note: 1) For a case-control study, the effect size should be log(odds ratio) 
+with its corresponding standard error.
+2) Please always input the summary statistics of all SNPs even 
+if your analysis only focuses on a subset of SNPs
+because the program needs the summary data of all SNPs to calculate the 
+phenotypic variance. 
+You can use one of the \code{--extract} options (Data management) to limit 
+the  COJO analysis in a certain genomic region.\cr\cr
+\strong{General results columns}:\cr
+\itemize{
+\item{Chr : }{Chromosome.}
+\item{SNP : }{SNP RSID.}
+\item{bp : }{Physical position.}
+\item{refA : }{Effect allele.}
+\item{freq : }{Frequency of the effect allele in the original data.}
+\item{b : }{Effect size.}
+\item{se : }{Standard error.}
+\item{p : }{p-value from the original GWAS or meta-analysis.}
+\item{n : }{Estimated effective sample size.}
+\item{freq_geno : }{Frequency of the effect allele in the reference sample.}
 }
-\concept{COJO
-\url{https://www.nature.com/articles/ng.2213}
-\url{https://www.cell.com/ajhg/fulltext/S0002-9297(10)00598-7}
-\url{https://cnsgenomics.com/software/gcta/#Overview}}
+\strong{Stepwise analysis results columns}:\cr
+\itemize{
+\item{bJ : }{Effect size from the joint analysis of all the selected SNPs.}
+\item{bJ_se : }{Standard error from the joint analysis of all 
+the selected SNPs.}
+\item{pJ : }{p-value from the joint analysis of all the selected SNPs.}
+\item{LD_r : }{LD correlation between the SNP i and SNP i + 1 for
+ the SNPs on the list.}
+\item{LD_r2 : }{LD_r squared}
+\item{CS : }{Whether the SNP is in the Credible Set, 
+defined as any SNP with where \code{pJ<(1-credset_thresh)}.}
+}
+\strong{Conditional analysis results columns:}\cr
+\itemize{
+\item{bC : }{effect size from the conditional analysis}
+\item{bC_se : }{standard error from the conditional analysis}
+\item{pC : }{p-value from the conditional analysis}
+\item{CS : }{Whether the SNP is in the Credible Set, 
+defined as any SNP with where \code{pC<(1-credset_thresh)}}.
+}
+}
+\examples{
+vcf <- system.file("extdata", "BST1.1KGphase3.vcf.bgz",
+    package = "echodata")
+dat <- echodata::BST1
+locus_dir <- file.path(tempdir(), echodata::locus_dir)
+fullSS_path <- echodata::example_fullSS()
+bfile <- echoLD::vcf_to_plink(vcf = vcf)$prefix
+cojo_DT <- COJO(dat = dat, 
+                locus_dir = locus_dir,
+                fullSS_path = fullSS_path,
+                bfile = bfile)
+}
+\seealso{
+Other COJO: 
+\code{\link{COJO_locus_subdir}()},
+\code{\link{COJO_process_results}()},
+\code{\link{COJO_run}()}
+}
+\concept{COJO}
