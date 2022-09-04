@@ -1,3 +1,7 @@
+#' Import log
+#' 
+#' @keywords internal
+#' @importFrom tidyr separate
 FINEMAP_import_log <- function(locus_dir,
                                config_thresh=.95){
     log_path <- list.files(file.path(locus_dir,"FINEMAP"),

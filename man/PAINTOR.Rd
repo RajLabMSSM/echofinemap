@@ -9,12 +9,17 @@
 }
 \usage{
 PAINTOR(
-  dat = NULL,
+  dat,
+  annot = NULL,
+  dat_prefixes = NULL,
+  annot_prefixes = NULL,
+  zscore_col = "ZSCORE",
+  tstat_col = "tstat",
+  LD_matrix,
+  locus_dir,
+  fullSS_path,
+  storage_dir = tempdir(),
   paintor_path = NULL,
-  GWAS_datasets = NULL,
-  QTL_datasets = NULL,
-  locus,
-  locus_name = NULL,
   n_causal = 5,
   XGR_dataset = NA,
   ROADMAP_search = NA,
@@ -25,15 +30,29 @@ PAINTOR(
   multi_finemap_col_name = "PAINTOR",
   trim_gene_limits = FALSE,
   force_new_subset = FALSE,
-  GWAS_populations = "EUR",
-  QTL_populations = "EUR",
-  LD_reference = "1KG_Phase1",
+  dat_populations = "EUR",
+  LD_reference = "1KGphase3",
   force_new_LD = FALSE,
-  LD_matrix = NULL,
-  force_reinstall = FALSE
+  force_reinstall = FALSE,
+  nThread = 1,
+  verbose = TRUE
 )
+}
+\arguments{
+\item{dat}{A \link[data.table]{data.table} of GWAS/QTL/TWAS 
+summary statistics. Alternatively, for multi-trait/multi-ancestry
+ fine-mapping you can instead provide a named list of 
+ \link[data.table]{data.table}s with overlapping genomic coordinates 
+ (e.g. \code{list(GWAS1=dat1, GWAS2=dat2)}).}
 }
 \description{
 Run full PAINTOR pipeline
 }
-\keyword{internal}
+\examples{
+dat <- echodata::BST1
+LD_matrix <- echodata::BST1_LD_matrix
+fullSS_path <- echodata::example_fullSS()
+locus_dir <- file.path(tempdir(),echodata::locus_dir)
+dat2 <- PAINTOR(dat = list("Nalls2019"=dat),
+                locus_dir = locus_dir)
+}

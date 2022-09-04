@@ -57,8 +57,8 @@ POLYFUN_h2_enrichment_SNPgroups <- function(merged_dat,
         UCS <- POLYFUN_h2_enrichment(h2_df=h2_df,
                                      target_SNPs = subset(dat, Support>0)$SNP)
         # # PAINTOR CS
-        # PAINTOR.credset <- POLYFUN_h2_enrichment(h2_df=h2_df,
-        #                                          target_SNPs = subset(dat, PAINTOR.CS>0)$SNP)
+        # PAINTOR_credset <- POLYFUN_h2_enrichment(h2_df=h2_df,
+        #                                          target_SNPs = subset(dat, PAINTOR_CS>0)$SNP)
         ABF.credset <- POLYFUN_h2_enrichment(h2_df=h2_df,
                                              target_SNPs = subset(dat, ABF.CS>0)$SNP)
         

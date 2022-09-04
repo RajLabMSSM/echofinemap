@@ -11,6 +11,15 @@
 #' and which one is currently active.
 setup_gcc <- function(version='latest',
                       verbose=TRUE){ 
+    
+    #### Use xcode implementation ####
+    if(version=="clang"){
+        out <- R.utils::createLink(link="/usr/local/bin/gcc", 
+                                   target="/usr/bin/clang", 
+                                   overwrite=TRUE)
+        return(NULL)
+    }
+    #### Use gcc ####
     gcc_paths <- list.files("/usr/local/Cellar",
                                pattern = "gcc@", 
                                full.names = TRUE)

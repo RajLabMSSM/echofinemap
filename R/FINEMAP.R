@@ -72,6 +72,7 @@
 #' @export
 #' @importFrom echodata get_sample_size
 #' @importFrom data.table :=
+#' @importFrom methods is
 #' @examples
 #' locus_dir <- file.path(tempdir(),echodata::locus_dir)
 #' dat <- echodata::BST1;
