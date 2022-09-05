@@ -18,7 +18,6 @@ multifinemap(
   compute_n = "ldsc",
   standardise_headers = FALSE,
   conditioned_snps = NULL,
-  PAINTOR_QTL_datasets = NULL,
   credset_thresh = 0.95,
   consensus_thresh = 2,
   case_control = TRUE,

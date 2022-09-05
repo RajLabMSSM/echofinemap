@@ -1,0 +1,21 @@
+test_that("PAINTOR works", {
+    
+    dat <- echodata::BST1
+    ## For example only;
+    ## normally you need to compute ZSCORE using the
+    ## full genome-wide summary stats.
+    dat[,ZSCORE:=(-log10(P))]
+    LD_matrix <- echodata::BST1_LD_matrix
+    locus_dir <- file.path(tempdir(),echodata::locus_dir)
+    dat2 <- PAINTOR(dat = dat,
+                    locus_dir = locus_dir,
+                    LD_matrix = LD_matrix,
+                    max_causal = 2,
+                    method = "enumerate",
+                    set_seed = 2019)
+    testthat::expect_false(all(c("PP","CS") %in% names(dat)))
+    testthat::expect_true(all(c("PP","CS") %in% names(dat2)))
+    testthat::expect_equal(sum(dat2$CS),2)
+    testthat::expect_equal(max(dat2$PP),1)
+    testthat::expect_equal(round(mean(dat2$PP),3),0.021)
+})

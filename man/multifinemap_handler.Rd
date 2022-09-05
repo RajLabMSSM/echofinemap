@@ -16,11 +16,11 @@ multifinemap_handler(
   n_causal = 5,
   compute_n = "ldsc",
   conditioned_snps = NULL,
-  PAINTOR_QTL_datasets = NULL,
   credset_thresh = 0.95,
   case_control = TRUE,
   priors_col = NULL,
   verbose = TRUE,
+  seed = 2022,
   nThread = 1,
   conda_env = "echoR_mini"
 )

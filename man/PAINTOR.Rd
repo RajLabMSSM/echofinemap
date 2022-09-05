@@ -10,30 +10,25 @@
 \usage{
 PAINTOR(
   dat,
-  annot = NULL,
-  dat_prefixes = NULL,
-  annot_prefixes = NULL,
-  zscore_col = "ZSCORE",
-  tstat_col = "tstat",
   LD_matrix,
   locus_dir,
-  fullSS_path,
-  storage_dir = tempdir(),
-  paintor_path = NULL,
-  n_causal = 5,
-  XGR_dataset = NA,
-  ROADMAP_search = NA,
-  chromatin_state = "TssA",
+  annot = NULL,
+  zscore_col = "ZSCORE",
+  tstat_col = "tstat",
+  max_causal = 1,
   use_annotations = FALSE,
+  annot_xgr = NULL,
+  annot_roadmap = NULL,
+  chrom_states = NULL,
   credset_thresh = 0.95,
-  consensus_thresh = 2,
-  multi_finemap_col_name = "PAINTOR",
-  trim_gene_limits = FALSE,
-  force_new_subset = FALSE,
   dat_populations = "EUR",
   LD_reference = "1KGphase3",
   force_new_LD = FALSE,
+  method = c("mcmc", "enumerate"),
+  set_seed = 2019,
+  paintor_path = NULL,
   force_reinstall = FALSE,
+  conda_env = "echoR_mini",
   nThread = 1,
   verbose = TRUE
 )
@@ -44,15 +39,26 @@ summary statistics. Alternatively, for multi-trait/multi-ancestry
  fine-mapping you can instead provide a named list of 
  \link[data.table]{data.table}s with overlapping genomic coordinates 
  (e.g. \code{list(GWAS1=dat1, GWAS2=dat2)}).}
+
+\item{method}{\code{"enumerate"} is actually faster 
+when \code{max_causal} is small (<3), 
+but far larger \code{max_causal} use \code{"mcmc"}.}
 }
 \description{
 Run full PAINTOR pipeline
 }
 \examples{
+ 
 dat <- echodata::BST1
-LD_matrix <- echodata::BST1_LD_matrix
-fullSS_path <- echodata::example_fullSS()
+## For example only; 
+## normally you need to compute ZSCORE using the 
+## full genome-wide summary stats.
+dat[,ZSCORE:=(-log10(P))]
+LD_matrix <- echodata::BST1_LD_matrix  
 locus_dir <- file.path(tempdir(),echodata::locus_dir)
-dat2 <- PAINTOR(dat = list("Nalls2019"=dat),
-                locus_dir = locus_dir)
+dat2 <- PAINTOR(dat = dat,
+                locus_dir = locus_dir,
+                LD_matrix = LD_matrix,
+                max_causal = 2,
+                method = "enumerate") 
 }

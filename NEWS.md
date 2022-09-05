@@ -7,6 +7,18 @@
     - Added 3 COJO modes to list of finemapping methods:
         `run_stepwise`,`run_conditional`,`run_joint`
     - Automated installation of GCTA.
+    - Added unit tests.
+* `PAINTOR`: 
+    - Now working with *echoverse*.
+    - Generalized to any data input type (GWAS/QTL/TWAS)
+        to avoid hard-coded args.
+    - Streamlined functions and reduced clutter.  
+    - Automated installation of PAINTOR.
+    - Added unit tests.
+* `multifinemap`: 
+    - Automatically checks `finemap_methods`
+    - Passes `seed` all the way to finemapping functions. 
+    - Expanded finemapping methods. 
 
 ## Bug fixes
 

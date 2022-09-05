@@ -15,13 +15,12 @@ multifinemap_handler_method <- function(dat,
                                         force_new_finemap=FALSE,
                                         LD_matrix=NULL,
                                         n_causal=5,
-                                        conditioned_snps,
-                                        compute_n="ldsc", 
-                                        PAINTOR_QTL_datasets=NULL,
+                                        conditioned_snps=NULL,
+                                        compute_n="ldsc",  
                                         credset_thresh=.95,
                                         case_control=TRUE,
                                         priors_col=NULL,
-                                        
+                                        seed = 2022,
                                         verbose=TRUE,
                                         nThread=1,
                                         conda_env="echoR_mini"){
@@ -34,8 +33,6 @@ multifinemap_handler_method <- function(dat,
     dat <- drop_finemap_cols(dat = dat,
                              finemap_methods = finemap_method, 
                              verbose = verbose)
-    #### Check methods ####
-    all_methods <- required_cols()$method
     # INITIATE FINE-MAPPING
     if(finemap_method=="SUSIE"){
         #### method: SUSIE ####
@@ -83,8 +80,7 @@ multifinemap_handler_method <- function(dat,
                    credset_thresh = credset_thresh,
                    compute_n = compute_n,
                    case_control = case_control,
-                   verbose = verbose)
-        
+                   verbose = verbose) 
         
     } else if(finemap_method=="FINEMAP"){
         #### FINEMAP ####
@@ -144,17 +140,18 @@ multifinemap_handler_method <- function(dat,
         
     } else if("PAINTOR" %in% finemap_method) {
         #### PAINTOR ####
-        dat <- PAINTOR(dat=dat,
-                       GWAS_datasets=ifelse(dataset_type=="GWAS",
-                                            basename(dirname(locus_dir)),NULL),
-                       QTL_datasets=NULL,
-                       locus=basename(locus_dir),
-                       n_causal=n_causal,
+        dat <- PAINTOR(dat = dat,
+                       locus_dir = locus_dir,
+                       LD_matrix = LD_matrix,
+                       max_causal = n_causal,
+                       credset_thresh = credset_thresh,  
+                       annot = NULL,
                        use_annotations=FALSE,
-                       credset_thresh=credset_thresh,
-                       GWAS_populations="EUR",
-                       LD_matrix=LD_matrix,
-                       force_new_LD=FALSE)
+                       method = finemap_args$PAINTOR$method,
+                       conda_env = conda_env,
+                       set_seed = seed,
+                       nThread = nThread,
+                       verbose = verbose)
     } else {
         stp <- paste(
             "finemap_methods must be one or more of:",

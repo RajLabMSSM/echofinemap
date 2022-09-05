@@ -7,10 +7,17 @@
 PAINTOR_run(
   paintor_path = NULL,
   PT_results_path,
-  .LD_file.paths,
-  n_datasets,
-  method = "enumerate",
-  n_causal = 2
+  inputFile_path,
+  ld_paths,
+  zscore_cols,
+  max_causal,
+  Gname = "Enrichment.Estimates.txt",
+  RESname = "results.txt",
+  ANname = "annotations.txt",
+  method = c("mcmc", "enumerate"),
+  set_seed = 2019,
+  auto_restart = FALSE,
+  verbose = TRUE
 )
 }
 \description{

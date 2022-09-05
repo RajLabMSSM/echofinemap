@@ -28,8 +28,7 @@ multifinemap <- function(dat,
                          n_causal=5,
                          compute_n="ldsc",
                          standardise_headers=FALSE,
-                         conditioned_snps=NULL,
-                         PAINTOR_QTL_datasets=NULL,
+                         conditioned_snps=NULL, 
                          credset_thresh=.95,
                          consensus_thresh=2,
                          case_control=TRUE,
@@ -39,7 +38,10 @@ multifinemap <- function(dat,
                          seed=2022,
                          verbose=TRUE){ 
     start_FM <- Sys.time()
-    set.seed(seed)  
+    set.seed(seed)   
+    #### Check methods ####
+    finemap_methods <- lfm(finemap_methods = finemap_methods,
+                           verbose = verbose)
     ## See if fine-mapping has previously been done.
     file_path <- create_method_path(locus_dir = locus_dir,
                                     LD_reference = LD_reference,
@@ -77,11 +79,11 @@ multifinemap <- function(dat,
             LD_matrix = LD_matrix,
             n_causal = n_causal,
             compute_n = compute_n, 
-            conditioned_snps = conditioned_snps,
-            PAINTOR_QTL_datasets = PAINTOR_QTL_datasets,
+            conditioned_snps = conditioned_snps, 
             credset_thresh = credset_thresh,
             case_control = case_control,
             priors_col = priors_col,
+            seed = seed,
             verbose = verbose,
             nThread = nThread,
             conda_env = conda_env)

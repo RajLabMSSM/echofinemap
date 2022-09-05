@@ -6,7 +6,7 @@
 \usage{
 PAINTOR_create_locus_file(
   dat_merged,
-  LD_ls,
+  shared_snps,
   locus_dir,
   PT_results_path,
   NA_method = c("drop", "fill")

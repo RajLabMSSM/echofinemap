@@ -8,10 +8,11 @@ PAINTOR_download_annotations(
   query_dat,
   locus_dir,
   PT_results_path,
+  annot_sample = FALSE,
   annot_xgr = NULL,
-  annot_roadmap = NA,
+  annot_roadmap = NULL,
   chrom_states = NULL,
-  no_annotations = FALSE,
+  use_annotations = TRUE,
   conda_env = "echoR_mini",
   nThread = 1,
   verbose = TRUE

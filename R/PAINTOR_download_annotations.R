@@ -23,7 +23,7 @@ PAINTOR_download_annotations <- function(query_dat,
     if(isFALSE(use_annotations)){
         messager("+++ PAINTOR:: no_annotations=TRUE.",
                  "Prior Probability set to 1 for all SNPs.")
-        data.table::fwrite(x = data.frame(Default_Priors = rep(1,nrow(dat_merged))),
+        data.table::fwrite(x = data.frame(Default_Priors = rep(1,nrow(query_dat))),
                            file = .annotations_file,
                            sep=" ", 
                            quote  = FALSE)

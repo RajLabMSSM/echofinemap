@@ -11,12 +11,10 @@ PAINTOR_install <- function(paintor_path = NULL,
                             force_reinstall = FALSE,
                             verbose = TRUE){
     paintor_path <- PAINTOR_find_folder(paintor_path = paintor_path) 
-    install_log <- file.path(paintor_path,"install_log.txt")
-    # readLines(install_log)
+    install_log <- file.path(paintor_path,"install_log.txt") 
     if(PAINTOR_is_installed(paintor_path = paintor_path,
                             force_reinstall = force_reinstall)){ 
-        messager("PAINTOR:: PAINTOR_V3.0 already installed",
-                 "(install_log.txt detected).",v=verbose)
+        messager("PAINTOR:: PAINTOR_V3.0 already installed.",v=verbose)
     }else {
         cmd <- paste("cd", paintor_path,"&& bash install.sh")
         messager("PAINTOR:: Installing PAINTOR_V3.0")

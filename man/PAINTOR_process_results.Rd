@@ -4,8 +4,11 @@
 \alias{PAINTOR_process_results}
 \title{Process PAINTOR results}
 \usage{
-PAINTOR_process_results(PT_results_path, locus_name = "Locus1")
+PAINTOR_process_results(dat_merged, res_paths, credset_thresh)
 }
 \description{
 @keywords internal
+ @importFrom data.table rbindlist fread
+ @importFrom dplyr rename
+ @importFrom stats setNames
 }
