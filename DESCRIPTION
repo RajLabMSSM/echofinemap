@@ -29,9 +29,9 @@ biocViews:
     Genetics, FunctionalGenomics, SystemsBiology
 Imports:
     echodata,
+    echoconda, 
     echoLD,
     echoannot,
-    echoconda, 
     coloc,
     tools,
     methods,

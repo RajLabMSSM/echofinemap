@@ -6,9 +6,12 @@
 #'  @importFrom stats setNames
 PAINTOR_process_results <- function(dat_merged,
                                     res_paths,
-                                    credset_thresh){
+                                    credset_thresh,
+                                    verbose=TRUE){
     
     Posterior_Prob <- RSID <- PP <- NULL; 
+    
+    messager("+ PAINTOR:: Processing results.",v=verbose)
     res <- lapply(stats::setNames(names(res_paths$RESname),
                                   names(res_paths$RESname)),
                   function(nm){ 

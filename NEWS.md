@@ -14,6 +14,7 @@
         to avoid hard-coded args.
     - Streamlined functions and reduced clutter.  
     - Automated installation of PAINTOR.
+    - Can now handle multi-trait and multi-ancestry fine-mapping.
     - Added unit tests.
 * `multifinemap`: 
     - Automatically checks `finemap_methods`

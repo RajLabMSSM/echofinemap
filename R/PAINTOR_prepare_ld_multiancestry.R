@@ -2,6 +2,7 @@
 #'
 #' @keywords internal
 #' @importFrom stats setNames
+#' @importFrom echoLD subset_common_snps get_LD
 PAINTOR_prepare_ld_multiancestry <- function(dat_merged,
                                              LD_ls,
                                              locus_dir,
@@ -23,6 +24,14 @@ PAINTOR_prepare_ld_multiancestry <- function(dat_merged,
                                        dat = dat_merged,
                                        verbose = verbose)$LD
         }) 
+        #### Duplicate LD_matrix as needed ####
+        suffixes <- PAINTOR_get_suffixes(dat_merged = dat_merged)
+        if(length(suffixes)>length(LD_ls)){
+            messager("Only one LD_matrix will be used.",
+                     v=verbose)
+            LD_ls <- lapply(suffixes, 
+                            function(x){LD_ls[[1]]})
+        }
     #### Download LD matrices from LD panel ####
     } else if(!is.null(dat_populations)){
         messager("PAINTOR:: Preparing LD files from LD_reference:",
@@ -47,7 +56,7 @@ PAINTOR_prepare_ld_multiancestry <- function(dat_merged,
                                  nThread = nThread,
                                  verbose = verbose)$LD 
               })
-        #### Duplicate 
+        #### Duplicate LD_matrix as needed ####
         if(length(dat_populations)>length(uniq_pops)){
             LD_ls <- lapply(dat_populations, 
                            function(pop){LD_ls[[pop]]})
@@ -67,16 +76,20 @@ PAINTOR_prepare_ld_multiancestry <- function(dat_merged,
         messager("+ PAINTOR::",formatC(length(shared_snps),big.mark = ","),
                  "shared SNPs identified.",v=verbose)
     } 
+    #### Subset LD matrices to only shared SNPs ####
+    LD_ls <- lapply(LD_ls, function(ld_mat){
+        if(length(shared_snps)>0){
+            ld_mat <- ld_mat[shared_snps, shared_snps]
+        }
+        return(ld_mat)
+    })
     ##### Filter SNPs and save LD ####
     ld_paths <- lapply(seq_len(length(LD_ls)), 
                        function(i){
         messager("Filtering LD matrix:",names(LD_ls)[i],v=verbose)
        ld_path <- file.path(PT_results_path, names(LD_ls)[i]) 
        if((!file.exists(ld_path)) | isTRUE(force_new_LD)){
-           ld_mat <- LD_ls[[i]] 
-           if(length(shared_snps)>0){
-               ld_mat <- ld_mat[shared_snps, shared_snps]
-           }
+           ld_mat <- LD_ls[[i]]  
            messager("++ PAINTOR::",paste(formatC(dim(ld_mat),big.mark = ","),
                                          collapse=" x "),"LD matrix.",v=verbose) 
            #### Save ####
@@ -94,6 +107,12 @@ PAINTOR_prepare_ld_multiancestry <- function(dat_merged,
            }
         return(ld_path)
     }) |> `names<-`(names(LD_ls))
-    return(list(paths = ld_paths,
+    #### Subset dat_merged ####
+    data.table::setkey(dat_merged,SNP)
+    dat_merged <- dat_merged[shared_snps,]
+    #### Return ####
+    return(list(ld_paths = ld_paths,
+                LD_ls = LD_ls,
+                dat_merged = dat_merged,
                 shared_snps = shared_snps))
 }

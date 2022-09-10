@@ -4,7 +4,7 @@
 \alias{PAINTOR_process_results}
 \title{Process PAINTOR results}
 \usage{
-PAINTOR_process_results(dat_merged, res_paths, credset_thresh)
+PAINTOR_process_results(dat_merged, res_paths, credset_thresh, verbose = TRUE)
 }
 \description{
 @keywords internal

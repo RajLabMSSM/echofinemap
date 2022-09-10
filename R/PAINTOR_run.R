@@ -11,7 +11,7 @@ PAINTOR_run <- function(paintor_path=NULL,
                         RESname = "results.txt",
                         ANname = "annotations.txt",
                         method=c("mcmc","enumerate"),
-                        set_seed = 2019,
+                        set_seed = 2022,
                         auto_restart = FALSE,
                         verbose = TRUE){
     
@@ -60,20 +60,20 @@ PAINTOR_run <- function(paintor_path=NULL,
         "-out",PT_results_path,
         
         # Output Filename for enrichment estimates [default: Enrichment.Estimate]
-        "-Gname",Gname,
+        "-Gname",basename(Gname),
         
         # Suffix for ouput files of results [Default: results]
-        "-RESname",RESname,
+        "-RESname",basename(RESname),
         
         # Suffix for annotation files [Default: annotations]
-        "-ANname",ANname,
+        "-ANname",basename(ANname),
         
         "-set_seed",set_seed
     )
-    echoconda::cmd_print(cmd)
+    echoconda::cmd_print(cmd, basepath = FALSE)
     system(cmd)
     PT.end <- Sys.time()
-    messager("PAINTOR:: Completed fine-mapping in",
+    messager("+ PAINTOR:: Completed fine-mapping in",
              round((PT.end-PT.start)/60, 2),"minutes.")
     
     # Check the time it took to see if it didn't actually run.
@@ -101,21 +101,31 @@ PAINTOR_run <- function(paintor_path=NULL,
                      out=PT_results_path,
                      Zhead=Zhead,
                      LDname=LDname,
-                     Gname = list.files(PT_results_path,Gname, full.names = TRUE),
+                     Gname = list.files(PT_results_path,
+                                        basename(Gname), 
+                                        full.names = TRUE),
                      RESname = grep("LogFile\\.",
-                                    list.files(PT_results_path,RESname, full.names = TRUE),
-                                    invert = TRUE, value = TRUE
+                                    list.files(
+                                        PT_results_path,
+                                        basename(RESname), 
+                                        full.names = TRUE),
+                                    invert = TRUE, 
+                                    value = TRUE
                      ),
-                     ANname = list.files(PT_results_path,ANname, full.names = TRUE), 
+                     ANname = list.files(PT_results_path,
+                                         basename(ANname),
+                                         full.names = TRUE), 
                      LogFile = grep("LogFile\\.",
-                                    list.files(PT_results_path,RESname, full.names = TRUE),
+                                    list.files(PT_results_path,
+                                               basename(RESname), 
+                                               full.names = TRUE),
                                     value = TRUE
                      ),
                      max_causal=max_causal,
                      method=method,
                      set_seed=set_seed
                      )
-    names(res_paths$RESname) <- stringr::str_split(basename(res_paths$RESname),"\\.",
-                                                   simplify =  TRUE)[,1]
+    names(res_paths$RESname) <- stringr::str_split(
+        basename(res_paths$RESname),"\\.", simplify =  TRUE)[,1]
     return(res_paths)
 }

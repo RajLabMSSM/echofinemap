@@ -15,7 +15,7 @@ PAINTOR_run(
   RESname = "results.txt",
   ANname = "annotations.txt",
   method = c("mcmc", "enumerate"),
-  set_seed = 2019,
+  set_seed = 2022,
   auto_restart = FALSE,
   verbose = TRUE
 )

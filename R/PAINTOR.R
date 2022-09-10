@@ -11,6 +11,7 @@
 #' @source
 #' \href{https://github.com/gkichaev/PAINTOR_V3.0}{GitHub}
 #' \href{https://github.com/gkichaev/PAINTOR_V3.0/wiki/2a.-Computing-1000-genomes-LD}{LD Tutorial}
+#' \href{https://github.com/gkichaev/PAINTOR_V3.0/wiki/2.-Input-Files-and-Formats}{Input file formats}
 #' @export
 #' @importFrom methods is
 #' @examples  
@@ -82,11 +83,12 @@ PAINTOR <- function(dat,
         annot_prefixes = names(annot_ls),
         verbose = verbose)  
     #### Merge data ####
-    dat_merged <- PAINTOR_merge_datasets(dat_ls = dat_ls) 
+    dat_merged <- PAINTOR_merge_datasets(dat_ls = dat_ls, 
+                                         verbose = verbose) 
     #### 2. LD Matrix File #### 
     LD_out <- PAINTOR_prepare_ld_multiancestry(
         locus_dir = locus_dir,
-        dat_merged = dat_merged,
+        dat_merged = dat_merged, 
         LD_ls = LD_ls,
         PT_results_path = PT_results_path, 
         dat_populations = dat_populations,
@@ -94,13 +96,17 @@ PAINTOR <- function(dat,
         force_new_LD = force_new_LD, 
         nThread = nThread,
         verbose = verbose)
+    dat_merged <- LD_out$dat_merged
+    LD_ls <- LD_out$LD_ls
+    ld_paths <- LD_out$ld_paths
     #### Create Locus File while subsetting by matched LD ####
-    locusFile_path <- PAINTOR_create_locus_file(dat_merged = dat_merged,
-                                                shared_snps = LD_out$shared_snps,
-                                                locus_dir = locus_dir,
-                                                PT_results_path = PT_results_path)
+    locusFile_path <- PAINTOR_create_locus_file(
+        dat_merged = dat_merged, 
+        locus_dir = locus_dir,
+        PT_results_path = PT_results_path,
+        verbose = verbose)
     #### 3. Annotation Matrix File ####
-    ANname <- PAINTOR_download_annotations(query_dat = dat_merged,
+    ANname <- PAINTOR_download_annotations(dat_merged = dat_merged, 
                                            locus_dir = locus_dir,
                                            PT_results_path = PT_results_path, 
                                            use_annotations = use_annotations,
@@ -119,22 +125,18 @@ PAINTOR <- function(dat,
                         value = TRUE) 
     res_paths <- PAINTOR_run(paintor_path = paintor_path,
                              PT_results_path = PT_results_path,
-                             inputFile_path = inputFile_path,
+                             inputFile_path = inputFile_path, 
                              zscore_cols = zscore_cols, 
                              method = method, 
                              max_causal = max_causal,
-                             set_seed =  set_seed,
-                             ld_paths = LD_out$paths,
+                             set_seed = set_seed,
+                             ld_paths = ld_paths,
                              verbose = verbose) 
     res_paths[["locusFile"]] <- locusFile_path
     #### 6. Gather results ####
     dat_merged <- PAINTOR_process_results(dat_merged = dat_merged,
                                           res_paths = res_paths,
-                                          credset_thresh = credset_thresh)    
-    #### Plot ####
-    # transethnic_plot(res = res,
-    #                  save_path = file.path(PT_results_path,"track_plot.enumerate2.png"),
-    #                  PAINTOR_label="PAINTOR\nTrans-ethnic",
-    #                  conditions = c("Nalls23andMe_2019","MESA_CAU","MESA_HIS"))
+                                          credset_thresh = credset_thresh,
+                                          verbose = verbose)     
   return(dat_merged)
 } 

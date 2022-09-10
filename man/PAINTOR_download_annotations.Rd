@@ -5,7 +5,7 @@
 \title{Download annotations for PAINTOR}
 \usage{
 PAINTOR_download_annotations(
-  query_dat,
+  dat_merged,
   locus_dir,
   PT_results_path,
   annot_sample = FALSE,

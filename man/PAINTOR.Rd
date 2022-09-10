@@ -6,6 +6,7 @@
 \source{
 \href{https://github.com/gkichaev/PAINTOR_V3.0}{GitHub}
 \href{https://github.com/gkichaev/PAINTOR_V3.0/wiki/2a.-Computing-1000-genomes-LD}{LD Tutorial}
+\href{https://github.com/gkichaev/PAINTOR_V3.0/wiki/2.-Input-Files-and-Formats}{Input file formats}
 }
 \usage{
 PAINTOR(
