@@ -39,6 +39,7 @@ Imports:
     data.table,
     dplyr,
     tidyr,
+    cli,
     ggplot2,
     rlang,
     Matrix,

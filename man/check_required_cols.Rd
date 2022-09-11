@@ -28,5 +28,5 @@ to run each fine-mapping method, as well as suggested columns.
 }
 \examples{
 dat <- echodata::BST1
-finemap_methods <- echofinemap::check_required_cols(dat=dat)
+finemap_methods <- check_required_cols(dat=dat)
 }

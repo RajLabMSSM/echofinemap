@@ -20,11 +20,16 @@
     - Automatically checks `finemap_methods`
     - Passes `seed` all the way to finemapping functions. 
     - Expanded finemapping methods. 
+* `check_required_cols`: Add coloring via `cli`.
 
 ## Bug fixes
 
 * `FINEMAP`: Figured out solution to get FINEMAP v1.4 working on Mac. 
     Instructions in messages now updated.
+* `create_method_path`: Use `basename(LD_reference)` for file naming.
+* Require "MAF" columns for coloc, as it now seems to be required by 
+    the error message when it's missing: 
+    `dataset : please give MAF if using p values`
 
 # echofinemap 0.99.2
 

@@ -4,7 +4,7 @@
 #' @inheritParams multifinemap
 #' @export
 #' @examples 
-#' finemap_methods <- echofinemap::list_finemap_methods()
+#' finemap_methods <- echofinemap::lfm()
 lfm <- list_finemap_methods <- function(finemap_methods = NULL,
                                         verbose = TRUE){
     d <- required_cols() 

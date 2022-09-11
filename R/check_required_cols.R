@@ -10,50 +10,59 @@
 #' @param verbose Print messages.
 #' 
 #' @export
+#' @import cli
 #' @examples
 #' dat <- echodata::BST1
-#' finemap_methods <- echofinemap::check_required_cols(dat=dat)
+#' finemap_methods <- check_required_cols(dat=dat)
 check_required_cols <- function(dat,
                                 finemap_methods=NULL, 
                                 dataset_type="GWAS",
                                 verbose=TRUE){
-    noentry <- "\u26D4"
+    noentry <- "\uD83D\uDEAB"
     checkmark <- "\u2705"
     warningsign <- "\u26A0"
     dat <- data.table::copy(dat) 
     #### Check requested methods #### 
-    finemap_methods <- list_finemap_methods(
+    finemap_methods <- lfm(
         finemap_methods = finemap_methods,
         verbose = verbose)
     #### Get required cols table ####
     d <- required_cols(dataset_type = dataset_type) 
     #### Iterate through methods #####
     for(m in finemap_methods){
-        messager("vvvvv-- ",m,v=verbose)
+        if(verbose) cat(cli::bg_br_magenta(m)); cli::cat_line();
         #### Check required cols ####
         req <- d[m,]$required[[1]]
         req_missing <- req[!req %in% colnames(dat)]
         if(length(req_missing)>0){
-            messager(noentry,"Missing required columns for ",m,": ",
-                    paste(req_missing,collapse=", ")," (Skipping)",
-                    v=verbose);
+            msg <- paste(
+                noentry,"Missing required column(s) for",
+                paste0(cli::col_br_magenta(m)," [skipping]",":"),
+                cli::col_br_white(paste(req_missing,collapse=", "))
+            )  
             #### Remove that method ####
             finemap_methods <- finemap_methods[finemap_methods != m]
+            if(verbose) cat(cli::col_br_cyan(msg)); cli::cat_line();
             next()
-        } else{messager(checkmark,"All required columns present.",
-                        v=verbose)}
+        } else{
+            msg <- paste(checkmark,"All required columns present.") 
+            if(verbose) cat(cli::col_br_cyan(msg)); cli::cat_line();
+        } 
         #### Check suggested cols ####
         sug <- d[m,]$suggested[[1]]
         if(length(sug)==0) next()
         sug_missing <- sug[!sug %in% colnames(dat)]
         if(length(sug_missing)>0){
-            messager(warningsign,"Missing optional columns for ",m,": ",
-                    paste(sug_missing,collapse=", "),
-                    v=verbose)
+            msg2 <- paste(
+                cli::col_br_red(warningsign),
+                "Missing optional column(s) for",
+                paste0(cli::col_br_magenta(m),":"),
+                cli::col_br_white(paste(sug_missing,collapse=", "))
+            )
         } else {
-            messager(checkmark,"All suggested columns present.",
-                     v=verbose)  
+            msg2 <- paste(checkmark,"All optional columns present.")
         }
+        if(verbose) cat(cli::col_br_cyan(msg2)); cli::cat_line();
     }
     if(length(finemap_methods)==0) {
         stop("Your data does not have the sufficient columns to run",

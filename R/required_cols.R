@@ -12,7 +12,7 @@ required_cols <- function(dataset_type = "GWAS",
                           for_all = c("SNP","CHR","POS","Effect","StdErr")){
     
     required_dict <- list(ABF=c(for_all,
-                                "N",
+                                "N","MAF",
                                 if(dataset_type=="GWAS") 
                                     "proportion_cases" else NULL),
                           FINEMAP=c(for_all),
@@ -24,7 +24,7 @@ required_cols <- function(dataset_type = "GWAS",
                           COJO_stepwise=c(for_all,"A1","A2"),
                           COJO_conditional=c(for_all,"A1","A2"),
                           COJO_joint=c(for_all,"A1","A2"))
-    suggested_dict <- list(ABF=c("MAF"),
+    suggested_dict <- list(ABF=NULL,
                            FINEMAP=c("A1","A2","MAF","N"),
                            SUSIE=c("N"),
                            POLYFUN_SUSIE=c("MAF","N"),

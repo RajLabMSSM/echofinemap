@@ -13,10 +13,8 @@ create_method_path <- function(locus_dir,
                                LD_reference=NULL,
                                create_dir=TRUE,
                                compress=FALSE){
-    method_dir <- file.path(locus_dir, finemap_method)
-    # Make finemapping results folder
-    if(create_dir) dir.create(method_dir, 
-                              recursive = TRUE, showWarnings  = FALSE)
+    
+    method_dir <- file.path(locus_dir, finemap_method) 
     # Return results file name
     # dataset <- basename(dirname(locus_dir))
     # locus <- basename(locus_dir)
@@ -27,11 +25,16 @@ create_method_path <- function(locus_dir,
     } else{
         file_path <- file.path(method_dir,
                                paste0(
-                                   paste(paste0(LD_reference,"_LD"),
+                                   paste(paste0(basename(LD_reference),"_LD"),
                                          finemap_method,"tsv", sep="."),
                                       if(compress) ".gz" else "*")
         )
     }
-    if(!include_astrices) file_path <- gsub("\\*","",file_path)
+    # Make finemapping results folder
+    if(isTRUE(create_dir)) {
+        dir.create(dirname(file_path), 
+                   recursive = TRUE, showWarnings  = FALSE)
+    }
+    if(isFALSE(include_astrices)) file_path <- gsub("\\*","",file_path)
     return(file_path)
 }

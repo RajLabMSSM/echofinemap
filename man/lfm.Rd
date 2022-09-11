@@ -13,5 +13,5 @@ lfm(finemap_methods = NULL, verbose = TRUE)
 List all fine-mapping methods currently available in \pkg{echofinemap}.
 }
 \examples{
-finemap_methods <- echofinemap::list_finemap_methods()
+finemap_methods <- echofinemap::lfm()
 }
