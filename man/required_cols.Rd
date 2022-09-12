@@ -3,6 +3,9 @@
 \name{required_cols}
 \alias{required_cols}
 \title{Table of required columns}
+\source{
+\href{https://stackoverflow.com/a/43670036}{embedding knitr links}
+}
 \usage{
 required_cols(
   dataset_type = "GWAS",
@@ -11,6 +14,7 @@ required_cols(
   add_sources = TRUE,
   add_citations = TRUE,
   add_executables = FALSE,
+  embed_links = TRUE,
   verbose = TRUE
 )
 }
@@ -26,6 +30,9 @@ required_cols(
 \item{add_citations}{Add citations for each method.}
 
 \item{add_executables}{Add path to executables for each method.}
+
+\item{embed_links}{For any columns that contain URLs,
+embed them as links with shortened names.}
 
 \item{verbose}{Print messages.}
 }

@@ -8,7 +8,11 @@
 #' @param add_sources Add source code URLs for each method.
 #' @param add_citations Add citations for each method.
 #' @param add_executables Add path to executables for each method.
+#' @param embed_links For any columns that contain URLs,
+#'  embed them as links with shortened names. 
 #' @param verbose Print messages.
+#' @source \href{https://stackoverflow.com/a/43670036}{embedding knitr links}
+#' 
 #' @export
 #' @importFrom data.table data.table setkey
 #' @examples 
@@ -19,6 +23,7 @@ required_cols <- function(dataset_type = "GWAS",
                           add_sources = TRUE,
                           add_citations = TRUE,
                           add_executables = FALSE,
+                          embed_links = FALSE,
                           verbose = TRUE){
     
     #### Add required cols ####
@@ -77,7 +82,11 @@ required_cols <- function(dataset_type = "GWAS",
                             COJO_stepwise="https://github.com/jianyangqt/gcta",
                             COJO_conditional="https://github.com/jianyangqt/gcta",
                             COJO_joint="https://github.com/jianyangqt/gcta")  
-        d$source <- source_dict[d$method]
+        if(isTRUE(embed_links)){
+            d$source <- paste0("[source](",source_dict[d$method],")")
+        } else {
+            d$source <- source_dict[d$method]
+        }
     }
     #### Extract executable paths ####
     if(isTRUE(add_executables)){
@@ -110,7 +119,11 @@ required_cols <- function(dataset_type = "GWAS",
             COJO_stepwise="https://doi.org/10.1038/ng.2213",
             COJO_conditional="https://doi.org/10.1038/ng.2213",
             COJO_joint="https://doi.org/10.1038/ng.2213") 
-        d$citation <- as.character(citations_dict[d$method])
+        if(isTRUE(embed_links)){
+            d$citation <- paste0("[cite](",citations_dict[d$method],")")
+        } else {
+            d$citation <- citations_dict[d$method]
+        } 
     }
     data.table::setkey(d, "method")
     return(d)
