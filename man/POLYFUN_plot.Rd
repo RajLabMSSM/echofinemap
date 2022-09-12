@@ -23,7 +23,7 @@ Plot PolyFun and other fine-mapping results
 Other polyfun: 
 \code{\link{POLYFUN_compute_priors}()},
 \code{\link{POLYFUN_download_ref_files}()},
-\code{\link{POLYFUN_find_polyfun_folder}()},
+\code{\link{POLYFUN_find_folder}()},
 \code{\link{POLYFUN_finemapper}()},
 \code{\link{POLYFUN_functional_enrichment}()},
 \code{\link{POLYFUN_gather_annotations}()},

@@ -6,18 +6,30 @@
 \usage{
 required_cols(
   dataset_type = "GWAS",
-  for_all = c("SNP", "CHR", "POS", "Effect", "StdErr")
+  for_all = c("SNP", "CHR", "POS", "Effect", "StdErr"),
+  add_versions = FALSE,
+  add_citations = TRUE,
+  add_executables = FALSE,
+  verbose = TRUE
 )
 }
 \arguments{
 \item{dataset_type}{Dataset type ("GWAS" or "QTL").}
 
 \item{for_all}{Columns required for all methods.}
+
+\item{add_versions}{Add software versions for each method.}
+
+\item{add_citations}{Add citations for each method.}
+
+\item{add_executables}{Add path to executables for each method.}
+
+\item{verbose}{Print messages.}
 }
 \description{
 Return a table with the minimum columns required
 to run each fine-mapping method, as well as suggested columns.
 }
 \examples{
-d <- echofinemap::required_cols()
+d <- required_cols(add_versions=TRUE, add_executables=TRUE)
 }

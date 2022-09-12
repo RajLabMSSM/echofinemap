@@ -4,12 +4,14 @@
 \alias{POLYFUN_help}
 \title{POLYFUN help}
 \usage{
-POLYFUN_help(polyfun = NULL, conda_env = "echoR_mini")
+POLYFUN_help(polyfun = NULL, conda_env = "echoR_mini", verbose = TRUE)
 }
 \arguments{
 \item{polyfun}{[Optional] Path to PolyFun executable.}
 
 \item{conda_env}{Conda environment name.}
+
+\item{verbose}{Print messages.}
 }
 \value{
 PolyFun help message as character vector.
@@ -19,13 +21,13 @@ Display PolyFun help.
 Will automatically install PolyFun if has not been installed already.
 }
 \examples{
-echofinemap::POLYFUN_help()
+h <- echofinemap::POLYFUN_help()
 }
 \seealso{
 Other polyfun: 
 \code{\link{POLYFUN_compute_priors}()},
 \code{\link{POLYFUN_download_ref_files}()},
-\code{\link{POLYFUN_find_polyfun_folder}()},
+\code{\link{POLYFUN_find_folder}()},
 \code{\link{POLYFUN_finemapper}()},
 \code{\link{POLYFUN_functional_enrichment}()},
 \code{\link{POLYFUN_gather_annotations}()},

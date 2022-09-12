@@ -25,7 +25,7 @@ POLYFUN_munge_summ_stats <- function(polyfun=NULL,
                                      verbose=TRUE){
     
     python <- echoconda::find_python_path(conda_env = conda_env)
-    polyfun <- POLYFUN_find_polyfun_folder(polyfun_path = polyfun)
+    polyfun <- POLYFUN_find_folder(polyfun_path = polyfun)
     PF.output.path <- file.path(locus_dir, "PolyFun")
     dir.create(PF.output.path, showWarnings = FALSE, recursive = TRUE)
     munged_path <- file.path(

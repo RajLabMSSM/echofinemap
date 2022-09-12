@@ -27,7 +27,7 @@ POLYFUN_compute_priors <- function(polyfun=NULL,
     # echoverseTemplate:::source_all()
     
     python <- echoconda::find_python_path(conda_env = conda_env)
-    polyfun <- POLYFUN_find_polyfun_folder(polyfun_path = polyfun)
+    polyfun <- POLYFUN_find_folder(polyfun_path = polyfun)
     
     if(is.null(annotations_path)){
         warning("No annotations_path provided.",

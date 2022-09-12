@@ -17,6 +17,7 @@ PAINTOR_run <- function(paintor_path=NULL,
     
     messager("+ PAINTOR:: Running PAINTOR",v=verbose) 
     method <- tolower(method)[1] 
+    paintor_ex <- PAINTOR_find_executable(paintor_path = paintor_path)
     paintor_path <- PAINTOR_find_folder(paintor_path=paintor_path)  
     Zhead <- paste(zscore_cols, collapse=",")
     .ld_suffixes <- stringr::str_split(names(ld_paths),"\\.",
@@ -26,7 +27,7 @@ PAINTOR_run <- function(paintor_path=NULL,
     ## RUN
     # https://github.com/gkichaev/PAINTOR_V3.0/wiki/3.-Running-Software-and-Suggested-Pipeline
     cmd <- paste(
-        file.path(paintor_path,"PAINTOR"), 
+        paintor_ex, 
         #### REQUIRED ####
         # (required) Filename of the input file containing the
         ## list of the fine-mapping loci [default: N/A]

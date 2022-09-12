@@ -1,7 +1,7 @@
 PAINTOR_is_installed <- function(paintor_path,
-                                  force_reinstall){
-    paintor_path <- PAINTOR_find_folder(paintor_path = paintor_path)
-    paintor_ex <- file.path(paintor_path,"PAINTOR")
+                                 force_reinstall){
+    
+    paintor_ex <- PAINTOR_find_executable(paintor_path = paintor_path)
     install_log <- file.path(paintor_path,"install_log.txt") 
     is_installed <- file.exists(install_log) && 
         file.exists(paintor_ex) &&

@@ -85,7 +85,7 @@ POLYFUN <- function(dat,
     POLYFUN_install()
     method <- POLYFUN_check_method(method=method,
                                    verbose=verbose)
-    polyfun <- POLYFUN_find_polyfun_folder(polyfun_path = polyfun)
+    polyfun <- POLYFUN_find_folder(polyfun_path = polyfun)
     out.path <- file.path(dirname(locus_dir),
                           "_genome_wide/PolyFun/output") 
     ##### Ensure formatting is correct ####

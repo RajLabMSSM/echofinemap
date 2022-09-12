@@ -16,7 +16,7 @@ POLYFUN_finemapper <- function(polyfun=NULL,
                                conda_env="echoR_mini",
                                verbose=TRUE){
     # base_url  <- "./echolocatoR/tools/polyfun/LD_temp"
-    polyfun <- POLYFUN_find_polyfun_folder(polyfun_path = polyfun)
+    polyfun <- POLYFUN_find_folder(polyfun_path = polyfun)
     python <- echoconda::find_python_path(conda_env = conda_env)
     
     chrom <- unique(dat$CHR)

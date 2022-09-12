@@ -5,9 +5,9 @@
 #' @family polyfun
 #' @source
 #' \code{
-#' polyfun_path <- POLYFUN_find_polyfun_folder()
+#' polyfun_path <- POLYFUN_find_folder()
 #' }
-POLYFUN_find_polyfun_folder <- function(polyfun_path=NULL){
+POLYFUN_find_folder <- function(polyfun_path=NULL){
     if(is.null(polyfun_path)){
         polyfun_path <- system.file("tools/polyfun", 
                                     package = "echofinemap")

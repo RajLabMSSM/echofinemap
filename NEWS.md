@@ -21,6 +21,11 @@
     - Passes `seed` all the way to finemapping functions. 
     - Expanded finemapping methods. 
 * `check_required_cols`: Add coloring via `cli`.
+* `required_cols`: Add URLS to GitHub repos and citations. 
+* Added functions for checking each fine-mapping CLI method's version:
+    - `<method>_check_version`
+    - Changed `POLYFUN_find_polyfun_folder` --> `POLYFUN_find_folder` 
+        for consistency.
 
 ## Bug fixes
 

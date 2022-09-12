@@ -36,7 +36,7 @@ LDSC.files <- POLYFUN_compute_priors(locus_dir=locus_dir,
 \seealso{
 Other polyfun: 
 \code{\link{POLYFUN_download_ref_files}()},
-\code{\link{POLYFUN_find_polyfun_folder}()},
+\code{\link{POLYFUN_find_folder}()},
 \code{\link{POLYFUN_finemapper}()},
 \code{\link{POLYFUN_functional_enrichment}()},
 \code{\link{POLYFUN_gather_annotations}()},

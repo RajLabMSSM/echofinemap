@@ -22,7 +22,7 @@ POLYFUN_import_priors <- function(locus_dir,
     
     python <- echoconda::find_python_path(conda_env = conda_env,
                                           verbose = verbose)
-    polyfun <- POLYFUN_find_polyfun_folder(polyfun_path = polyfun)
+    polyfun <- POLYFUN_find_folder(polyfun_path = polyfun)
     dataset <- basename(dirname(locus_dir))
     locus <- basename(locus_dir)
     PF.output.path <- POLYFUN_initialize(locus_dir=locus_dir) 

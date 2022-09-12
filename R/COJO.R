@@ -126,9 +126,8 @@ COJO <- function(dat,
         warning(wrn)
     }
     #### Find executable ####
-    gcta_path <- echoconda::find_executables_remote(path = gcta_path,
-                                                    tool = "gcta",
-                                                    verbose = verbose)[[1]]
+    gcta_path <- COJO_find_executable(gcta_path = gcta_path, 
+                                      verbose = verbose)
     #### Make path ####
     cojo_dir <- COJO_locus_subdir(locus_dir)  
     #### Create cojo .ma file ####

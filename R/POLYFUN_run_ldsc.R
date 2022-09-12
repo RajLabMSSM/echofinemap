@@ -21,7 +21,7 @@ POLYFUN_run_ldsc <- function(polyfun=NULL,
                              freq.prefix="/sc/arion/projects/pd-omics/tools/polyfun/1000G_frq/1000G.mac5eur.",
                              conda_env="echoR_mini",
                              verbose=TRUE){
-    polyfun <- POLYFUN_find_polyfun_folder(polyfun_path = polyfun)
+    polyfun <- POLYFUN_find_folder(polyfun_path = polyfun)
     python <- echoconda::find_python_path(conda_env = conda_env) 
     
     # 0. Create paths
