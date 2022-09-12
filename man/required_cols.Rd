@@ -8,6 +8,7 @@ required_cols(
   dataset_type = "GWAS",
   for_all = c("SNP", "CHR", "POS", "Effect", "StdErr"),
   add_versions = FALSE,
+  add_sources = TRUE,
   add_citations = TRUE,
   add_executables = FALSE,
   verbose = TRUE
@@ -19,6 +20,8 @@ required_cols(
 \item{for_all}{Columns required for all methods.}
 
 \item{add_versions}{Add software versions for each method.}
+
+\item{add_sources}{Add source code URLs for each method.}
 
 \item{add_citations}{Add citations for each method.}
 
