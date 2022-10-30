@@ -14,6 +14,10 @@ drop_finemap_cols(
 \arguments{
 \item{dat}{Fine-mapping results data.}
 
+\item{finemap_methods}{Fine-mapping methods to run. 
+See \link[echofinemap]{lfm} for a list of all fine-mapping methods currently
+available.}
+
 \item{summary_cols}{Multi-tool summary columns to drop.}
 
 \item{verbose}{Print messages.}

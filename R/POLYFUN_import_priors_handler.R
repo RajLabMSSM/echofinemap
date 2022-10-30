@@ -6,7 +6,6 @@ POLYFUN_import_priors_handler <- function(dat,
                                           force_new_priors=FALSE){  
     SNPVAR <- SNP <- NULL;
     
-    mode <- POLYFUN_check_mode(mode)
     chrom <- unique(dat$CHR) 
     if(length(chrom)>1) {
         stp1 <- paste(

@@ -1,8 +1,7 @@
 #' Table of required columns
 #' 
 #' Return a table with the minimum columns required
-#' to run each fine-mapping method, as well as suggested columns.
-#' @param dataset_type Dataset type ("GWAS" or "QTL"). 
+#' to run each fine-mapping method, as well as suggested columns. 
 #' @param for_all Columns required for all methods.
 #' @param add_versions Add software versions for each method.
 #' @param add_sources Add source code URLs for each method.
@@ -11,13 +10,14 @@
 #' @param embed_links For any columns that contain URLs,
 #'  embed them as links with shortened names. 
 #' @param verbose Print messages.
+#' @inheritParams multifinemap
 #' @source \href{https://stackoverflow.com/a/43670036}{embedding knitr links}
 #' 
 #' @export
 #' @importFrom data.table data.table setkey
 #' @examples 
 #' d <- required_cols(add_versions=TRUE, add_executables=TRUE)
-required_cols <- function(dataset_type = "GWAS",
+required_cols <- function(case_control = TRUE,
                           for_all = c("SNP","CHR","POS","Effect","StdErr"),
                           add_versions = FALSE,
                           add_sources = TRUE,
@@ -29,7 +29,7 @@ required_cols <- function(dataset_type = "GWAS",
     #### Add required cols ####
     required_dict <- list(ABF=c(for_all,
                                 "N","MAF",
-                                if(dataset_type=="GWAS") 
+                                if(isTRUE(case_control)) 
                                     "proportion_cases" else NULL),
                           FINEMAP=c(for_all),
                           SUSIE=c(for_all),

@@ -5,7 +5,7 @@
 \title{Find and import PolyFun annotation files}
 \usage{
 POLYFUN_gather_annotations(
-  chromosomes = c(1:22),
+  chromosomes = seq_len(22),
   subset_snps = NULL,
   polyfun_annots
 )
@@ -15,10 +15,10 @@ Find and import PolyFun annotation files
 }
 \examples{
 \dontrun{
-BST1 <- echodata::BST1
-dat <- BST1
-subset_snps <- dat$SNP
-annot_DT <- POLYFUN_gather_annotations(chromosomes=dat$CHR[1], subset_snps=subset_snps, polyfun_annots="/pd-omics/tools/polyfun/annotations/baselineLF2.2.UKB")
+dat <- echodata::BST1  
+annot_DT <- POLYFUN_gather_annotations(chromosomes=dat$CHR[1],
+                                       subset_snps=subset_snps, 
+                                       polyfun_annots="/pd-omics/tools/polyfun/annotations/baselineLF2.2.UKB")
 }
 }
 \seealso{
@@ -27,17 +27,11 @@ Other polyfun:
 \code{\link{POLYFUN_download_ref_files}()},
 \code{\link{POLYFUN_find_folder}()},
 \code{\link{POLYFUN_finemapper}()},
-\code{\link{POLYFUN_functional_enrichment}()},
 \code{\link{POLYFUN_gather_ldscores}()},
-\code{\link{POLYFUN_h2_enrichment_SNPgroups_plot}()},
-\code{\link{POLYFUN_h2_enrichment_SNPgroups}()},
-\code{\link{POLYFUN_h2_enrichment}()},
 \code{\link{POLYFUN_help}()},
 \code{\link{POLYFUN_import_priors}()},
 \code{\link{POLYFUN_initialize}()},
-\code{\link{POLYFUN_ldsc_annot_enrichment}()},
 \code{\link{POLYFUN_munge_summ_stats}()},
-\code{\link{POLYFUN_plot}()},
 \code{\link{POLYFUN_prepare_snp_input}()},
 \code{\link{POLYFUN_run_ldsc}()},
 \code{\link{POLYFUN}()}

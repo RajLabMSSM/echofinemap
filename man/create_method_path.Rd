@@ -9,9 +9,21 @@ create_method_path(
   finemap_method,
   include_astrices = FALSE,
   LD_reference = NULL,
-  create_dir = TRUE,
   compress = FALSE
 )
+}
+\arguments{
+\item{locus_dir}{Locus-specific directory to store results in.}
+
+\item{finemap_method}{Fine-mapping method to run. 
+See \link[echofinemap]{lfm} for a list of all fine-mapping methods currently
+available.}
+
+\item{include_astrices}{Whether to keep any astrices in file path.}
+
+\item{LD_reference}{Name of the LD reference panel.}
+
+\item{compress}{Whether to add ".gz" at the end of the file path.}
 }
 \description{
 Create a fine-mapping method-specific path.

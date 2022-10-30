@@ -15,11 +15,28 @@ PAINTOR_run(
   RESname = "results.txt",
   ANname = "annotations.txt",
   method = c("mcmc", "enumerate"),
-  set_seed = 2022,
+  seed = 2022,
   auto_restart = FALSE,
   verbose = TRUE
 )
 }
-\description{
-@keywords internal
+\arguments{
+\item{paintor_path}{[Optional] Path to PAINTOR executable. 
+Will be automatically installed if set to \code{NULL} (default).}
+
+\item{max_causal}{Maximum number of causal SNPs.}
+
+\item{method}{\code{"enumerate"} is actually faster 
+when \code{max_causal} is small (<3), 
+but far larger \code{max_causal} use \code{"mcmc"}.}
+
+\item{seed}{Set the random seed for reproducible results.}
+
+\item{auto_restart}{Automatically rerun PAINTOR if it fails the first time.}
+
+\item{verbose}{Print messages.}
 }
+\description{
+Run PAINTOR executable.
+}
+\keyword{internal}

@@ -1,8 +1,18 @@
+#' Prepare priors 
+#' 
+#' Prepare values to be used as per-SNP priors probabilities in fine-mapping.
+#' @param rescale_priors If prior probabilities are supplied,
+#' rescale them from 0-1 (i.e. \code{rescaled_priors = priors / sum(priors)}).
+#' @param snp_col Name of the SNP column.
+#' @inheritParams multifinemap
+#' 
+#' @keywords internal
 prepare_priors <- function(dat,
                            priors_col=NULL,
                            snp_col="SNP",
                            rescale_priors=TRUE, 
                            verbose=TRUE){ 
+    
     if(is.null(priors_col)) return(NULL)
     if(!priors_col %in% colnames(dat)) {
         messager("priors_col not found in dat:",priors_col)

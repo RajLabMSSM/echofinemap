@@ -12,7 +12,7 @@ Publication}
 SUSIE(
   dat,
   LD_matrix,
-  dataset_type = "GWAS",
+  case_control = TRUE,
   max_causal = 5,
   compute_n = "ldsc",
   priors_col = NULL,
@@ -24,26 +24,36 @@ SUSIE(
   residual_variance = NULL,
   max_iter = 100,
   estimate_prior_method = "optim",
-  manual_var_y = FALSE,
+  var_y = NULL,
   plot_track_fit = FALSE,
   return_all_CS = TRUE,
   file_prefix = file.path(tempdir(), "SUSIE"),
-  var_name = "Expression",
   verbose = TRUE
 )
 }
 \arguments{
 \item{dat}{Fine-mapping results data.}
 
+\item{LD_matrix}{Linkage Disequilibrium (LD) matrix to use for fine-mapping.}
+
+\item{case_control}{Whether the summary statistics come from a case-control
+study (e.g. a GWAS of having Alzheimer's Disease or not) (\code{TRUE})
+or a quantitative study (e.g. a GWAS of height, or an eQTL) (\code{FALSE}).}
+
 \item{max_causal}{The maximum number of non-zero effects 
 (and thus causal variants).}
 
-\item{compute_n}{How to compute per-SNP sample size (new column "N").
+\item{compute_n}{How to compute per-SNP sample size (new column "N").\cr
+If the column "N" is already present in \code{dat}, this column 
+will be used to extract per-SNP sample sizes
+and the argument \code{compute_n} will be ignored.\cr
+If the column "N" is \emph{not} present in \code{dat}, one of the following 
+options can be supplied to \code{compute_n}: 
 \itemize{
 \item{\code{0}: }{N will not be computed.}
 \item{\code{>0}: }{If any number >0 is provided,
 that value will be set as N for every row.
-\strong{Note}: Computing N this way is incorrect and should be avoided
+**Note**: Computing N this way is incorrect and should be avoided
 if at all possible.}
 \item{\code{"sum"}: }{N will be computed as:
 cases (N_CAS) + controls (N_CON), so long as both columns are present}.
@@ -101,10 +111,25 @@ likelihood at the specified prior variance is compared to the
 likelihood at a variance of zero, and the setting with the larger
 likelihood is retained.}
 
+\item{var_y}{[Optional] User-supplied phenotypic variance value(s). 
+Can be one of the following:
+\itemize{
+\item{\code{NULL}: }{Variance will be inferred automatically by SUSIE.}
+\item{Numeric vector: }{Variance will be computed directly from vector.}
+\item{Character string: }{The name of a column in \code{dat}
+ to extract a numeric vector from to compute variance.}
+\item{"case_control"}{Variance will be inferred from the proportion 
+of cases/controls in the study. 
+Only works when both "N_cases" and "N_controls" are columns in \code{dat}.}
+}}
+
 \item{plot_track_fit}{Record each iteration and make a GIF of the
 fine-mapping algorithm learning the causal variants.
 \strong{WARNING!:} Making this plot can take a long time if there's
  many iterations.}
+
+\item{return_all_CS}{If >1 Credible Set is identified, 
+return them all (\code{TRUE}), or just the first (\code{FALSE}).}
 
 \item{file_prefix}{Prefix to path of output plot file. If not
 specified, the plot, or plots, will be saved to a temporary

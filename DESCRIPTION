@@ -1,7 +1,7 @@
 Package: echofinemap
 Type: Package
 Title: echoverse module: Fine-mapping functions
-Version: 0.99.3
+Version: 0.99.4
 Authors@R: 
     c(person(given = "Brian",
            family = "Schilder",
@@ -30,22 +30,21 @@ biocViews:
 Imports:
     echodata,
     echoconda, 
-    echoLD,
-    echoannot,
+    echoannot, 
+    echoLD, 
     coloc,
     tools,
     methods,
+    stringr,
     R.utils,
     data.table,
     dplyr,
     tidyr,
     cli,
-    ggplot2,
     rlang,
-    Matrix,
-    piggyback,
-    Ckmeans.1d.dp,
-    susieR (>= 0.12.0)
+    Matrix, 
+    susieR (>= 0.12.0),
+    Rfast
 Suggests:
     markdown,
     rmarkdown,
@@ -61,9 +60,9 @@ Suggests:
     ggrepel,
     patchwork,
     purrr,
-    Rfast,
     devtools,
-    genetics.binaRies
+    genetics.binaRies,
+    Ckmeans.1d.dp
 Remotes:
   github::RajLabMSSM/echodata,
   github::RajLabMSSM/echoLD,

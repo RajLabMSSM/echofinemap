@@ -34,10 +34,22 @@ COJO(
 \arguments{
 \item{dat}{Fine-mapping results data.}
 
+\item{locus_dir}{Locus-specific directory to store results in.}
+
 \item{bfile}{Input PLINK binary PED files, e.g. test.fam, 
 test.bim and test.bed (see PLINK user manual for details).}
 
+\item{fullSS_path}{Path to the full summary statistics file (GWAS or QTL)
+that you want to fine-map.
+It is usually best to provide the absolute path rather
+than the relative path.}
+
+\item{conditioned_snps}{Which SNPs to conditions on when fine-mapping
+with (e.g. \emph{COJO}).}
+
 \item{exclude}{Specify a list of SNPs to be excluded from the analysis.}
+
+\item{prefix}{Prefix to use for file names.}
 
 \item{run_stepwise}{\code{--cojo-slct}:
 Perform a stepwise model selection procedure
@@ -62,12 +74,19 @@ effects without model selection. Results will be saved in a
 (across all fine-mapping methods used) of SNPs to be included in 
 the "mean.CS" column.}
 
-\item{compute_n}{How to compute per-SNP sample size (new column "N").
+\item{freq_cutoff}{Minimum variant frequency cutoff.}
+
+\item{compute_n}{How to compute per-SNP sample size (new column "N").\cr
+If the column "N" is already present in \code{dat}, this column 
+will be used to extract per-SNP sample sizes
+and the argument \code{compute_n} will be ignored.\cr
+If the column "N" is \emph{not} present in \code{dat}, one of the following 
+options can be supplied to \code{compute_n}: 
 \itemize{
 \item{\code{0}: }{N will not be computed.}
 \item{\code{>0}: }{If any number >0 is provided,
 that value will be set as N for every row.
-\strong{Note}: Computing N this way is incorrect and should be avoided
+**Note**: Computing N this way is incorrect and should be avoided
 if at all possible.}
 \item{\code{"sum"}: }{N will be computed as:
 cases (N_CAS) + controls (N_CON), so long as both columns are present}.
@@ -78,6 +97,14 @@ Neff = 2 / (1/N_CAS + 1/N_CON)}.
 \item{\code{"metal"}: }{N will be computed as effective sample size:
 Neff = 4 / (1/N_CAS + 1/N_CON)}.
 }}
+
+\item{colmap}{Column mappings object. 
+Uses \link[echodata]{construct_colmap} by default.}
+
+\item{full_genome}{Whether to run GCTA-COJO across genome-wide (\code{TRUE}),
+or within a specific locus (default: \code{FALSE})}
+
+\item{gcta_path}{Path to the GCTA-COJO executable.}
 
 \item{verbose}{Print messages.}
 

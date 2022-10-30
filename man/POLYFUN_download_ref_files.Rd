@@ -2,42 +2,41 @@
 % Please edit documentation in R/POLYFUN_download_ref_files.R
 \name{POLYFUN_download_ref_files}
 \alias{POLYFUN_download_ref_files}
-\title{Download 1000 Genomes reference files}
+\title{Download reference files}
+\source{
+\code{
+ref_prefix <- POLYFUN_download_ref_files()
+}
+}
 \usage{
 POLYFUN_download_ref_files(
-  alkes_url =
-    "https://data.broadinstitute.org/alkesgroup/LDSCORE/1000G_Phase1_plinkfiles.tgz",
-  results_dir = "./results",
+  alkes_url = paste("https://data.broadinstitute.org/alkesgroup",
+    "LDSCORE/1000G_Phase1_plinkfiles.tgz", sep = "/"),
+  output_dir = tools::R_user_dir(package = "echofinemap", which = "cache"),
   force_overwrite = FALSE,
-  download_method = "wget",
-  conda_env = "echoR_mini"
+  return_prefix = TRUE,
+  download_method = "axel",
+  conda_env = "echoR_mini",
+  verbose = TRUE
 )
 }
+\value{
+File prefix.
+}
 \description{
-Download 1000 Genomes reference files
-}
-\examples{
-\dontrun{
-ref.prefix <- POLYFUN_download_ref_files(force_overwrite=TRUE)
-}
+Download 1000 Genomes reference files.
 }
 \seealso{
 Other polyfun: 
 \code{\link{POLYFUN_compute_priors}()},
 \code{\link{POLYFUN_find_folder}()},
 \code{\link{POLYFUN_finemapper}()},
-\code{\link{POLYFUN_functional_enrichment}()},
 \code{\link{POLYFUN_gather_annotations}()},
 \code{\link{POLYFUN_gather_ldscores}()},
-\code{\link{POLYFUN_h2_enrichment_SNPgroups_plot}()},
-\code{\link{POLYFUN_h2_enrichment_SNPgroups}()},
-\code{\link{POLYFUN_h2_enrichment}()},
 \code{\link{POLYFUN_help}()},
 \code{\link{POLYFUN_import_priors}()},
 \code{\link{POLYFUN_initialize}()},
-\code{\link{POLYFUN_ldsc_annot_enrichment}()},
 \code{\link{POLYFUN_munge_summ_stats}()},
-\code{\link{POLYFUN_plot}()},
 \code{\link{POLYFUN_prepare_snp_input}()},
 \code{\link{POLYFUN_run_ldsc}()},
 \code{\link{POLYFUN}()}

@@ -11,7 +11,7 @@ SUSIE_extract_cs <- function(dat,
     susie_snps <- names(fitted_bhat$X_column_scale_factors)
     CS <- lapply(CS_indices, function(x){susie_snps[x]})
     CS_dict <- list()
-    len <- if(return_all_CS) length(CS) else 1
+    len <- if(isTRUE(return_all_CS)) length(CS) else 1
     ## Assign a CS number for each group of SNPs
     for(i in seq_len(len)){
         for(s in CS[[i]]){

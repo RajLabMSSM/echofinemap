@@ -1,3 +1,29 @@
+# echofinemap 0.99.4
+
+## New features
+
+* Pass more arg down to method-level via `finemap_args`. 
+* Add `check_args` function to handle `finemap_args`.
+* Offload `piggyback` functions to echodata (`echodata::get_data`)
+* `SUSIE`:
+    - Condense `manual_var_y` and `var_name` into one arg: `var_y`
+    - Replace `dataset_type` with more appropriate `case_control` arg.
+* Fully documented all functions. 
+* Remove `POLYFUN_plot` (redundant code with `echoplot`) 
+* `POLYFUN_`: fixed or deleted functions 
+    - `POLYFUN_munge_summ_stats`
+    - `POLYFUN_compute_priors`
+
+## Bug fixes
+
+* Make `Rfast` an Import to avoid downstream issues with `echolocatoR`. 
+* Fix GHA: @master --> @v2  
+* Remove unnecessary deps:
+    - `ggplot2`
+* Adjust *.Rbuildignore* to not cause issues with large `inst/tools` subfolder.
+* `require_cols`:
+    - Now takes the more accurate `case_control` arg instead of `dataaset_type`.
+
 # echofinemap 0.99.3
 
 ## New features

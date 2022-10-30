@@ -19,3 +19,6 @@ package\.json$
 
 ^packrat/
 ^\.Rprofile$
+echofinemap/inst/tools
+inst/tools/
+^tools/

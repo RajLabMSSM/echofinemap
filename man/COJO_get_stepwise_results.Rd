@@ -12,6 +12,8 @@ COJO_get_stepwise_results(
 )
 }
 \arguments{
+\item{prefix}{Prefix to use for file names.}
+
 \item{verbose}{Print messages.}
 }
 \value{

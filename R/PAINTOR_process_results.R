@@ -1,9 +1,14 @@
-#' Process PAINTOR results
+#' PAINTOR: process results
 #'
-#'  @keywords internal
-#'  @importFrom data.table rbindlist fread
-#'  @importFrom dplyr rename
-#'  @importFrom stats setNames
+#' Process PAINTOR fine-mapping results.
+#' @param dat_merged Merged PAINTOR results.
+#' @param res_paths Paths to PAINTOR results.
+#' @inheritParams echodata::find_consensus_snps
+#' 
+#' @keywords internal
+#' @importFrom data.table rbindlist fread
+#' @importFrom dplyr rename
+#' @importFrom stats setNames
 PAINTOR_process_results <- function(dat_merged,
                                     res_paths,
                                     credset_thresh,

@@ -7,7 +7,7 @@
 check_required_cols(
   dat,
   finemap_methods = NULL,
-  dataset_type = "GWAS",
+  case_control = TRUE,
   verbose = TRUE
 )
 }
@@ -15,9 +15,13 @@ check_required_cols(
 \item{dat}{\link[data.table]{data.table} containing SNP-level 
 data to fine-map.}
 
-\item{finemap_methods}{Fine-mapping methods to check.}
+\item{finemap_methods}{Fine-mapping methods to run. 
+See \link[echofinemap]{lfm} for a list of all fine-mapping methods currently
+available.}
 
-\item{dataset_type}{Dataset type ("GWAS" or "QTL").}
+\item{case_control}{Whether the summary statistics come from a case-control
+study (e.g. a GWAS of having Alzheimer's Disease or not) (\code{TRUE})
+or a quantitative study (e.g. a GWAS of height, or an eQTL) (\code{FALSE}).}
 
 \item{verbose}{Print messages.}
 }

@@ -26,12 +26,21 @@ ABF(
 \arguments{
 \item{dat}{Fine-mapping results data.}
 
-\item{compute_n}{How to compute per-SNP sample size (new column "N").
+\item{credset_thresh}{The minimum mean Posterior Probability
+(across all fine-mapping methods used) of SNPs to be included in 
+the "mean.CS" column.}
+
+\item{compute_n}{How to compute per-SNP sample size (new column "N").\cr
+If the column "N" is already present in \code{dat}, this column 
+will be used to extract per-SNP sample sizes
+and the argument \code{compute_n} will be ignored.\cr
+If the column "N" is \emph{not} present in \code{dat}, one of the following 
+options can be supplied to \code{compute_n}: 
 \itemize{
 \item{\code{0}: }{N will not be computed.}
 \item{\code{>0}: }{If any number >0 is provided,
 that value will be set as N for every row.
-\strong{Note}: Computing N this way is incorrect and should be avoided
+**Note**: Computing N this way is incorrect and should be avoided
 if at all possible.}
 \item{\code{"sum"}: }{N will be computed as:
 cases (N_CAS) + controls (N_CON), so long as both columns are present}.
@@ -42,6 +51,12 @@ Neff = 2 / (1/N_CAS + 1/N_CON)}.
 \item{\code{"metal"}: }{N will be computed as effective sample size:
 Neff = 4 / (1/N_CAS + 1/N_CON)}.
 }}
+
+\item{sdY}{Standard deviation of quantitative trait.}
+
+\item{case_control}{Whether the summary statistics come from a case-control
+study (e.g. a GWAS of having Alzheimer's Disease or not) (\code{TRUE})
+or a quantitative study (e.g. a GWAS of height, or an eQTL) (\code{FALSE}).}
 
 \item{verbose}{Print messages.}
 }

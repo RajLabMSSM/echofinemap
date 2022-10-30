@@ -31,12 +31,51 @@ multifinemap(
 \arguments{
 \item{dat}{Fine-mapping results data.}
 
-\item{compute_n}{How to compute per-SNP sample size (new column "N").
+\item{locus_dir}{Locus-specific directory to store results in.}
+
+\item{fullSS_path}{Path to the full summary statistics file (GWAS or QTL)
+that you want to fine-map.
+It is usually best to provide the absolute path rather
+than the relative path.}
+
+\item{finemap_methods}{Fine-mapping methods to run. 
+See \link[echofinemap]{lfm} for a list of all fine-mapping methods currently
+available.}
+
+\item{finemap_args}{A named nested list containing additional arguments 
+for each fine-mapping method. e.g.
+\code{finemap_args = list(FINEMAP=list(), PAINTOR=list(method=""))}}
+
+\item{dataset_type}{The kind dataset you're fine-mapping
+(e.g. GWAS, eQTL, tQTL).
+This will also be used when creating the subdirectory where your results
+will be stored
+(e.g. \emph{Data/<dataset_type>/Kunkle_2019}).}
+
+\item{force_new_finemap}{By default, if an fine-mapping results file for
+ a given locus is already present,
+then \pkg{echolocatoR} will just use the preexisting file.
+Set \code{force_new_finemap=T} to override this and re-run fine-mapping.}
+
+\item{LD_reference}{Name of the LD reference panel.}
+
+\item{LD_matrix}{Linkage Disequilibrium (LD) matrix to use for fine-mapping.}
+
+\item{n_causal}{The maximum number of potential causal SNPs per locus.
+This parameter is used somewhat differently by different fine-mapping tools.
+See tool-specific functions for details.}
+
+\item{compute_n}{How to compute per-SNP sample size (new column "N").\cr
+If the column "N" is already present in \code{dat}, this column 
+will be used to extract per-SNP sample sizes
+and the argument \code{compute_n} will be ignored.\cr
+If the column "N" is \emph{not} present in \code{dat}, one of the following 
+options can be supplied to \code{compute_n}: 
 \itemize{
 \item{\code{0}: }{N will not be computed.}
 \item{\code{>0}: }{If any number >0 is provided,
 that value will be set as N for every row.
-\strong{Note}: Computing N this way is incorrect and should be avoided
+**Note**: Computing N this way is incorrect and should be avoided
 if at all possible.}
 \item{\code{"sum"}: }{N will be computed as:
 cases (N_CAS) + controls (N_CON), so long as both columns are present}.
@@ -50,6 +89,9 @@ Neff = 4 / (1/N_CAS + 1/N_CON)}.
 
 \item{standardise_headers}{Standardise headers first.}
 
+\item{conditioned_snps}{Which SNPs to conditions on when fine-mapping
+with (e.g. \emph{COJO}).}
+
 \item{credset_thresh}{The minimum mean Posterior Probability
 (across all fine-mapping methods used) of SNPs to be included in 
 the "mean.CS" column.}
@@ -58,8 +100,18 @@ the "mean.CS" column.}
 in which a SNP is in the Credible Set in order to be included in the 
 "Consensus_SNP" column.}
 
+\item{case_control}{Whether the summary statistics come from a case-control
+study (e.g. a GWAS of having Alzheimer's Disease or not) (\code{TRUE})
+or a quantitative study (e.g. a GWAS of height, or an eQTL) (\code{FALSE}).}
+
 \item{priors_col}{[Optional] Name of the a column in 
 \code{dat} to extract SNP-wise prior probabilities from.}
+
+\item{conda_env}{Conda environment to use.}
+
+\item{nThread}{Number of threads to parallelise across (when applicable).}
+
+\item{seed}{Set the random seed for reproducible results.}
 
 \item{verbose}{Print messages.}
 }

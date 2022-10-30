@@ -6,7 +6,7 @@
 PAINTOR_prepare_ld_multiancestry <- function(dat_merged,
                                              LD_ls,
                                              locus_dir,
-                                             dat_populations,  
+                                             superpopulation,  
                                              PT_results_path,
                                              LD_reference = "1KGphase3",
                                              force_new_LD = FALSE,
@@ -33,11 +33,11 @@ PAINTOR_prepare_ld_multiancestry <- function(dat_merged,
                             function(x){LD_ls[[1]]})
         }
     #### Download LD matrices from LD panel ####
-    } else if(!is.null(dat_populations)){
+    } else if(!is.null(superpopulation)){
         messager("PAINTOR:: Preparing LD files from LD_reference:",
                  LD_reference,v=verbose) 
         #### Only query LD as many times as necessary ####
-        uniq_pops <- unique(dat_populations)
+        uniq_pops <- unique(superpopulation)
         if(length(uniq_pops)==1){
             messager("Only one unique population will be used:",uniq_pops,
                      v=verbose)
@@ -57,14 +57,14 @@ PAINTOR_prepare_ld_multiancestry <- function(dat_merged,
                                  verbose = verbose)$LD 
               })
         #### Duplicate LD_matrix as needed ####
-        if(length(dat_populations)>length(uniq_pops)){
-            LD_ls <- lapply(dat_populations, 
+        if(length(superpopulation)>length(uniq_pops)){
+            LD_ls <- lapply(superpopulation, 
                            function(pop){LD_ls[[pop]]})
         }
     } else {
         stp <- paste("Must provide one of the following sets of arguments:",
                      "\n - LD_matrix",
-                     "\n - dat_populations and LD_reference")
+                     "\n - superpopulation and LD_reference")
         stop(stp)
     } 
     #### Name all LD according to PAINTOR convention ####

@@ -8,7 +8,7 @@ PAINTOR_prepare_ld_multiancestry(
   dat_merged,
   LD_ls,
   locus_dir,
-  dat_populations,
+  superpopulation,
   PT_results_path,
   LD_reference = "1KGphase3",
   force_new_LD = FALSE,

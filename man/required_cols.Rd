@@ -8,18 +8,20 @@
 }
 \usage{
 required_cols(
-  dataset_type = "GWAS",
+  case_control = TRUE,
   for_all = c("SNP", "CHR", "POS", "Effect", "StdErr"),
   add_versions = FALSE,
   add_sources = TRUE,
   add_citations = TRUE,
   add_executables = FALSE,
-  embed_links = TRUE,
+  embed_links = FALSE,
   verbose = TRUE
 )
 }
 \arguments{
-\item{dataset_type}{Dataset type ("GWAS" or "QTL").}
+\item{case_control}{Whether the summary statistics come from a case-control
+study (e.g. a GWAS of having Alzheimer's Disease or not) (\code{TRUE})
+or a quantitative study (e.g. a GWAS of height, or an eQTL) (\code{FALSE}).}
 
 \item{for_all}{Columns required for all methods.}
 

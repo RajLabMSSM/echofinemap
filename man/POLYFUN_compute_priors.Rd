@@ -2,57 +2,103 @@
 % Please edit documentation in R/POLYFUN_compute_priors.R
 \name{POLYFUN_compute_priors}
 \alias{POLYFUN_compute_priors}
-\title{Recompute SNP-wise priors from summary stats}
+\title{PolyFun: recompute priors}
 \usage{
 POLYFUN_compute_priors(
-  polyfun = NULL,
-  locus_dir,
   fullSS_path,
+  remove_dup = TRUE,
+  polyfun_path = NULL,
+  locus_dir = tempdir(),
   sample_size = NULL,
   min_INFO = 0,
   min_MAF = 0.001,
+  skip_ckmedian = FALSE,
+  num_bins = NULL,
   annotations_path = NULL,
   weights_path = NULL,
-  prefix = "GWAS1",
+  prefix = "dataset1",
   chrom = "all",
   compute_ldscores = FALSE,
   allow_missing_SNPs = TRUE,
   ref_prefix = NULL,
   remove_tmps = TRUE,
-  conda_env = "echoR_mini"
+  conda_env = "echoR_mini",
+  verbose = TRUE
 )
 }
+\arguments{
+\item{fullSS_path}{Path to the full summary statistics file (GWAS or QTL)
+that you want to fine-map.
+It is usually best to provide the absolute path rather
+than the relative path.}
+
+\item{polyfun_path}{[Optional] Path to PolyFun directory where all the 
+executables and reference data are stored. 
+Will be automatically installed if set to \code{NULL} (default).}
+
+\item{locus_dir}{Locus-specific directory to store results in.}
+
+\item{sample_size}{Dataset sample size.}
+
+\item{min_INFO}{Minimum per-SNP INFO criterion score.}
+
+\item{min_MAF}{Minimum per-SNP MAF.}
+
+\item{skip_ckmedian}{SKip ckmedian step.}
+
+\item{annotations_path}{Path prefix to annotation files 
+#' (e.g. "path/to/files/annotations.").
+If \code{NULL}, will simply use example files included with PolyFun.}
+
+\item{weights_path}{Path prefix to weights files 
+(e.g. "path/to/files/weights.").
+If \code{NULL}, will simply use example files included with PolyFun.}
+
+\item{prefix}{Dataset prefix name.}
+
+\item{chrom}{Which chromosome to query.}
+
+\item{compute_ldscores}{Whether to compute per-SNP heritability with
+LDSCore regression.}
+
+\item{allow_missing_SNPs}{Whether or not to allow missing SNPs.}
+
+\item{ref_prefix}{Prefix of path leading to reference files.}
+
+\item{remove_tmps}{Remove temporary files.}
+
+\item{conda_env}{Conda environment to use.}
+
+\item{verbose}{Print messages.}
+}
 \description{
-Recompute SNP-wise priors from summary stats
+Recompute SNP-wise priors from summary stats.
+\strong{Important not on duplicate SNPs: } 
+Make sure you have removed all duplicate SNPs from your
+full summary stats file (\code{fullSS_path}) before running this function.
+Or simply use the \code{remove_dup=TRUE} argument.
+\strong{Important note on file formats:}
+Make sure your full summary stats file (\code{fullSS_path}) is tab-delimited
+(NOT space-delimited). This will be done automatically if you set
+ \code{remove_dup=TRUE}.
 }
 \examples{
-\dontrun{
-locus_dir <- file.path(tempdir(),echodata::locus_dir)
 fullSS_path <- echodata::example_fullSS()
-LDSC.files <- POLYFUN_compute_priors(locus_dir=locus_dir,
-                                     fullSS_path=fullSS_path)
-}
+ldsc_files <- echofinemap:::POLYFUN_compute_priors(fullSS_path=fullSS_path)
 }
 \seealso{
 Other polyfun: 
 \code{\link{POLYFUN_download_ref_files}()},
 \code{\link{POLYFUN_find_folder}()},
 \code{\link{POLYFUN_finemapper}()},
-\code{\link{POLYFUN_functional_enrichment}()},
 \code{\link{POLYFUN_gather_annotations}()},
 \code{\link{POLYFUN_gather_ldscores}()},
-\code{\link{POLYFUN_h2_enrichment_SNPgroups_plot}()},
-\code{\link{POLYFUN_h2_enrichment_SNPgroups}()},
-\code{\link{POLYFUN_h2_enrichment}()},
 \code{\link{POLYFUN_help}()},
 \code{\link{POLYFUN_import_priors}()},
 \code{\link{POLYFUN_initialize}()},
-\code{\link{POLYFUN_ldsc_annot_enrichment}()},
 \code{\link{POLYFUN_munge_summ_stats}()},
-\code{\link{POLYFUN_plot}()},
 \code{\link{POLYFUN_prepare_snp_input}()},
 \code{\link{POLYFUN_run_ldsc}()},
 \code{\link{POLYFUN}()}
 }
 \concept{polyfun}
-\keyword{internal}

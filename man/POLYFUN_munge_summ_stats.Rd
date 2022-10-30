@@ -3,10 +3,16 @@
 \name{POLYFUN_munge_summ_stats}
 \alias{POLYFUN_munge_summ_stats}
 \title{PolyFun: Munge summary stats}
+\source{
+\code{
+fullSS_path <- echodata::example_fullSS()  
+munged_path <- POLYFUN_munge_summ_stats(fullSS_path=fullSS_path)
+}
+}
 \usage{
 POLYFUN_munge_summ_stats(
-  polyfun = NULL,
   fullSS_path,
+  polyfun_path = NULL,
   locus_dir = tempdir(),
   sample_size = NULL,
   min_INFO = 0,
@@ -19,17 +25,29 @@ POLYFUN_munge_summ_stats(
   verbose = TRUE
 )
 }
+\arguments{
+\item{fullSS_path}{Path to the full summary statistics file (GWAS or QTL)
+that you want to fine-map.
+It is usually best to provide the absolute path rather
+than the relative path.}
+
+\item{polyfun_path}{[Optional] Path to PolyFun directory where all the 
+executables and reference data are stored. 
+Will be automatically installed if set to \code{NULL} (default).}
+
+\item{locus_dir}{Locus-specific directory to store results in.}
+
+\item{conda_env}{Conda environment to use.}
+
+\item{verbose}{Print messages.}
+}
 \description{
 Munge summary statistics using the PolyFun implementation of the LDSSC
  munge sum stats python script (\code{munge_polyfun_sumstats.py}).
-}
-\examples{
-\dontrun{
-fullSS_path <- echodata::example_fullSS()
-#### Remove duplicates ####
-dat <- data.table::fread(fullSS_path)
-munged_path <- POLYFUN_munge_summ_stats(fullSS_path=fullSS_path)
-}
+\strong{NOTE:} This script is kept only for documentation purposes.
+Please use 
+\href{https://github.com/neurogenomics/MungeSumstats}{\pkg{MungeSumstats}} 
+instead as it is far more robust.
 }
 \seealso{
 Other polyfun: 
@@ -37,17 +55,11 @@ Other polyfun:
 \code{\link{POLYFUN_download_ref_files}()},
 \code{\link{POLYFUN_find_folder}()},
 \code{\link{POLYFUN_finemapper}()},
-\code{\link{POLYFUN_functional_enrichment}()},
 \code{\link{POLYFUN_gather_annotations}()},
 \code{\link{POLYFUN_gather_ldscores}()},
-\code{\link{POLYFUN_h2_enrichment_SNPgroups_plot}()},
-\code{\link{POLYFUN_h2_enrichment_SNPgroups}()},
-\code{\link{POLYFUN_h2_enrichment}()},
 \code{\link{POLYFUN_help}()},
 \code{\link{POLYFUN_import_priors}()},
 \code{\link{POLYFUN_initialize}()},
-\code{\link{POLYFUN_ldsc_annot_enrichment}()},
-\code{\link{POLYFUN_plot}()},
 \code{\link{POLYFUN_prepare_snp_input}()},
 \code{\link{POLYFUN_run_ldsc}()},
 \code{\link{POLYFUN}()}

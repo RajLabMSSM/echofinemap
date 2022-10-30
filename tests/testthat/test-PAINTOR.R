@@ -13,7 +13,7 @@ test_that("PAINTOR works", {
                     LD_matrix = LD_matrix,
                     max_causal = 2,
                     method = "enumerate",
-                    set_seed = 2019)
+                    seed = 2019)
     testthat::expect_false(all(c("PP","CS") %in% names(dat)))
     testthat::expect_true(all(c("PP","CS") %in% names(dat2)))
     testthat::expect_equal(sum(dat2$CS),2)
@@ -28,7 +28,7 @@ test_that("PAINTOR works", {
                     LD_matrix = LD_matrix,
                     max_causal = 2,
                     method = "enumerate",
-                    set_seed = 2022)
+                    seed = 2022)
     testthat::expect_false(all(c("PP","CS") %in% names(dat)))
     testthat::expect_true(all(c("PP","CS") %in% names(dat3)))
     testthat::expect_equal(sum(dat3$CS),2)

@@ -4,19 +4,19 @@
 #' has the minimum columns required
 #' to run each fine-mapping method, as well as suggested columns.
 #' @param dat \link[data.table]{data.table} containing SNP-level 
-#' data to fine-map.
-#' @param finemap_methods Fine-mapping methods to check.
-#' @param dataset_type Dataset type ("GWAS" or "QTL").
+#' data to fine-map.  
 #' @param verbose Print messages.
+#' @inheritParams multifinemap
 #' 
 #' @export
 #' @import cli
+#' @importFrom data.table copy
 #' @examples
 #' dat <- echodata::BST1
 #' finemap_methods <- check_required_cols(dat=dat)
 check_required_cols <- function(dat,
                                 finemap_methods=NULL, 
-                                dataset_type="GWAS",
+                                case_control=TRUE,
                                 verbose=TRUE){
     noentry <- "\uD83D\uDEAB"
     checkmark <- "\u2705"
@@ -27,7 +27,8 @@ check_required_cols <- function(dat,
         finemap_methods = finemap_methods,
         verbose = verbose)
     #### Get required cols table ####
-    d <- required_cols(dataset_type = dataset_type) 
+    d <- required_cols(case_control = case_control,
+                       verbose = verbose) 
     #### Iterate through methods #####
     for(m in finemap_methods){
         if(verbose) cat(cli::bg_br_magenta(m)); cli::cat_line();

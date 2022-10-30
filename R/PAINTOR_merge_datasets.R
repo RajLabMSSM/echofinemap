@@ -3,12 +3,12 @@ PAINTOR_merge_datasets <- function(dat_ls,
                                    suffixes=paste0(".",seq_len(length(dat_ls))),
                                    verbose=TRUE){ 
     
-    required_cols <- c("CHR","POS","SNP","ZSCORE")
+    req_cols <- c("CHR","POS","SNP","ZSCORE")
     messager("Merging list of primary datasets.",v=verbose)
     dat_merged <- lapply(names(dat_ls), 
                          function(nm){
         d <- dat_ls[[nm]]
-        missing_cols <- required_cols[!required_cols %in% names(d)]
+        missing_cols <- req_cols[!req_cols %in% names(d)]
         if(length(missing_cols)>0){
             stp <- paste("Dataset",paste0("'",nm,"'"),
                          "is missing the following required column(s):",

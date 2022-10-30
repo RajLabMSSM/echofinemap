@@ -20,6 +20,8 @@ COJO_run(
 )
 }
 \arguments{
+\item{gcta_path}{Path to the GCTA-COJO executable.}
+
 \item{bfile}{Input PLINK binary PED files, e.g. test.fam, 
 test.bim and test.bed (see PLINK user manual for details).}
 
@@ -40,10 +42,19 @@ without model selection. Results will be saved in a
  *.jma file with additional file *.jma.ldr showing the 
  LD correlations between the SNPs.}
 
+\item{conditioned_snps}{Which SNPs to conditions on when fine-mapping
+with (e.g. \emph{COJO}).}
+
+\item{prefix}{Prefix to use for file names.}
+
+\item{cojo_dir}{Directory to store results in.}
+
 \item{cojo_file}{Input the summary-level statistics 
 from a meta-analysis GWAS (or a single GWAS).}
 
 \item{exclude}{Specify a list of SNPs to be excluded from the analysis.}
+
+\item{verbose}{Print messages.}
 
 \item{...}{
   Arguments passed on to \code{\link[=COJO_args]{COJO_args}}
@@ -81,8 +92,11 @@ inflation factor will be calculated from the summary-level statistics
 of all the SNPs unless you specify a value, e.g. \code{--cojo-gc 1.05}.}
   }}
 }
+\value{
+Input and output file paths.
+}
 \description{
-Run \emph{GCTA-COJO}
+Run \emph{GCTA-COJO}.
 }
 \seealso{
 Other COJO: 
@@ -91,3 +105,4 @@ Other COJO:
 \code{\link{COJO}()}
 }
 \concept{COJO}
+\keyword{internal}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/PAINTOR.R
 \name{PAINTOR}
 \alias{PAINTOR}
-\title{Run full PAINTOR pipeline}
+\title{PAINTOR: fine-map}
 \source{
 \href{https://github.com/gkichaev/PAINTOR_V3.0}{GitHub}
 \href{https://github.com/gkichaev/PAINTOR_V3.0/wiki/2a.-Computing-1000-genomes-LD}{LD Tutorial}
@@ -22,11 +22,11 @@ PAINTOR(
   annot_roadmap = NULL,
   chrom_states = NULL,
   credset_thresh = 0.95,
-  dat_populations = "EUR",
+  superpopulation = "EUR",
   LD_reference = "1KGphase3",
   force_new_LD = FALSE,
   method = c("mcmc", "enumerate"),
-  set_seed = 2019,
+  seed = 2022,
   paintor_path = NULL,
   force_reinstall = FALSE,
   conda_env = "echoR_mini",
@@ -35,18 +35,66 @@ PAINTOR(
 )
 }
 \arguments{
-\item{dat}{A \link[data.table]{data.table} of GWAS/QTL/TWAS 
-summary statistics. Alternatively, for multi-trait/multi-ancestry
- fine-mapping you can instead provide a named list of 
- \link[data.table]{data.table}s with overlapping genomic coordinates 
- (e.g. \code{list(GWAS1=dat1, GWAS2=dat2)}).}
+\item{dat}{Fine-mapping results data.}
+
+\item{LD_matrix}{Linkage Disequilibrium (LD) matrix to use for fine-mapping.}
+
+\item{locus_dir}{Locus-specific directory to store results in.}
+
+\item{annot}{Custom annotations to use for functional fine-mapping.}
+
+\item{zscore_col}{Name of the column containing the normalized Z-statistic.}
+
+\item{tstat_col}{[Optional] Name of the column containing the t-statistic.}
+
+\item{max_causal}{Maximum number of causal SNPs.}
+
+\item{use_annotations}{Whether to perform functional fine-mapping with 
+specified annotations (\code{TRUE}) 
+or simply perform statistical fine-mapping without any annotations.}
+
+\item{annot_xgr}{Use annotations from \pkg{XGR}
+via \link[echoannot]{XGR_query}.}
+
+\item{annot_roadmap}{Use annotations from \pkg{Roadmap} 
+via \link[echoannot]{ROADMAP_query}.}
+
+\item{chrom_states}{Filter results by chromatin states.}
+
+\item{credset_thresh}{The minimum mean Posterior Probability
+(across all fine-mapping methods used) of SNPs to be included in 
+the "mean.CS" column.}
+
+\item{superpopulation}{The ancestry of each population in \code{dat}. 
+Can be one (applied to all dataset) or more (one per dataset).
+When users don't supply their own Linkage Disequilibrium (LD) 
+matrix/matrices via the \code{LD_matrix} argument, 
+this information is used to gather LD matrices 
+from the reference panel(s) using \link[echoLD]{get_LD}.}
+
+\item{LD_reference}{Name of the LD reference panel.}
+
+\item{force_new_LD}{Force new LD subset.}
 
 \item{method}{\code{"enumerate"} is actually faster 
 when \code{max_causal} is small (<3), 
 but far larger \code{max_causal} use \code{"mcmc"}.}
+
+\item{seed}{Set the random seed for reproducible results.}
+
+\item{paintor_path}{[Optional] Path to PAINTOR executable. 
+Will be automatically installed if set to \code{NULL} (default).}
+
+\item{force_reinstall}{Force reinstallation of PAINTOR.}
+
+\item{conda_env}{Conda environment to use.}
+
+\item{nThread}{Number of threads to parallelise across (when applicable).}
+
+\item{verbose}{Print messages.}
 }
 \description{
-Run full PAINTOR pipeline
+Run the full PAINTOR fine-mapping pipeline.
 }
 \examples{
  

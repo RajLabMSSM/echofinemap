@@ -29,13 +29,25 @@
 #'
 #' @param max_causal The maximum number of non-zero effects 
 #' (and thus causal variants).
-#' @param rescale_priors If prior probabilities are supplied,
-#' rescale them from 0-1 (i.e. \code{rescaled_priors = priors / sum(priors)}).
 #' @param plot_track_fit Record each iteration and make a GIF of the
 #' fine-mapping algorithm learning the causal variants.
 #' \strong{WARNING!:} Making this plot can take a long time if there's
 #'  many iterations.
+#' @param var_y [Optional] User-supplied phenotypic variance value(s). 
+#' Can be one of the following:
+#' \itemize{
+#' \item{\code{NULL}: }{Variance will be inferred automatically by SUSIE.}
+#' \item{Numeric vector: }{Variance will be computed directly from vector.}
+#' \item{Character string: }{The name of a column in \code{dat}
+#'  to extract a numeric vector from to compute variance.}
+#' \item{"case_control"}{Variance will be inferred from the proportion 
+#' of cases/controls in the study. 
+#' Only works when both "N_cases" and "N_controls" are columns in \code{dat}.}
+#' }
+#' @param return_all_CS If >1 Credible Set is identified, 
+#' return them all (\code{TRUE}), or just the first (\code{FALSE}).
 #' @inheritParams multifinemap
+#' @inheritParams prepare_priors
 #' @inheritParams susieR::susie_suff_stat
 #' @inheritParams susieR::susie_plot_iteration
 #' @inheritParams echoLD::get_LD
@@ -59,7 +71,7 @@
 #' dat2 <- echofinemap::SUSIE(dat=dat, LD_matrix=LD_matrix)
 SUSIE <- function(dat,
                   LD_matrix,
-                  dataset_type="GWAS",
+                  case_control=TRUE,
                   # susieR default max_causal=L=10
                   max_causal=5,
                   # susieR default sample_size=n=<missing>
@@ -82,18 +94,17 @@ SUSIE <- function(dat,
                   max_iter=100,
                   # susieR default="optim"
                   estimate_prior_method="optim",
-                  manual_var_y=FALSE,
+                  var_y=NULL,
                   
                   plot_track_fit=FALSE,
                   return_all_CS=TRUE,
-                  file_prefix=file.path(tempdir(),"SUSIE"),
-                  var_name="Expression",
+                  file_prefix=file.path(tempdir(),"SUSIE"), 
                   verbose=TRUE){
   
     if(!requireNamespace("Rfast")){
         warning("Install Rfast to speed up susieR even further:\n",
                 "   install.packages('Rfast')")
-    }
+    } 
     #### Remove rows with NAs ####
     dat <- remove_na_rows(dat=dat, 
                           cols = c("Effect","StdErr","SNP","MAF"),
@@ -111,10 +122,10 @@ SUSIE <- function(dat,
              paste0("sample_size=",formatC(sample_size,big.mark = ",")),
              v=verbose)
   #### Get phenotype variance ####
-  if(manual_var_y){
+  if(!is.null(var_y)){
     var_y <- get_pheno_variance(dat = dat,
-                                dataset_type =  dataset_type, 
-                                var_name = var_name,
+                                case_control = case_control,
+                                var_y = var_y,
                                 verbose = verbose)
   } else {var_y <- rlang::missing_arg()}
   #### Filter SNPs to only those in LD ref ####

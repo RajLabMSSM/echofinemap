@@ -1,8 +1,15 @@
 #' Run \emph{GCTA-COJO}
-#'
-#' @family COJO 
+#' 
+#' Run \emph{GCTA-COJO}.
+#' @param cojo_dir Directory to store results in.
+#' @inheritParams multifinemap
+#' @inheritParams COJO
 #' @inheritParams COJO_args
 #' @inheritDotParams COJO_args
+#' @returns Input and output file paths.
+#' 
+#' @family COJO 
+#' @keywords internal
 COJO_run <- function(gcta_path,
                      bfile,
                      cojo_slct = TRUE,

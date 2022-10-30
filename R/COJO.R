@@ -68,9 +68,16 @@
 #' Fit all the included SNPs to estimate their joint 
 #' effects without model selection. Results will be saved in a 
 #' \emph{*.jma} file with additional file \emph{*.jma.ldr}.
+#' @param gcta_path Path to the GCTA-COJO executable.
+#' @param prefix Prefix to use for file names.
+#' @param freq_cutoff Minimum variant frequency cutoff.
+#' @param full_genome Whether to run GCTA-COJO across genome-wide (\code{TRUE}),
+#' or within a specific locus (default: \code{FALSE})
 #' @inheritParams COJO_args
+#' @inheritParams multifinemap
 #' @inheritParams echodata::find_consensus_snps
 #' @inheritParams echodata::get_sample_size
+#' @inheritParams echodata::import_topSNPs
 #' @inheritDotParams COJO_args
 #' @family COJO
 #' @source 

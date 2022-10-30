@@ -14,7 +14,7 @@ FINEMAP(
   FINEMAP_path = NULL,
   compute_n = "ldsc",
   n_causal = 5,
-  model = "sss",
+  model = c("sss", "cond"),
   remove_tmps = FALSE,
   force_new = FALSE,
   credset_thresh = 0.95,
@@ -30,17 +30,26 @@ FINEMAP(
 \arguments{
 \item{dat}{Fine-mapping results data.}
 
+\item{locus_dir}{Locus-specific directory to store results in.}
+
+\item{LD_matrix}{Linkage Disequilibrium (LD) matrix to use for fine-mapping.}
+
 \item{FINEMAP_path}{Path to a custom FINEMAP executable to use
 instead of the ones included in \pkg{echolocatoR}.
 Users can also simply supply "finemap" if this command is linked to
  the executable.}
 
-\item{compute_n}{How to compute per-SNP sample size (new column "N").
+\item{compute_n}{How to compute per-SNP sample size (new column "N").\cr
+If the column "N" is already present in \code{dat}, this column 
+will be used to extract per-SNP sample sizes
+and the argument \code{compute_n} will be ignored.\cr
+If the column "N" is \emph{not} present in \code{dat}, one of the following 
+options can be supplied to \code{compute_n}: 
 \itemize{
 \item{\code{0}: }{N will not be computed.}
 \item{\code{>0}: }{If any number >0 is provided,
 that value will be set as N for every row.
-\strong{Note}: Computing N this way is incorrect and should be avoided
+**Note**: Computing N this way is incorrect and should be avoided
 if at all possible.}
 \item{\code{"sum"}: }{N will be computed as:
 cases (N_CAS) + controls (N_CON), so long as both columns are present}.
@@ -52,8 +61,14 @@ Neff = 2 / (1/N_CAS + 1/N_CON)}.
 Neff = 4 / (1/N_CAS + 1/N_CON)}.
 }}
 
+\item{n_causal}{The maximum number of potential causal SNPs per locus.
+This parameter is used somewhat differently by different fine-mapping tools.
+See tool-specific functions for details.}
+
 \item{model}{"cond" for stepwise conditional search, 
 "sss" for stochastic shotgun search.}
+
+\item{remove_tmps}{Remove any temporary files generated.}
 
 \item{force_new}{If saved results already exist in the given
 \code{locus_dir}, skip re-running FINEMAP and use them 
@@ -68,6 +83,9 @@ the "mean.CS" column.}
 
 \item{priors_col}{[Optional] Name of the a column in 
 \code{dat} to extract SNP-wise prior probabilities from.}
+
+\item{rescale_priors}{If prior probabilities are supplied,
+rescale them from 0-1 (i.e. \code{rescaled_priors = priors / sum(priors)}).}
 
 \item{args_list}{A named list of additional arguments to pass to FINEMAP
 (e.g.: args_list = list("--n-iterations"=5000,"--sss"="")).

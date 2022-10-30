@@ -13,6 +13,10 @@
 #' J Wakefield, A bayesian measure of the probability of false discovery 
 #' in genetic epidemiology studies. American Journal of Human Genetics. 
 #' 81, 208–227 (2007).} 
+#' @param sdY Standard deviation of quantitative trait.
+#' @inheritParams multifinemap
+#' @inheritParams echodata::get_sample_size
+#' @inheritParams echodata::find_consensus_snps
 #' @export
 #' @importFrom dplyr rename arrange desc
 #' @importFrom echodata get_sample_size
@@ -40,7 +44,12 @@ ABF <- function(dat,
                   # MUST be squared
                   varbeta = dat$StdErr^2, 
                   snp = dat$SNP)
-  if(case_control){ 
+  if(isTRUE(case_control)){ 
+      if(!"proportion_cases" %in% names(dat)){
+          stp <- paste("ABF::",shQuote("proportion_cases"),
+                       "col is required when case_control=TRUE.")
+          stop(stp)
+      }
     dataset$s <- mean(dat$proportion_cases, na.rm = TRUE) 
     dataset$type <- "cc"
   } else{
@@ -55,7 +64,8 @@ ABF <- function(dat,
                                            compute_n = compute_n,
                                            force_new = FALSE,
                                            return_only = max,
-                                           verbose = verbose)
+                                           verbose = verbose,
+                                           na.rm = TRUE)
   dataset$N <- sample_size
   #### Run ABF ####
   messager("Running ABF.",v=verbose)

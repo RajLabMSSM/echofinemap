@@ -2,9 +2,13 @@ POLYFUN_sample_size_arg <- function(fullSS_path,
                                     sample_size,
                                     nrows=1000,
                                     verbose=TRUE){
-    header <- echodata::get_header(path = fullSS_path)
-    if(any(c("N_cases") %in% header) &
-       any(c("N_controls") %in% header) ){
+    
+    header <- echodata::get_header(path = fullSS_path, 
+                                   nrows = nrows, 
+                                   verbose = verbose)
+    if((any(c("N_cases") %in% header) &
+        any(c("N_controls") %in% header)) |
+       "N" %in% header){
         if(!is.null(sample_size)){
             wrn <- paste(
                 "Cannot both specify sample_size (--n) and have an",

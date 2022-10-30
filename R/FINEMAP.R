@@ -63,7 +63,9 @@
 #' Set \code{TRUE} to ignore these files and re-run FINEMAP.
 #' @param nThread Number of threads to parallelise across.
 #' Passed to \code{"--n-threads"} in FINEMAP.
+#' @param remove_tmps Remove any temporary files generated. 
 #' @inheritParams multifinemap 
+#' @inheritParams prepare_priors 
 #' @inheritParams echodata::get_sample_size
 #' 
 #' @source \url{http://www.christianbenner.com}
@@ -90,7 +92,7 @@ FINEMAP <- function(dat,
                     FINEMAP_path=NULL,
                     compute_n="ldsc",
                     n_causal=5,# Max number of allowed causal SNPs
-                    model="sss",
+                    model=c("sss","cond"),
                     remove_tmps=FALSE,
                     force_new=FALSE,
                     credset_thresh=.95,
@@ -104,11 +106,11 @@ FINEMAP <- function(dat,
   # echoverseTemplate:::source_all(packages = "dplyr")
   # echoverseTemplate:::args2vars(FINEMAP)
   
-  CS <- PP <- NULL;
+  PP <- NULL;
   
   if(!methods::is(finemap_version,"package_version")){
       finemap_version <- package_version(finemap_version)
-  }
+  } 
   #### Remove rows with NAs ####
   dat <- remove_na_rows(dat=dat, 
                         cols = c("Effect","StdErr","SNP","MAF",

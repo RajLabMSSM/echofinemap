@@ -1,6 +1,10 @@
 #' Run PAINTOR
 #'
-#'  @keywords internal
+#' Run PAINTOR executable.
+#' @param auto_restart Automatically rerun PAINTOR if it fails the first time.
+#' @inheritParams multifinemap
+#' @inheritParams PAINTOR
+#' @keywords internal
 PAINTOR_run <- function(paintor_path=NULL,
                         PT_results_path,
                         inputFile_path,
@@ -11,7 +15,7 @@ PAINTOR_run <- function(paintor_path=NULL,
                         RESname = "results.txt",
                         ANname = "annotations.txt",
                         method=c("mcmc","enumerate"),
-                        set_seed = 2022,
+                        seed = 2022,
                         auto_restart = FALSE,
                         verbose = TRUE){
     
@@ -69,7 +73,7 @@ PAINTOR_run <- function(paintor_path=NULL,
         # Suffix for annotation files [Default: annotations]
         "-ANname",basename(ANname),
         
-        "-set_seed",set_seed
+        "-seed",seed
     )
     echoconda::cmd_print(cmd, basepath = FALSE)
     system(cmd)
@@ -91,7 +95,7 @@ PAINTOR_run <- function(paintor_path=NULL,
                                        ANname = ANname,
                                        method = method,
                                        max_causal = max_causal,
-                                       set_seed = set_seed,
+                                       seed = seed,
                                        verbose = verbose)
         return(res_paths)
     }
@@ -124,7 +128,7 @@ PAINTOR_run <- function(paintor_path=NULL,
                      ),
                      max_causal=max_causal,
                      method=method,
-                     set_seed=set_seed
+                     seed=seed
                      )
     names(res_paths$RESname) <- stringr::str_split(
         basename(res_paths$RESname),"\\.", simplify =  TRUE)[,1]

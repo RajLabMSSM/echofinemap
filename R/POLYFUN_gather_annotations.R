@@ -3,12 +3,12 @@
 #' @family polyfun
 #' @examples
 #' \dontrun{
-#' BST1 <- echodata::BST1
-#' dat <- BST1
-#' subset_snps <- dat$SNP
-#' annot_DT <- POLYFUN_gather_annotations(chromosomes=dat$CHR[1], subset_snps=subset_snps, polyfun_annots="/pd-omics/tools/polyfun/annotations/baselineLF2.2.UKB")
+#' dat <- echodata::BST1  
+#' annot_DT <- POLYFUN_gather_annotations(chromosomes=dat$CHR[1],
+#'                                        subset_snps=subset_snps, 
+#'                                        polyfun_annots="/pd-omics/tools/polyfun/annotations/baselineLF2.2.UKB")
 #' }
-POLYFUN_gather_annotations <- function(chromosomes=c(1:22),
+POLYFUN_gather_annotations <- function(chromosomes=seq_len(22),
                                        subset_snps=NULL,
                                        polyfun_annots){
     annot_DT <- lapply(chromosomes, function(chrom){

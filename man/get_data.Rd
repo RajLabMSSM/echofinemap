@@ -7,9 +7,29 @@
 get_data(
   fname,
   repo = "RajLabMSSM/echofinemap",
-  storage_dir = tempdir(),
-  overwrite = FALSE
+  save_dir = tempdir(),
+  tag = "latest",
+  overwrite = FALSE,
+  ...
 )
+}
+\arguments{
+\item{fname}{File name.}
+
+\item{repo}{GitHub repository name.}
+
+\item{save_dir}{Local directory to cache data in.}
+
+\item{tag}{tag for the GitHub release to which this data should be attached.}
+
+\item{overwrite}{Should any local files of the same name be overwritten?
+default \code{TRUE}.}
+
+\item{...}{
+  Arguments passed on to \code{\link[echodata:get_data]{echodata::get_data}}
+  \describe{
+    \item{\code{}}{}
+  }}
 }
 \description{
 Get data via \pkg{piggyback}.

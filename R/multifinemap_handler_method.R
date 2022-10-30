@@ -32,30 +32,48 @@ multifinemap_handler_method <- function(dat,
     #### Remove existing fine-mapping cols to avoid duplicates ####
     dat <- drop_finemap_cols(dat = dat,
                              finemap_methods = finemap_method, 
-                             verbose = verbose)
+                             verbose = FALSE)
+    fma <- check_args(finemap_args = finemap_args,
+                      finemap_method = finemap_method, 
+                      verbose = verbose)
     # INITIATE FINE-MAPPING
     if(finemap_method=="SUSIE"){
-        #### method: SUSIE ####
-        dat <- SUSIE(dat = dat,
-                     dataset_type = dataset_type,
-                     LD_matrix = LD_matrix,
-                     max_causal = n_causal,
-                     compute_n = compute_n,
-                     credset_thresh = credset_thresh,
-                     verbose = verbose)
+        #### method: SUSIE #### 
+        dat <- SUSIE(
+                    dat = dat, 
+                    LD_matrix = LD_matrix,
+                    max_causal = n_causal,
+                    compute_n = compute_n,
+                    case_control = case_control,
+                    priors_col = fma$priors_col,
+                    rescale_priors = fma$rescale_priors,
+                    scaled_prior_variance = fma$scaled_prior_variance,
+                    estimate_residual_variance = fma$estimate_residual_variance,
+                    estimate_prior_variance = fma$estimate_prior_variance, 
+                    residual_variance = fma$residual_variance, 
+                    estimate_prior_method = fma$estimate_prior_method,
+                    max_iter = fma$max_iter,
+                    var_y = fma$var_y,
+                    plot_track_fit = fma$plot_track_fit,
+                    return_all_CS = fma$return_all_CS, 
+                    file_prefix = fma$file_prefix,  
+                    credset_thresh = credset_thresh,
+                    verbose = verbose)
         
     } else if(finemap_method=="POLYFUN_SUSIE"){
         #### PolyFun+SUSIE ####
         dat <- POLYFUN(locus_dir = locus_dir,
                        dat = dat,
-                       LD_matrix = LD_matrix,
-                       dataset_type = dataset_type,
+                       LD_matrix = LD_matrix, 
                        method = "SUSIE",
+                       case_control = case_control,
                        max_causal = n_causal,
                        compute_n = compute_n,
-                       mode = "precomputed", #"non-parametric",
+                       polyfun = fma$polyfun,
+                       mode = fma$mode,
                        credset_thresh = credset_thresh,
                        force_new = force_new_finemap,
+                       nThread = nThread,
                        conda_env = conda_env,
                        verbose = verbose)
         
@@ -63,14 +81,16 @@ multifinemap_handler_method <- function(dat,
         #### PolyFun+SUSIE ####
         dat <- POLYFUN(locus_dir = locus_dir,
                        dat = dat,
-                       LD_matrix = LD_matrix,
-                       dataset_type = dataset_type,
+                       LD_matrix = LD_matrix, 
                        method = "FINEMAP",
+                       case_control = case_control,
                        max_causal = n_causal,
                        compute_n = compute_n, 
-                       mode = "precomputed", #"non-parametric",
+                       polyfun = fma$polyfun,
+                       mode = fma$mode,
                        credset_thresh = credset_thresh,
                        force_new = force_new_finemap,
+                       nThread = nThread,
                        conda_env = conda_env, 
                        verbose = verbose)
         
@@ -80,6 +100,7 @@ multifinemap_handler_method <- function(dat,
                    credset_thresh = credset_thresh,
                    compute_n = compute_n,
                    case_control = case_control,
+                   sdY = fma$sdY,
                    verbose = verbose) 
         
     } else if(finemap_method=="FINEMAP"){
@@ -90,14 +111,15 @@ multifinemap_handler_method <- function(dat,
                        compute_n = compute_n,  
                        n_causal = n_causal,
                        credset_thresh = credset_thresh,
-                       args_list = if("FINEMAP" %in% names(finemap_args)) {
-                           finemap_args[["FINEMAP"]]
-                       } else {NULL}, 
+                       finemap_version = fma$finemap_version,
+                       model = fma$model,
+                       remove_tmps = fma$remove_tmps,
+                       FINEMAP_path = fma$FINEMAP_path,
+                       args_list = fma$args_list, 
+                       priors_col = priors_col,
                        force_new = force_new_finemap,
                        nThread=nThread,
-                       verbose=verbose
-                       )
-        
+                       verbose=verbose)
         
     } else if("COJO_stepwise" %in% finemap_method){
         #### COJO_stepwise #### 
@@ -109,6 +131,7 @@ multifinemap_handler_method <- function(dat,
                     run_conditional = FALSE,
                     run_joint = FALSE,
                     full_genome = TRUE,
+                    compute_n = compute_n,
                     credset_thresh = credset_thresh,
                     verbose = verbose)
         
@@ -122,6 +145,7 @@ multifinemap_handler_method <- function(dat,
                     run_conditional = TRUE,
                     run_joint = FALSE,
                     full_genome = FALSE,
+                    compute_n = compute_n,
                     credset_thresh = credset_thresh,
                     verbose = verbose)
         
@@ -135,6 +159,7 @@ multifinemap_handler_method <- function(dat,
                     run_conditional = FALSE,
                     run_joint = TRUE,
                     full_genome = TRUE,
+                    compute_n = compute_n,
                     credset_thresh = credset_thresh,
                     verbose = verbose)
         
@@ -142,14 +167,18 @@ multifinemap_handler_method <- function(dat,
         #### PAINTOR ####
         dat <- PAINTOR(dat = dat,
                        locus_dir = locus_dir,
+                       LD_reference = fma$LD_reference,
                        LD_matrix = LD_matrix,
+                       superpopulation = fma$superpopulation,
+                       annot_roadmap = fma$annot_roadmap,
+                       annot_xgr = fma$annot_xgr,
                        max_causal = n_causal,
                        credset_thresh = credset_thresh,  
-                       annot = NULL,
-                       use_annotations=FALSE,
-                       method = finemap_args$PAINTOR$method,
+                       annot = fma$annot,
+                       use_annotations = fma$use_annotations,
+                       method = fma$method,
                        conda_env = conda_env,
-                       set_seed = seed,
+                       seed = seed,
                        nThread = nThread,
                        verbose = verbose)
     } else {

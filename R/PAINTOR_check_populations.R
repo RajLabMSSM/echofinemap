@@ -1,25 +1,25 @@
-PAINTOR_check_populations <- function(dat_ls,
+PAINTOR_check_superpopulation <- function(dat_ls,
                                       LD_ls = NULL,
-                                      populations = NULL,
+                                      superpopulation = NULL,
                                       verbose = TRUE){
     if(is.null(LD_ls)){ 
         messager("No LD_matrix provided.",
                  "Will compute LD from refrence panel instead.",v=verbose)
-        if(length(populations)==0){
-            stp <- "Must provide >0 populations."
+        if(length(superpopulation)==0){
+            stp <- "Must provide >0 superpopulation."
             stop(stp)
-        } else if(length(populations)==1){
-            messager("Assigning one population to all datasets:",populations,
+        } else if(length(superpopulation)==1){
+            messager("Assigning one population to all datasets:",superpopulation,
                      v=verbose)
-            populations <- rep(populations,length(dat_ls))
-        } else if(length(populations)>1){
-            if(length(populations)!=length(dat_ls)){
-                stp2 <- paste("populations must be the same length",
+            superpopulation <- rep(superpopulation,length(dat_ls))
+        } else if(length(superpopulation)>1){
+            if(length(superpopulation)!=length(dat_ls)){
+                stp2 <- paste("superpopulation must be the same length",
                               "as the number of datasets.")
                 stop(stp2)
             } 
         }
-        return(populations)
+        return(superpopulation)
     } else {
         messager("Using LD matrices provided in LD_matrix argument.",v=verbose)
         return(NULL)

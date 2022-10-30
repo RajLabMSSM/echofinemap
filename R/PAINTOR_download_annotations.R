@@ -1,6 +1,10 @@
 #' Download annotations for PAINTOR
-#'
+#' 
+#' Download annotations to perform functional fine-mapping with PAINTOR.
+#' @inheritParams multifinemap
+#' @inheritParams PAINTOR
 #' @keywords internal
+#' @importFrom echoannot XGR_query ROADMAP_query
 PAINTOR_download_annotations <- function(dat_merged,  
                                          locus_dir,
                                          PT_results_path,
@@ -40,7 +44,7 @@ PAINTOR_download_annotations <- function(dat_merged,
         #### XGR ####
         if(!is.null(annot_xgr)){
             messager("++ Preparing annotations via XGR.",v=verbose) 
-            xgr.gr <- echoannot::XGR_download_and_standardize(
+            xgr.gr <- echoannot::XGR_query(
                 lib.selections = annot_xgr, 
                 as_grangesList = TRUE, 
                 dat = dat_merged,

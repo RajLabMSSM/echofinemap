@@ -18,7 +18,28 @@ PAINTOR_download_annotations(
   verbose = TRUE
 )
 }
+\arguments{
+\item{locus_dir}{Locus-specific directory to store results in.}
+
+\item{annot_xgr}{Use annotations from \pkg{XGR}
+via \link[echoannot]{XGR_query}.}
+
+\item{annot_roadmap}{Use annotations from \pkg{Roadmap} 
+via \link[echoannot]{ROADMAP_query}.}
+
+\item{chrom_states}{Filter results by chromatin states.}
+
+\item{use_annotations}{Whether to perform functional fine-mapping with 
+specified annotations (\code{TRUE}) 
+or simply perform statistical fine-mapping without any annotations.}
+
+\item{conda_env}{Conda environment to use.}
+
+\item{nThread}{Number of threads to parallelise across (when applicable).}
+
+\item{verbose}{Print messages.}
+}
 \description{
-Download annotations for PAINTOR
+Download annotations to perform functional fine-mapping with PAINTOR.
 }
 \keyword{internal}

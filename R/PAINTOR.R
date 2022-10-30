@@ -1,17 +1,38 @@
-#' Run full PAINTOR pipeline
+#' PAINTOR: fine-map
 #' 
-#' @param dat A \link[data.table]{data.table} of GWAS/QTL/TWAS 
-#' summary statistics. Alternatively, for multi-trait/multi-ancestry
-#'  fine-mapping you can instead provide a named list of 
-#'  \link[data.table]{data.table}s with overlapping genomic coordinates 
-#'  (e.g. \code{list(GWAS1=dat1, GWAS2=dat2)}).
-#' @param method \code{"enumerate"} is actually faster 
-#' when \code{max_causal} is small (<3), 
-#' but far larger \code{max_causal} use \code{"mcmc"}.
+#' Run the full PAINTOR fine-mapping pipeline.
 #' @source
 #' \href{https://github.com/gkichaev/PAINTOR_V3.0}{GitHub}
 #' \href{https://github.com/gkichaev/PAINTOR_V3.0/wiki/2a.-Computing-1000-genomes-LD}{LD Tutorial}
 #' \href{https://github.com/gkichaev/PAINTOR_V3.0/wiki/2.-Input-Files-and-Formats}{Input file formats}
+#' @param method \code{"enumerate"} is actually faster 
+#' when \code{max_causal} is small (<3), 
+#' but far larger \code{max_causal} use \code{"mcmc"}.
+#' @param zscore_col Name of the column containing the normalized Z-statistic.
+#' @param tstat_col [Optional] Name of the column containing the t-statistic.
+#' @param max_causal Maximum number of causal SNPs.
+#' @param use_annotations Whether to perform functional fine-mapping with 
+#' specified annotations (\code{TRUE}) 
+#' or simply perform statistical fine-mapping without any annotations.
+#' @param annot Custom annotations to use for functional fine-mapping.
+#' @param annot_xgr Use annotations from \pkg{XGR}
+#' via \link[echoannot]{XGR_query}.
+#' @param annot_roadmap Use annotations from \pkg{Roadmap} 
+#' via \link[echoannot]{ROADMAP_query}.
+#' @param force_reinstall Force reinstallation of PAINTOR.
+#' @param superpopulation The ancestry of each population in \code{dat}. 
+#' Can be one (applied to all dataset) or more (one per dataset).
+#' When users don't supply their own Linkage Disequilibrium (LD) 
+#' matrix/matrices via the \code{LD_matrix} argument, 
+#' this information is used to gather LD matrices 
+#' from the reference panel(s) using \link[echoLD]{get_LD}.
+#' @param paintor_path [Optional] Path to PAINTOR executable. 
+#' Will be automatically installed if set to \code{NULL} (default). 
+#' @inheritParams multifinemap
+#' @inheritParams echodata::find_consensus_snps
+#' @inheritParams echoannot::ROADMAP_query
+#' @inheritParams echoLD::get_LD
+#' 
 #' @export
 #' @importFrom methods is
 #' @examples  
@@ -39,11 +60,11 @@ PAINTOR <- function(dat,
                     annot_roadmap = NULL,
                     chrom_states = NULL, 
                     credset_thresh = .95, 
-                    dat_populations = "EUR",
+                    superpopulation = "EUR",
                     LD_reference = "1KGphase3",
                     force_new_LD = FALSE, 
                     method = c("mcmc","enumerate"),
-                    set_seed = 2019,
+                    seed = 2022,
                     paintor_path = NULL,
                     force_reinstall = FALSE,
                     conda_env = "echoR_mini",
@@ -71,10 +92,10 @@ PAINTOR <- function(dat,
                               dat_ls = dat_ls,
                               locus_dir = locus_dir,
                               verbose = verbose)
-    #### Check populations ####
-    dat_populations <- PAINTOR_check_populations(
+    #### Check superpopulation ####
+    superpopulation <- PAINTOR_check_superpopulation(
         dat_ls = dat_ls, 
-        populations = dat_populations,
+        superpopulation = superpopulation,
         LD_ls = LD_ls)
     ##### Report number of datasets/annotations and produce save path ####
     PT_results_path <- PAINTOR_datatype_handler(
@@ -91,7 +112,7 @@ PAINTOR <- function(dat,
         dat_merged = dat_merged, 
         LD_ls = LD_ls,
         PT_results_path = PT_results_path, 
-        dat_populations = dat_populations,
+        superpopulation = superpopulation,
         LD_reference = LD_reference,
         force_new_LD = force_new_LD, 
         nThread = nThread,
@@ -129,7 +150,7 @@ PAINTOR <- function(dat,
                              zscore_cols = zscore_cols, 
                              method = method, 
                              max_causal = max_causal,
-                             set_seed = set_seed,
+                             seed = seed,
                              ld_paths = ld_paths,
                              verbose = verbose) 
     res_paths[["locusFile"]] <- locusFile_path

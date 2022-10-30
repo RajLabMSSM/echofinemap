@@ -2,17 +2,24 @@
 #' 
 #' Munge summary statistics using the PolyFun implementation of the LDSSC
 #'  munge sum stats python script (\code{munge_polyfun_sumstats.py}).
-#' @keywords internal
+#' \strong{NOTE:} This script is kept only for documentation purposes.
+#' Please use 
+#' \href{https://github.com/neurogenomics/MungeSumstats}{\pkg{MungeSumstats}} 
+#' instead as it is far more robust.
+#' @inheritParams multifinemap
+#' @inheritParams POLYFUN
+#' @inheritParams echoconda::activate_env
 #' @family polyfun
-#' @examples
-#' \dontrun{
-#' fullSS_path <- echodata::example_fullSS()
-#' #### Remove duplicates ####
-#' dat <- data.table::fread(fullSS_path)
+#' 
+#' @keywords internal
+#' @importFrom echoconda find_python_path cmd_print
+#' @source 
+#' \code{
+#' fullSS_path <- echodata::example_fullSS()  
 #' munged_path <- POLYFUN_munge_summ_stats(fullSS_path=fullSS_path)
 #' }
-POLYFUN_munge_summ_stats <- function(polyfun=NULL,
-                                     fullSS_path,
+POLYFUN_munge_summ_stats <- function(fullSS_path,
+                                     polyfun_path=NULL,
                                      locus_dir=tempdir(),
                                      sample_size=NULL,
                                      min_INFO=0,
@@ -24,13 +31,14 @@ POLYFUN_munge_summ_stats <- function(polyfun=NULL,
                                      conda_env="echoR_mini",
                                      verbose=TRUE){
     
-    python <- echoconda::find_python_path(conda_env = conda_env)
-    polyfun <- POLYFUN_find_folder(polyfun_path = polyfun)
+    python <- echoconda::find_python_path(conda_env = conda_env,
+                                          verbose = verbose)
+    polyfun_path <- POLYFUN_find_folder(polyfun_path = polyfun_path)
     PF.output.path <- file.path(locus_dir, "PolyFun")
     dir.create(PF.output.path, showWarnings = FALSE, recursive = TRUE)
     munged_path <- file.path(
         PF.output.path,
-        paste0(gsub("\\.gz|\\.txt|\\.tsv|\\.csv","",
+        paste0(gsub("\\.gz|\\.txt|\\.tsv|\\.csv|\\.parquet","",
                     basename(fullSS_path)),".munged.parquet"))
     
     # PolyFun requires space-delimited file with the following columns 
@@ -38,15 +46,15 @@ POLYFUN_munge_summ_stats <- function(polyfun=NULL,
     ## SNP CHR BP ....and....
     ## either a p-value, an effect size estimate and its standard error,
     #a Z-score or a p-value 
-    sample_size_arg <- POLYFUN_sample_size_arg(
-        fullSS_path=fullSS_path,
-        sample_size=sample_size, 
-        verbose=verbose)
+    sample_size_arg <- POLYFUN_sample_size_arg(fullSS_path=fullSS_path,
+                                               sample_size=sample_size, 
+                                               verbose=verbose)
     ##### Run munge_polyfun_sumstats.py ####
-    if(!file.exists(munged_path) | force_new_munge){
-        messager("+ PolyFun:: Initiating data munging pipeline...",v=verbose)
+    if(!file.exists(munged_path) | isTRUE(force_new_munge)){
+        messager("+ PolyFun:: Initiating data munging script.",
+                 v=verbose)
         cmd <- paste(python,
-                     file.path(polyfun,"munge_polyfun_sumstats.py"),
+                     file.path(polyfun_path,"munge_polyfun_sumstats.py"),
                      "--sumstats",fullSS_path,
                      sample_size_arg, # Study sample size
                      "--out",munged_path,
@@ -62,6 +70,11 @@ POLYFUN_munge_summ_stats <- function(polyfun=NULL,
         messager("+ PolyFun:: Existing munged summary stats files detected.",
                  v=verbose)
     }
+    #### Check that file actually created successfully ####
+    if(!file.exists(munged_path)){
+        stp <- paste("+ PolyFun:: Could not find munged file:",munged_path)
+        stop(stp)
+    }
+    #### Return ####
     return(munged_path)
 }
-

@@ -21,6 +21,10 @@ FINEMAP_find_executable <- function(FINEMAP_path=NULL,
                                     ),
                                     version=package_version("1.4.1"),
                                     verbose=TRUE){
+    
+    # echoverseTemplate:::args2vars(FINEMAP_find_executable)
+    # echoverseTemplate:::source_all()
+    
     if(is.null(OS)) OS <- echodata::get_os()
     # messager("+ Using FINEMAP",paste0("v",version),v=verbose)
     if(OS=="osx"){
@@ -35,7 +39,7 @@ FINEMAP_find_executable <- function(FINEMAP_path=NULL,
     }
     if(!file.exists(FINEMAP_path)){ 
         tgz <- get_data(fname = paste0(exec,".tgz"), 
-                        storage_dir = save_dir) 
+                        save_dir = save_dir) 
         utils::untar(tarfile = tgz,
                      exdir = dirname(tgz)) 
     }

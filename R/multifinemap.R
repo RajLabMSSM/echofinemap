@@ -1,9 +1,42 @@
 #' Multi-fine-map
 #' 
-#' Handle fine-mapping across multiple tools.
-#' 
+#' Handle fine-mapping across multiple tools. 
+#' @param fullSS_path Path to the full summary statistics file (GWAS or QTL)
+#' that you want to fine-map.
+#' It is usually best to provide the absolute path rather
+#' than the relative path.
+#' @param locus_dir Locus-specific directory to store results in.
+#' @param dataset_type The kind dataset you're fine-mapping
+#' (e.g. GWAS, eQTL, tQTL).
+#' This will also be used when creating the subdirectory where your results
+#' will be stored
+#' (e.g. \emph{Data/<dataset_type>/Kunkle_2019}).
+#' @param force_new_finemap By default, if an fine-mapping results file for
+#'  a given locus is already present,
+#' then \pkg{echolocatoR} will just use the preexisting file.
+#' Set \code{force_new_finemap=T} to override this and re-run fine-mapping.
+#' @param conditioned_snps Which SNPs to conditions on when fine-mapping
+#' with (e.g. \emph{COJO}).
+#' @param LD_matrix Linkage Disequilibrium (LD) matrix to use for fine-mapping.
+#' @param LD_reference Name of the LD reference panel.
+#' @param finemap_methods Fine-mapping methods to run. 
+#' See \link[echofinemap]{lfm} for a list of all fine-mapping methods currently
+#' available.
+#' @param finemap_args A named nested list containing additional arguments 
+#' for each fine-mapping method. e.g.
+#' \code{finemap_args = list(FINEMAP=list(), PAINTOR=list(method=""))}
+#' @param n_causal The maximum number of potential causal SNPs per locus.
+#' This parameter is used somewhat differently by different fine-mapping tools.
+#' See tool-specific functions for details.
 #' @param priors_col [Optional] Name of the a column in 
 #' \code{dat} to extract SNP-wise prior probabilities from.
+#' @param case_control Whether the summary statistics come from a case-control
+#' study (e.g. a GWAS of having Alzheimer's Disease or not) (\code{TRUE})
+#' or a quantitative study (e.g. a GWAS of height, or an eQTL) (\code{FALSE}).
+#' @param seed Set the random seed for reproducible results.
+#' @param nThread Number of threads to parallelise across (when applicable).
+#' @param conda_env Conda environment to use.
+#' @param verbose Print messages.
 #' @inheritParams echodata::get_sample_size
 #' @inheritParams echodata::find_consensus_snps
 #' @family finemapping functions
@@ -37,6 +70,7 @@ multifinemap <- function(dat,
                          nThread=1,
                          seed=2022,
                          verbose=TRUE){ 
+    
     start_FM <- Sys.time()
     set.seed(seed)   
     #### Check methods ####
@@ -66,7 +100,7 @@ multifinemap <- function(dat,
         finemap_methods <- check_required_cols(
             dat = dat,
             finemap_methods = finemap_methods, 
-            dataset_type = dataset_type,
+            case_control = case_control,
             verbose = verbose)  
         dat2 <- multifinemap_handler(
             dat = dat,
