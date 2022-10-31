@@ -28,7 +28,7 @@ check_required_cols <- function(dat,
         verbose = verbose)
     #### Get required cols table ####
     d <- required_cols(case_control = case_control,
-                       verbose = verbose) 
+                       verbose = FALSE) 
     #### Iterate through methods #####
     for(m in finemap_methods){
         if(verbose) cat(cli::bg_br_magenta(m)); cli::cat_line();
