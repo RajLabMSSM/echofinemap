@@ -11,7 +11,7 @@ POLYFUN_check_version <- function(polyfun=NULL,
                           conda_env = conda_env, 
                           verbose = verbose)
         l <- grep("Version ",h,value = TRUE)
-        v <- package_version(rev(strsplit(l," ")[[1]])[1])
-        messager("POLYFUN version:",v,v=verbose)
-        return(v)
+        ver <- package_version(rev(strsplit(l," ")[[1]])[1])
+        messager("POLYFUN version:",ver,v=verbose)
+        return(ver)
 }

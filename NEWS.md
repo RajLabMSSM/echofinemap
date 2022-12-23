@@ -1,3 +1,9 @@
+# echofinemap 0.99.5
+
+## New features
+
+* Implement `rworkflows`
+
 # echofinemap 0.99.4
 
 ## New features
