@@ -1,3 +1,11 @@
+# echofinemap 0.99.6
+
+## New features
+
+* Standardize `rworkflows.yml` with canonical template:
+  enable Docker on `ghcr.io`, set `write-all` permissions,
+  use `GITHUB_TOKEN`, add `devel` branch trigger.
+
 # echofinemap 0.99.5
 
 ## New features
