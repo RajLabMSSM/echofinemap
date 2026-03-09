@@ -29,8 +29,17 @@ independently associated SNPs. Results will be saved in a
 \emph{.jma} file with additional file \emph{.jma.ldr} showing the LD 
 correlations between the SNPs."
 }
-\concept{COJO
+\references{
 \url{https://www.nature.com/articles/ng.2213}
 \url{https://www.cell.com/ajhg/fulltext/S0002-9297(10)00598-7}
-\url{https://cnsgenomics.com/software/gcta/#Overview}}
+\url{https://cnsgenomics.com/software/gcta/#Overview}
+}
+\seealso{
+Other COJO: 
+\code{\link{COJO}()},
+\code{\link{COJO_locus_subdir}()},
+\code{\link{COJO_process_results}()},
+\code{\link{COJO_run}()}
+}
+\concept{COJO}
 \keyword{internal}

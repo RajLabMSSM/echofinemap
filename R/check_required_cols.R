@@ -12,8 +12,10 @@
 #' @import cli
 #' @importFrom data.table copy
 #' @examples
+#' \dontrun{
 #' dat <- echodata::BST1
 #' finemap_methods <- check_required_cols(dat=dat)
+#' }
 check_required_cols <- function(dat,
                                 finemap_methods=NULL, 
                                 case_control=TRUE,

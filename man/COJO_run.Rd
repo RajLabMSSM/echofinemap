@@ -100,9 +100,10 @@ Run \emph{GCTA-COJO}.
 }
 \seealso{
 Other COJO: 
+\code{\link{COJO}()},
+\code{\link{COJO_get_stepwise_results}()},
 \code{\link{COJO_locus_subdir}()},
-\code{\link{COJO_process_results}()},
-\code{\link{COJO}()}
+\code{\link{COJO_process_results}()}
 }
 \concept{COJO}
 \keyword{internal}

@@ -1,5 +1,11 @@
 test_that("POLYFUN_SUSIE works", {
-    
+
+    testthat::skip_if_not_installed("echoconda")
+    testthat::skip_if_not(
+        echoconda::env_exists(conda_env = "echoR_mini"),
+        message = "echoR_mini conda env not available"
+    )
+
     set.seed(1234)
     locus_dir <- file.path(tempdir(),echodata::locus_dir)
     dat <- echodata::BST1 

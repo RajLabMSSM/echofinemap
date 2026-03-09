@@ -15,14 +15,20 @@ Find and import PolyFun annotation files
 }
 \examples{
 \dontrun{
-dat <- echodata::BST1  
-annot_DT <- POLYFUN_gather_annotations(chromosomes=dat$CHR[1],
-                                       subset_snps=subset_snps, 
-                                       polyfun_annots="/pd-omics/tools/polyfun/annotations/baselineLF2.2.UKB")
+dat <- echodata::BST1
+annot_DT <- POLYFUN_gather_annotations(
+    chromosomes = dat$CHR[1],
+    subset_snps = subset_snps,
+    polyfun_annots = file.path(
+        "/pd-omics/tools/polyfun",
+        "annotations/baselineLF2.2.UKB"
+    )
+)
 }
 }
 \seealso{
 Other polyfun: 
+\code{\link{POLYFUN}()},
 \code{\link{POLYFUN_compute_priors}()},
 \code{\link{POLYFUN_download_ref_files}()},
 \code{\link{POLYFUN_find_folder}()},
@@ -33,8 +39,7 @@ Other polyfun:
 \code{\link{POLYFUN_initialize}()},
 \code{\link{POLYFUN_munge_summ_stats}()},
 \code{\link{POLYFUN_prepare_snp_input}()},
-\code{\link{POLYFUN_run_ldsc}()},
-\code{\link{POLYFUN}()}
+\code{\link{POLYFUN_run_ldsc}()}
 }
 \concept{polyfun}
 \keyword{internal}

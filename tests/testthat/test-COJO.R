@@ -1,5 +1,8 @@
 test_that("COJO works", {
 
+    testthat::skip_if_not_installed("genetics.binaRies")
+    testthat::skip_if_not_installed("echoLD")
+
     vcf <- system.file("extdata", "BST1.1KGphase3.vcf.bgz",
         package = "echodata")
     dat <- echodata::BST1

@@ -98,6 +98,7 @@ Run the full PAINTOR fine-mapping pipeline.
 }
 \examples{
  
+\dontrun{
 dat <- echodata::BST1
 ## For example only; 
 ## normally you need to compute ZSCORE using the 
@@ -110,4 +111,5 @@ dat2 <- PAINTOR(dat = dat,
                 LD_matrix = LD_matrix,
                 max_causal = 2,
                 method = "enumerate") 
+}
 }

@@ -20,37 +20,37 @@
 #' You can use one of the \code{--extract} options (Data management) to limit 
 #' the  COJO analysis in a certain genomic region.\cr\cr
 #' \strong{General results columns}:\cr
-#' \itemize{
-#' \item{Chr : }{Chromosome.}
-#' \item{SNP : }{SNP RSID.}
-#' \item{bp : }{Physical position.}
-#' \item{refA : }{Effect allele.}
-#' \item{freq : }{Frequency of the effect allele in the original data.}
-#' \item{b : }{Effect size.}
-#' \item{se : }{Standard error.}
-#' \item{p : }{p-value from the original GWAS or meta-analysis.}
-#' \item{n : }{Estimated effective sample size.}
-#' \item{freq_geno : }{Frequency of the effect allele in the reference sample.}
+#' \describe{
+#' \item{Chr}{Chromosome.}
+#' \item{SNP}{SNP RSID.}
+#' \item{bp}{Physical position.}
+#' \item{refA}{Effect allele.}
+#' \item{freq}{Frequency of the effect allele in the original data.}
+#' \item{b}{Effect size.}
+#' \item{se}{Standard error.}
+#' \item{p}{p-value from the original GWAS or meta-analysis.}
+#' \item{n}{Estimated effective sample size.}
+#' \item{freq_geno}{Frequency of the effect allele in the reference sample.}
 #' }
 #' \strong{Stepwise analysis results columns}:\cr
-#' \itemize{
-#' \item{bJ : }{Effect size from the joint analysis of all the selected SNPs.}
-#' \item{bJ_se : }{Standard error from the joint analysis of all 
+#' \describe{
+#' \item{bJ}{Effect size from the joint analysis of all the selected SNPs.}
+#' \item{bJ_se}{Standard error from the joint analysis of all
 #' the selected SNPs.}
-#' \item{pJ : }{p-value from the joint analysis of all the selected SNPs.}
-#' \item{LD_r : }{LD correlation between the SNP i and SNP i + 1 for
+#' \item{pJ}{p-value from the joint analysis of all the selected SNPs.}
+#' \item{LD_r}{LD correlation between the SNP i and SNP i + 1 for
 #'  the SNPs on the list.}
-#' \item{LD_r2 : }{LD_r squared}
-#' \item{CS : }{Whether the SNP is in the Credible Set, 
+#' \item{LD_r2}{LD_r squared.}
+#' \item{CS}{Whether the SNP is in the Credible Set,
 #' defined as any SNP with where \code{pJ<(1-credset_thresh)}.}
 #' }
 #' \strong{Conditional analysis results columns:}\cr
-#' \itemize{
-#' \item{bC : }{effect size from the conditional analysis}
-#' \item{bC_se : }{standard error from the conditional analysis}
-#' \item{pC : }{p-value from the conditional analysis}
-#' \item{CS : }{Whether the SNP is in the Credible Set, 
-#' defined as any SNP with where \code{pC<(1-credset_thresh)}}.
+#' \describe{
+#' \item{bC}{Effect size from the conditional analysis.}
+#' \item{bC_se}{Standard error from the conditional analysis.}
+#' \item{pC}{p-value from the conditional analysis.}
+#' \item{CS}{Whether the SNP is in the Credible Set,
+#' defined as any SNP with where \code{pC<(1-credset_thresh)}.}
 #' } 
 #' @param run_stepwise \code{--cojo-slct}:
 #'  Perform a stepwise model selection procedure
@@ -73,33 +73,55 @@
 #' @param freq_cutoff Minimum variant frequency cutoff.
 #' @param full_genome Whether to run GCTA-COJO across genome-wide (\code{TRUE}),
 #' or within a specific locus (default: \code{FALSE})
+#' @param compute_n How to compute per-SNP sample size (new column "N").\cr
+#' If the column "N" is already present in \code{dat}, this column
+#' will be used to extract per-SNP sample sizes
+#' and the argument \code{compute_n} will be ignored.\cr
+#' If the column "N" is \emph{not} present in \code{dat}, one of the following
+#' options can be supplied to \code{compute_n}:
+#' \describe{
+#' \item{\code{0}}{N will not be computed.}
+#' \item{\code{>0}}{If any number >0 is provided,
+#' that value will be set as N for every row.
+#' **Note**: Computing N this way is incorrect and should be avoided
+#' if at all possible.}
+#' \item{\code{"sum"}}{N will be computed as:
+#' cases (N_CAS) + controls (N_CON), so long as both columns are present.}
+#' \item{\code{"ldsc"}}{N will be computed as effective sample size:
+#' Neff =(N_CAS+N_CON)*(N_CAS/(N_CAS+N_CON)) / mean((N_CAS/(N_CAS+N_CON))(N_CAS+N_CON)==max(N_CAS+N_CON)).}
+#' \item{\code{"giant"}}{N will be computed as effective sample size:
+#' Neff = 2 / (1/N_CAS + 1/N_CON).}
+#' \item{\code{"metal"}}{N will be computed as effective sample size:
+#' Neff = 4 / (1/N_CAS + 1/N_CON).}
+#' }
 #' @inheritParams COJO_args
 #' @inheritParams multifinemap
 #' @inheritParams echodata::find_consensus_snps
-#' @inheritParams echodata::get_sample_size
 #' @inheritParams echodata::import_topSNPs
 #' @inheritDotParams COJO_args
 #' @family COJO
 #' @source 
 #' \href{https://yanglab.westlake.edu.cn/software/gcta/#COJO}{
 #' COJO documentation}
-#' \href{https://doi.org/10.1016/j.ajhg.2010.11.011}{Publication 1}
-#' \href{https://doi.org/10.1038/ng.2213}{Publication 2}
+#' Publication 1 (\doi{10.1016/j.ajhg.2010.11.011})
+#' Publication 2 (\doi{10.1038/ng.2213})
 #' 
 #' @export
 #' @importFrom echodata construct_colmap
 #' @importFrom echoconda find_executables_remote
-#' @examples 
+#' @examples
+#' \dontrun{
 #' vcf <- system.file("extdata", "BST1.1KGphase3.vcf.bgz",
 #'     package = "echodata")
 #' dat <- echodata::BST1
 #' locus_dir <- file.path(tempdir(), echodata::locus_dir)
 #' fullSS_path <- echodata::example_fullSS()
 #' bfile <- echoLD::vcf_to_plink(vcf = vcf)$prefix
-#' cojo_DT <- COJO(dat = dat, 
+#' cojo_DT <- COJO(dat = dat,
 #'                 locus_dir = locus_dir,
 #'                 fullSS_path = fullSS_path,
 #'                 bfile = bfile)
+#' }
 COJO <- function(dat,
                  locus_dir,
                  bfile = file.path(locus_dir,"LD/plink"),

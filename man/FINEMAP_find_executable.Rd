@@ -21,14 +21,16 @@ FINEMAP_find_executable(
 Retrieve location of \code{FINEMAP} executable.
 }
 \examples{
+\dontrun{
 FINEMAP_path <- echofinemap:::FINEMAP_find_executable(version="1.3.1")
+}
 }
 \seealso{
 Other FINEMAP: 
+\code{\link{FINEMAP}()},
 \code{\link{FINEMAP_construct_data}()},
 \code{\link{FINEMAP_construct_master}()},
-\code{\link{FINEMAP_process_results}()},
-\code{\link{FINEMAP}()}
+\code{\link{FINEMAP_process_results}()}
 }
 \concept{FINEMAP}
 \keyword{internal}

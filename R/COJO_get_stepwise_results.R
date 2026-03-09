@@ -9,6 +9,7 @@
 #' \emph{.jma} file with additional file \emph{.jma.ldr} showing the LD 
 #' correlations between the SNPs."
 #' @family COJO
+#' @references
 #' \url{https://www.nature.com/articles/ng.2213}
 #' \url{https://www.cell.com/ajhg/fulltext/S0002-9297(10)00598-7}
 #' \url{https://cnsgenomics.com/software/gcta/#Overview}

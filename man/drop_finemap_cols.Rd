@@ -28,5 +28,7 @@ This is helpful when ensuring duplicate columns aren't created when
 re-running fine-mapping with the same method.
 }
 \examples{
+\dontrun{
 dat2 <- echofinemap::drop_finemap_cols(dat=dat)
+}
 }

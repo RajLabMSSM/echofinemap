@@ -10,7 +10,9 @@
 #' @export
 #' @importFrom echoconda find_python_path
 #' @examples 
+#' \dontrun{
 #' h <- echofinemap::POLYFUN_help()
+#' }
 POLYFUN_help <- function(polyfun=NULL,
                          conda_env="echoR_mini",
                          verbose=TRUE){

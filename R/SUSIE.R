@@ -8,13 +8,13 @@
 #' This means the results might not necessarily be reliable.
 #' There's several things you can try to avoid this:
 #' \itemize{
-#' \item{Make sure \code{susieR} is up-to-date: 
-#' \code{ devtools::install_github("stephenslab/susieR@@0.9.0")}}
-#' \item{Increase \code{max_causal} (e.g. 5 => 10).}
-#' \item{Increase \code{max_iter} (e.g. 100 => 1000), 
-#' though this will take longer.}
-#' \item{Decrease the locus window size, which will also speed up
-#'  the algorithm but potentially miss causal variants far from the lead SNP.}
+#' \item Make sure \code{susieR} is up-to-date:
+#' \code{devtools::install_github("stephenslab/susieR@@0.9.0")}
+#' \item Increase \code{max_causal} (e.g. 5 => 10).
+#' \item Increase \code{max_iter} (e.g. 100 => 1000),
+#' though this will take longer.
+#' \item Decrease the locus window size, which will also speed up
+#'  the algorithm but potentially miss causal variants far from the lead SNP.
 #' }
 #' Changing \code{estimate_prior_method} does not seem to affect 
 #' convergence warnings.
@@ -35,7 +35,7 @@
 #'  many iterations.
 #' @param var_y [Optional] User-supplied phenotypic variance value(s). 
 #' Can be one of the following:
-#' \itemize{
+#' \describe{
 #' \item{\code{NULL}: }{Variance will be inferred automatically by SUSIE.}
 #' \item{Numeric vector: }{Variance will be computed directly from vector.}
 #' \item{Character string: }{The name of a column in \code{dat}
@@ -51,7 +51,27 @@
 #' @inheritParams susieR::susie_suff_stat
 #' @inheritParams susieR::susie_plot_iteration
 #' @inheritParams echoLD::get_LD
-#' @inheritParams echodata::get_sample_size
+#' @param compute_n How to compute per-SNP sample size (new column "N").\cr
+#' If the column "N" is already present in \code{dat}, this column
+#' will be used to extract per-SNP sample sizes
+#' and the argument \code{compute_n} will be ignored.\cr
+#' If the column "N" is \emph{not} present in \code{dat}, one of the following
+#' options can be supplied to \code{compute_n}:
+#' \describe{
+#' \item{\code{0}}{N will not be computed.}
+#' \item{\code{>0}}{If any number >0 is provided,
+#' that value will be set as N for every row.
+#' **Note**: Computing N this way is incorrect and should be avoided
+#' if at all possible.}
+#' \item{\code{"sum"}}{N will be computed as:
+#' cases (N_CAS) + controls (N_CON), so long as both columns are present.}
+#' \item{\code{"ldsc"}}{N will be computed as effective sample size:
+#' Neff =(N_CAS+N_CON)*(N_CAS/(N_CAS+N_CON)) / mean((N_CAS/(N_CAS+N_CON))(N_CAS+N_CON)==max(N_CAS+N_CON)).}
+#' \item{\code{"giant"}}{N will be computed as effective sample size:
+#' Neff = 2 / (1/N_CAS + 1/N_CON).}
+#' \item{\code{"metal"}}{N will be computed as effective sample size:
+#' Neff = 4 / (1/N_CAS + 1/N_CON).}
+#' }
 #' 
 #' @source
 #' \href{https://stephenslab.github.io/susieR/}{GitHub}
@@ -66,9 +86,11 @@
 #' 
 #' @export
 #' @examples
+#' \dontrun{
 #' dat <- echodata::BST1
 #' LD_matrix <- echodata::BST1_LD_matrix
 #' dat2 <- echofinemap::SUSIE(dat=dat, LD_matrix=LD_matrix)
+#' }
 SUSIE <- function(dat,
                   LD_matrix,
                   case_control=TRUE,

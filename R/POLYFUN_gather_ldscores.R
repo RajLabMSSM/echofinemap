@@ -3,7 +3,11 @@
 #' @family polyfun
 #' @examples
 #' \dontrun{
-#' output_prefix <- file.path(system.file("tools/polyfun/gold","",package = "echofinemap"),"testrun.22")
+#' output_prefix <- file.path(
+#'     system.file("tools/polyfun/gold", "",
+#'                 package = "echofinemap"),
+#'     "testrun.22"
+#' )
 #' ldscore <- POLYFUN_gather_ldscores(output_prefix=output_prefix)
 #' }
 POLYFUN_gather_ldscores <- function(output_prefix){

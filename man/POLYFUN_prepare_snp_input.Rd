@@ -9,20 +9,23 @@ POLYFUN_prepare_snp_input(PF.output.path, locus_dir, dat = NULL, nThread = 1)
 \description{
 PolyFun requires a space-delimited (gzipped or not) file with these columns:
 \itemize{
-\item{CHR}
-\item{BP}
-\item{A1}
-\item{A2}
+\item \code{CHR}
+\item \code{BP}
+\item \code{A1}
+\item \code{A2}
 }
 }
 \examples{
+\dontrun{
 BST1 <- echodata::BST1; locus_dir <- echodata::locus_dir;
 dat <- BST1
 PF.output.path <- file.path(locus_dir, "PolyFun")
 POLYFUN_prepare_snp_input(PF.output.path=PF.output.path, locus_dir=locus_dir, dat=dat)
 }
+}
 \seealso{
 Other polyfun: 
+\code{\link{POLYFUN}()},
 \code{\link{POLYFUN_compute_priors}()},
 \code{\link{POLYFUN_download_ref_files}()},
 \code{\link{POLYFUN_find_folder}()},
@@ -33,8 +36,7 @@ Other polyfun:
 \code{\link{POLYFUN_import_priors}()},
 \code{\link{POLYFUN_initialize}()},
 \code{\link{POLYFUN_munge_summ_stats}()},
-\code{\link{POLYFUN_run_ldsc}()},
-\code{\link{POLYFUN}()}
+\code{\link{POLYFUN_run_ldsc}()}
 }
 \concept{polyfun}
 \keyword{internal}

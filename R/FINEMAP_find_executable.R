@@ -10,7 +10,9 @@
 #' \href{http://www.christianbenner.com}{FINEMAP site}
 #' \href{https://support.bioconductor.org/p/9141978/}{Similar dynlib error in R}
 #' @examples
+#' \dontrun{
 #' FINEMAP_path <- echofinemap:::FINEMAP_find_executable(version="1.3.1")
+#' }
 FINEMAP_find_executable <- function(FINEMAP_path=NULL,
                                     OS=NULL,
                                     save_dir = file.path(

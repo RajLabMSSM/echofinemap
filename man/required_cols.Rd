@@ -43,5 +43,7 @@ Return a table with the minimum columns required
 to run each fine-mapping method, as well as suggested columns.
 }
 \examples{
+\dontrun{
 d <- required_cols(add_versions=TRUE, add_executables=TRUE)
+}
 }

@@ -23,7 +23,7 @@ library(`r pkg`)
 
 # Examples
 
-```{r}
+```{r, eval=FALSE}
 dat <- echofinemap::drop_finemap_cols(dat = echodata::BST1)
 LD_matrix <- echodata::BST1_LD_matrix
 locus_dir <- file.path(tempdir(),echodata::locus_dir) 

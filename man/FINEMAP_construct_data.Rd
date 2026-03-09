@@ -32,10 +32,10 @@ can be specified arbitrarily."
 }
 \seealso{
 Other FINEMAP: 
+\code{\link{FINEMAP}()},
 \code{\link{FINEMAP_construct_master}()},
 \code{\link{FINEMAP_find_executable}()},
-\code{\link{FINEMAP_process_results}()},
-\code{\link{FINEMAP}()}
+\code{\link{FINEMAP_process_results}()}
 }
 \concept{FINEMAP}
 \keyword{internal}

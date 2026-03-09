@@ -35,13 +35,36 @@
 #' or a quantitative study (e.g. a GWAS of height, or an eQTL) (\code{FALSE}).
 #' @param seed Set the random seed for reproducible results.
 #' @param nThread Number of threads to parallelise across (when applicable).
+#' @param standardise_headers Whether to standardise column headers
+#' using \code{echodata::get_sample_size}.
 #' @param conda_env Conda environment to use.
 #' @param verbose Print messages.
-#' @inheritParams echodata::get_sample_size
+#' @param compute_n How to compute per-SNP sample size (new column "N").\cr
+#' If the column "N" is already present in \code{dat}, this column
+#' will be used to extract per-SNP sample sizes
+#' and the argument \code{compute_n} will be ignored.\cr
+#' If the column "N" is \emph{not} present in \code{dat}, one of the following
+#' options can be supplied to \code{compute_n}:
+#' \describe{
+#' \item{\code{0}}{N will not be computed.}
+#' \item{\code{>0}}{If any number >0 is provided,
+#' that value will be set as N for every row.
+#' **Note**: Computing N this way is incorrect and should be avoided
+#' if at all possible.}
+#' \item{\code{"sum"}}{N will be computed as:
+#' cases (N_CAS) + controls (N_CON), so long as both columns are present.}
+#' \item{\code{"ldsc"}}{N will be computed as effective sample size:
+#' Neff =(N_CAS+N_CON)*(N_CAS/(N_CAS+N_CON)) / mean((N_CAS/(N_CAS+N_CON))(N_CAS+N_CON)==max(N_CAS+N_CON)).}
+#' \item{\code{"giant"}}{N will be computed as effective sample size:
+#' Neff = 2 / (1/N_CAS + 1/N_CON).}
+#' \item{\code{"metal"}}{N will be computed as effective sample size:
+#' Neff = 4 / (1/N_CAS + 1/N_CON).}
+#' }
 #' @inheritParams echodata::find_consensus_snps
 #' @family finemapping functions
 #' @export
 #' @examples
+#' \dontrun{
 #' dat <- echofinemap::drop_finemap_cols(dat = echodata::BST1)
 #' LD_matrix <- echodata::BST1_LD_matrix
 #' locus_dir <- file.path(tempdir(),echodata::locus_dir) 
@@ -49,6 +72,7 @@
 #' dat2 <- echofinemap::multifinemap(dat = dat, 
 #'                                  locus_dir = locus_dir,
 #'                                  LD_matrix = LD_matrix)
+#' }
 multifinemap <- function(dat,
                          locus_dir,
                          fullSS_path=NULL,

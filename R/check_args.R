@@ -2,8 +2,8 @@
 #' 
 #' Check a list of arguments for a given function and:
 #' \itemize{
-#' \item{Remove any that do not match available arguments for that method.}
-#' \item{Set default values for any arguments that are NULL or not provided.}
+#' \item Remove any that do not match available arguments for that method.
+#' \item Set default values for any arguments that are NULL or not provided.
 #' }
 #' @param max_values Max number of values to return for any argument.
 #' @inheritParams multifinemap

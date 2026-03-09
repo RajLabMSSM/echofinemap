@@ -1,3 +1,8 @@
+# echofinemap 0.99.7
+
+## Bug fixes
+* Local R CMD check fixes and compatibility updates.
+
 # echofinemap 0.99.6
 
 ## New features

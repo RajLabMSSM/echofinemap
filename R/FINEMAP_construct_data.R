@@ -92,7 +92,7 @@ FINEMAP_construct_data <- function(dat,
         # Sys.chmod(data.z_path, "777", use_umask = FALSE)
         # data.ld
         data.ld_path <- file.path(locus_dir,"FINEMAP","data.ld")
-        data.table::fwrite(data.table:::as.data.table.matrix(LD_filt),
+        data.table::fwrite(data.table::as.data.table(LD_filt),
                            data.ld_path, sep=" ", 
                            quote = FALSE, col.names = FALSE,
                            nThread = nThread)

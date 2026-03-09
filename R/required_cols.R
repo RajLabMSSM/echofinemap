@@ -16,7 +16,9 @@
 #' @export
 #' @importFrom data.table data.table setkey
 #' @examples 
+#' \dontrun{
 #' d <- required_cols(add_versions=TRUE, add_executables=TRUE)
+#' }
 required_cols <- function(case_control = TRUE,
                           for_all = c("SNP","CHR","POS","Effect","StdErr"),
                           add_versions = FALSE,

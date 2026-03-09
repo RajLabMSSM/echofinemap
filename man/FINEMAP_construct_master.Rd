@@ -28,10 +28,10 @@ which tells \code{FINEMAP} where to find each input file.
 }
 \seealso{
 Other FINEMAP: 
+\code{\link{FINEMAP}()},
 \code{\link{FINEMAP_construct_data}()},
 \code{\link{FINEMAP_find_executable}()},
-\code{\link{FINEMAP_process_results}()},
-\code{\link{FINEMAP}()}
+\code{\link{FINEMAP_process_results}()}
 }
 \concept{FINEMAP}
 \keyword{internal}

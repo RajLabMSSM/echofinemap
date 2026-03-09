@@ -32,6 +32,9 @@ that you want to fine-map.
 It is usually best to provide the absolute path rather
 than the relative path.}
 
+\item{remove_dup}{Whether to remove duplicate SNPs
+from the full summary stats file before running PolyFun.}
+
 \item{polyfun_path}{[Optional] Path to PolyFun directory where all the 
 executables and reference data are stored. 
 Will be automatically installed if set to \code{NULL} (default).}
@@ -45,6 +48,10 @@ Will be automatically installed if set to \code{NULL} (default).}
 \item{min_MAF}{Minimum per-SNP MAF.}
 
 \item{skip_ckmedian}{SKip ckmedian step.}
+
+\item{num_bins}{Number of bins to use for the non-parametric
+functional enrichment approach. 30 is a reasonable value.
+If \code{NULL}, the default PolyFun behavior is used.}
 
 \item{annotations_path}{Path prefix to annotation files 
 #' (e.g. "path/to/files/annotations.").
@@ -83,11 +90,14 @@ Make sure your full summary stats file (\code{fullSS_path}) is tab-delimited
  \code{remove_dup=TRUE}.
 }
 \examples{
+\dontrun{
 fullSS_path <- echodata::example_fullSS()
 ldsc_files <- echofinemap:::POLYFUN_compute_priors(fullSS_path=fullSS_path)
 }
+}
 \seealso{
 Other polyfun: 
+\code{\link{POLYFUN}()},
 \code{\link{POLYFUN_download_ref_files}()},
 \code{\link{POLYFUN_find_folder}()},
 \code{\link{POLYFUN_finemapper}()},
@@ -98,7 +108,6 @@ Other polyfun:
 \code{\link{POLYFUN_initialize}()},
 \code{\link{POLYFUN_munge_summ_stats}()},
 \code{\link{POLYFUN_prepare_snp_input}()},
-\code{\link{POLYFUN_run_ldsc}()},
-\code{\link{POLYFUN}()}
+\code{\link{POLYFUN_run_ldsc}()}
 }
 \concept{polyfun}

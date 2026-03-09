@@ -5,7 +5,7 @@ collapse_args <- function(args_list){
   if(length(args_list)==0){
     return(NULL)
   }else {
-    if(class(args_list)=="character"){
+    if(is.character(args_list)){
       return(args_list)
     } else {
       args_str <- lapply(names(args_list), function(x){

@@ -17,5 +17,7 @@ available.}
 List all fine-mapping methods currently available in \pkg{echofinemap}.
 }
 \examples{
+\dontrun{
 finemap_methods <- echofinemap::lfm()
+}
 }

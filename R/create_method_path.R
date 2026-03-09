@@ -10,9 +10,11 @@
 #' @family finemapping functions
 #' @export
 #' @examples 
+#' \dontrun{
 #' locus_dir <- echodata::locus_dir
 #' path <- echofinemap::create_method_path(locus_dir = locus_dir, 
 #'                                         finemap_method = "SUSIE")
+#' }
 create_method_path <- function(locus_dir,
                                finemap_method,
                                include_astrices=FALSE,

@@ -8,7 +8,9 @@
 #' @inheritParams multifinemap
 #' @export
 #' @examples 
+#' \dontrun{
 #' dat2 <- echofinemap::drop_finemap_cols(dat=dat)
+#' }
 drop_finemap_cols <- function(dat, 
                               finemap_methods = NULL, 
                               summary_cols = c("Support",

@@ -15,7 +15,7 @@ or a quantitative study (e.g. a GWAS of height, or an eQTL) (\code{FALSE}).}
 
 \item{var_y}{[Optional] User-supplied phenotypic variance value(s). 
 Can be one of the following:
-\itemize{
+\describe{
 \item{\code{NULL}: }{Variance will be inferred automatically by SUSIE.}
 \item{Numeric vector: }{Variance will be computed directly from vector.}
 \item{Character string: }{The name of a column in \code{dat}

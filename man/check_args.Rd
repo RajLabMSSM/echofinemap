@@ -28,8 +28,8 @@ Named list of arguments for a specific \code{finemap_method}.
 \description{
 Check a list of arguments for a given function and:
 \itemize{
-\item{Remove any that do not match available arguments for that method.}
-\item{Set default values for any arguments that are NULL or not provided.}
+\item Remove any that do not match available arguments for that method.
+\item Set default values for any arguments that are NULL or not provided.
 }
 }
 \keyword{internal}

@@ -36,6 +36,7 @@
 #' @export
 #' @importFrom methods is
 #' @examples  
+#' \dontrun{
 #' dat <- echodata::BST1
 #' ## For example only; 
 #' ## normally you need to compute ZSCORE using the 
@@ -48,6 +49,7 @@
 #'                 LD_matrix = LD_matrix,
 #'                 max_causal = 2,
 #'                 method = "enumerate") 
+#' }
 PAINTOR <- function(dat,
                     LD_matrix,
                     locus_dir, 

@@ -1,7 +1,8 @@
 Package: echofinemap
 Type: Package
-Title: echoverse module: Fine-mapping functions
-Version: 0.99.6
+Title: Echoverse Module: Fine-Mapping Functions
+Version: 0.99.7
+Date: 2026-03-08
 Authors@R: 
     c(person(given = "Brian",
            family = "Schilder",
@@ -19,7 +20,7 @@ Authors@R:
            email = "towfique.raj@mssm.edu",
            comment = c(ORCID = "0000-0002-9355-5704"))
            ) 
-Description: echoverse module: Statistical and functional fine-mapping functions.
+Description: Echoverse module: Statistical and functional fine-mapping functions.
 URL: https://github.com/RajLabMSSM/echofinemap
 BugReports: https://github.com/RajLabMSSM/echofinemap/issues
 Encoding: UTF-8
@@ -44,8 +45,9 @@ Imports:
     rlang,
     Matrix, 
     susieR (>= 0.12.0),
-    Rfast
+    downloadR
 Suggests:
+    Rfast,
     markdown,
     rmarkdown,
     magick,
@@ -68,8 +70,9 @@ Remotes:
   github::RajLabMSSM/echoLD,
   github::RajLabMSSM/echoannot,
   github::RajLabMSSM/echoconda,
-  github::MRCIEU/genetics.binaRies
-RoxygenNote: 7.2.3
+  github::MRCIEU/genetics.binaRies,
+  github::RajLabMSSM/downloadR
+RoxygenNote: 7.3.3
 VignetteBuilder: knitr
 License: GPL-3
 Config/testthat/edition: 3

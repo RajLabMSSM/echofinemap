@@ -31,6 +31,8 @@ has the minimum columns required
 to run each fine-mapping method, as well as suggested columns.
 }
 \examples{
+\dontrun{
 dat <- echodata::BST1
 finemap_methods <- check_required_cols(dat=dat)
+}
 }

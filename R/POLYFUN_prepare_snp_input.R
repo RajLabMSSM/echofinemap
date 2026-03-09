@@ -6,18 +6,20 @@
 #'
 #' PolyFun requires a space-delimited (gzipped or not) file with these columns:
 #' \itemize{
-#' \item{CHR}
-#' \item{BP}
-#' \item{A1}
-#' \item{A2}
+#' \item \code{CHR}
+#' \item \code{BP}
+#' \item \code{A1}
+#' \item \code{A2}
 #' }
 #' @keywords internal
 #' @family polyfun
 #' @examples
+#' \dontrun{
 #' BST1 <- echodata::BST1; locus_dir <- echodata::locus_dir;
 #' dat <- BST1
 #' PF.output.path <- file.path(locus_dir, "PolyFun")
 #' POLYFUN_prepare_snp_input(PF.output.path=PF.output.path, locus_dir=locus_dir, dat=dat)
+#' }
 POLYFUN_prepare_snp_input <- function(PF.output.path,
                                       locus_dir,
                                       dat=NULL,

@@ -4,7 +4,9 @@
 #' @inheritParams multifinemap
 #' @export
 #' @examples 
+#' \dontrun{
 #' finemap_methods <- echofinemap::lfm()
+#' }
 lfm <- list_finemap_methods <- function(finemap_methods = NULL,
                                         verbose = TRUE){
     

@@ -11,12 +11,17 @@ Find and import LD score files
 }
 \examples{
 \dontrun{
-output_prefix <- file.path(system.file("tools/polyfun/gold","",package = "echofinemap"),"testrun.22")
+output_prefix <- file.path(
+    system.file("tools/polyfun/gold", "",
+                package = "echofinemap"),
+    "testrun.22"
+)
 ldscore <- POLYFUN_gather_ldscores(output_prefix=output_prefix)
 }
 }
 \seealso{
 Other polyfun: 
+\code{\link{POLYFUN}()},
 \code{\link{POLYFUN_compute_priors}()},
 \code{\link{POLYFUN_download_ref_files}()},
 \code{\link{POLYFUN_find_folder}()},
@@ -27,8 +32,7 @@ Other polyfun:
 \code{\link{POLYFUN_initialize}()},
 \code{\link{POLYFUN_munge_summ_stats}()},
 \code{\link{POLYFUN_prepare_snp_input}()},
-\code{\link{POLYFUN_run_ldsc}()},
-\code{\link{POLYFUN}()}
+\code{\link{POLYFUN_run_ldsc}()}
 }
 \concept{polyfun}
 \keyword{internal}

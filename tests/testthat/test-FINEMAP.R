@@ -1,5 +1,7 @@
 test_that("FINEMAP works", {
-  
+
+    testthat::skip_if_not_installed("genetics.binaRies")
+
     set.seed(1234)
     locus_dir <- file.path(tempdir(),echodata::locus_dir)
     dat <- echodata::BST1;

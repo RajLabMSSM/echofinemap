@@ -1,5 +1,8 @@
 test_that("multifinemap works", {
-  
+
+    testthat::skip_if_not_installed("genetics.binaRies")
+    testthat::skip_if_not_installed("echoLD")
+
     dat <- echofinemap::drop_finemap_cols(echodata::BST1)
     LD_matrix <- echodata::BST1_LD_matrix
     locus_dir <- file.path(tempdir(),echodata::locus_dir)

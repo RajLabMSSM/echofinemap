@@ -28,6 +28,7 @@ Uses the \code{extract_snpvar.py} script from PolyFun.
 }
 \seealso{
 Other polyfun: 
+\code{\link{POLYFUN}()},
 \code{\link{POLYFUN_compute_priors}()},
 \code{\link{POLYFUN_download_ref_files}()},
 \code{\link{POLYFUN_find_folder}()},
@@ -38,8 +39,7 @@ Other polyfun:
 \code{\link{POLYFUN_initialize}()},
 \code{\link{POLYFUN_munge_summ_stats}()},
 \code{\link{POLYFUN_prepare_snp_input}()},
-\code{\link{POLYFUN_run_ldsc}()},
-\code{\link{POLYFUN}()}
+\code{\link{POLYFUN_run_ldsc}()}
 }
 \concept{polyfun}
 \keyword{internal}

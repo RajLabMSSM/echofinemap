@@ -25,6 +25,11 @@
 #' @param remove_tmps Remove temporary files.
 #' @param min_INFO Minimum per-SNP INFO criterion score.
 #' @param min_MAF Minimum per-SNP MAF.
+#' @param remove_dup Whether to remove duplicate SNPs
+#' from the full summary stats file before running PolyFun.
+#' @param num_bins Number of bins to use for the non-parametric
+#' functional enrichment approach. 30 is a reasonable value.
+#' If \code{NULL}, the default PolyFun behavior is used.
 #' @param skip_ckmedian SKip ckmedian step.
 #' @inheritParams multifinemap
 #' @inheritParams POLYFUN
@@ -34,8 +39,10 @@
 #' @export
 #' @importFrom echoconda activate_env find_python_path cmd_print
 #' @examples
+#' \dontrun{
 #' fullSS_path <- echodata::example_fullSS()
 #' ldsc_files <- echofinemap:::POLYFUN_compute_priors(fullSS_path=fullSS_path)
+#' }
 POLYFUN_compute_priors <- function(fullSS_path,
                                    remove_dup=TRUE,
                                    polyfun_path=NULL,

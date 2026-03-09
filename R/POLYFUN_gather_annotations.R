@@ -3,10 +3,15 @@
 #' @family polyfun
 #' @examples
 #' \dontrun{
-#' dat <- echodata::BST1  
-#' annot_DT <- POLYFUN_gather_annotations(chromosomes=dat$CHR[1],
-#'                                        subset_snps=subset_snps, 
-#'                                        polyfun_annots="/pd-omics/tools/polyfun/annotations/baselineLF2.2.UKB")
+#' dat <- echodata::BST1
+#' annot_DT <- POLYFUN_gather_annotations(
+#'     chromosomes = dat$CHR[1],
+#'     subset_snps = subset_snps,
+#'     polyfun_annots = file.path(
+#'         "/pd-omics/tools/polyfun",
+#'         "annotations/baselineLF2.2.UKB"
+#'     )
+#' )
 #' }
 POLYFUN_gather_annotations <- function(chromosomes=seq_len(22),
                                        subset_snps=NULL,

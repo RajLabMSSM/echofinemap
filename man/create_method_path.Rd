@@ -29,14 +29,16 @@ available.}
 Create a fine-mapping method-specific path.
 }
 \examples{
+\dontrun{
 locus_dir <- echodata::locus_dir
 path <- echofinemap::create_method_path(locus_dir = locus_dir, 
                                         finemap_method = "SUSIE")
 }
+}
 \seealso{
 Other finemapping functions: 
-\code{\link{multifinemap_handler_method}()},
+\code{\link{multifinemap}()},
 \code{\link{multifinemap_handler}()},
-\code{\link{multifinemap}()}
+\code{\link{multifinemap_handler_method}()}
 }
 \concept{finemapping functions}

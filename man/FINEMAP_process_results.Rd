@@ -29,10 +29,10 @@ Post-processing of \code{FINEMAP} results.
 }
 \seealso{
 Other FINEMAP: 
+\code{\link{FINEMAP}()},
 \code{\link{FINEMAP_construct_data}()},
 \code{\link{FINEMAP_construct_master}()},
-\code{\link{FINEMAP_find_executable}()},
-\code{\link{FINEMAP}()}
+\code{\link{FINEMAP_find_executable}()}
 }
 \concept{FINEMAP}
 \keyword{internal}

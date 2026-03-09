@@ -40,25 +40,25 @@ Users can also simply supply "finemap" if this command is linked to
  the executable.}
 
 \item{compute_n}{How to compute per-SNP sample size (new column "N").\cr
-If the column "N" is already present in \code{dat}, this column 
+If the column "N" is already present in \code{dat}, this column
 will be used to extract per-SNP sample sizes
 and the argument \code{compute_n} will be ignored.\cr
-If the column "N" is \emph{not} present in \code{dat}, one of the following 
-options can be supplied to \code{compute_n}: 
-\itemize{
-\item{\code{0}: }{N will not be computed.}
-\item{\code{>0}: }{If any number >0 is provided,
+If the column "N" is \emph{not} present in \code{dat}, one of the following
+options can be supplied to \code{compute_n}:
+\describe{
+\item{\code{0}}{N will not be computed.}
+\item{\code{>0}}{If any number >0 is provided,
 that value will be set as N for every row.
 **Note**: Computing N this way is incorrect and should be avoided
 if at all possible.}
-\item{\code{"sum"}: }{N will be computed as:
-cases (N_CAS) + controls (N_CON), so long as both columns are present}.
-\item{\code{"ldsc"}: }{N will be computed as effective sample size:
-Neff =(N_CAS+N_CON)*(N_CAS/(N_CAS+N_CON)) / mean((N_CAS/(N_CAS+N_CON))(N_CAS+N_CON)==max(N_CAS+N_CON))}.
-\item{\code{"giant"}: }{N will be computed as effective sample size:
-Neff = 2 / (1/N_CAS + 1/N_CON)}.
-\item{\code{"metal"}: }{N will be computed as effective sample size:
-Neff = 4 / (1/N_CAS + 1/N_CON)}.
+\item{\code{"sum"}}{N will be computed as:
+cases (N_CAS) + controls (N_CON), so long as both columns are present.}
+\item{\code{"ldsc"}}{N will be computed as effective sample size:
+Neff =(N_CAS+N_CON)*(N_CAS/(N_CAS+N_CON)) / mean((N_CAS/(N_CAS+N_CON))(N_CAS+N_CON)==max(N_CAS+N_CON)).}
+\item{\code{"giant"}}{N will be computed as effective sample size:
+Neff = 2 / (1/N_CAS + 1/N_CON).}
+\item{\code{"metal"}}{N will be computed as effective sample size:
+Neff = 4 / (1/N_CAS + 1/N_CON).}
 }}
 
 \item{n_causal}{The maximum number of potential causal SNPs per locus.
@@ -110,43 +110,34 @@ a higher posterior model probability.\cr\cr
 Note that not not all versions of \code{FINEMAP} will necessarily 
 have all of these columns, 
 but "PP" and "CS" will always be present regardless of version. 
-\itemize{
-\item{\emph{PP} : \cr}{
-Per-SNP conditional posterior probability (PP), 
- after conditioning on the other SNPs 
+\describe{
+\item{PP}{Per-SNP conditional posterior probability (PP),
+ after conditioning on the other SNPs
  within its respective Credible Set (CS).
- If a given SNP is present in more than one CS, 
+ If a given SNP is present in more than one CS,
  each row will be a list of PP (one per CS).
  These PP were extracted from \emph{.cred} file(s).
- SNPs that were not within the CS are designated \code{NA}.
-}
-\item{\emph{CS} : \cr}{
-The Credible Set (CS) that a given SNP belongs to.
- If a given SNP is present in more than one CS, 
+ SNPs that were not within the CS are designated \code{NA}.}
+\item{CS}{The Credible Set (CS) that a given SNP belongs to.
+ If a given SNP is present in more than one CS,
  each row will be a list of CS id numbers (one per CS).
- These CS were extracted from \emph{.cred} file(s).
-}
-\item{\emph{PP_snp} : \cr}{
-Per-SNP marginal posterior inclusion probability (PIP), 
+ These CS were extracted from \emph{.cred} file(s).}
+\item{PP_snp}{Per-SNP marginal posterior inclusion probability (PIP),
  which is the probability that a given SNP is in the Credible Set (CS).
  These PIP were extracted from \emph{.snp} file(s).
- Only SNPs that were excluded from the fine-mapping input. 
-(e.g. due to not overlapping with the LD panel) are designated \code{NA}.
-} 
-\item{\emph{PP_config} : \cr}{
-Per-CS posterior probability (PP) that a given Credible Set (CS) 
+ Only SNPs that were excluded from the fine-mapping input
+ (e.g. due to not overlapping with the LD panel) are designated \code{NA}.}
+\item{PP_config}{Per-CS posterior probability (PP) that a given Credible Set (CS)
  (i.e. "configuration" of SNPs) is causal.
  These PP were extracted from \emph{.config} file(s).
- Only SNPs that were not within any CS are designated \code{NA}.
-}   
-\item{\emph{k} : \cr}{
-Optimized number of causal SNPs, which can be less than or equal to 
-the user-supplied \code{n_causal} argument.
- These values were extracted from \emph{.log} file(s).
-} 
+ Only SNPs that were not within any CS are designated \code{NA}.}
+\item{k}{Optimized number of causal SNPs, which can be less than or equal to
+ the user-supplied \code{n_causal} argument.
+ These values were extracted from \emph{.log} file(s).}
 }
 }
 \examples{
+\dontrun{
 locus_dir <- file.path(tempdir(),echodata::locus_dir)
 dat <- echodata::BST1;
 LD_matrix <- echofinemap::drop_finemap_cols(echodata::BST1_LD_matrix)
@@ -157,6 +148,7 @@ dat <- out$DT
 dat2 <- echofinemap::FINEMAP(dat=dat,
                              locus_dir=locus_dir,
                              LD_matrix=LD_matrix)
+}
 }
 \seealso{
 Other FINEMAP: 

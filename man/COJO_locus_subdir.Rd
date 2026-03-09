@@ -21,9 +21,10 @@ Make \emph{GCTA-COJO} path
 }
 \seealso{
 Other COJO: 
+\code{\link{COJO}()},
+\code{\link{COJO_get_stepwise_results}()},
 \code{\link{COJO_process_results}()},
-\code{\link{COJO_run}()},
-\code{\link{COJO}()}
+\code{\link{COJO_run}()}
 }
 \concept{COJO}
 \keyword{internal}
