@@ -1,7 +1,7 @@
 Package: echofinemap
 Type: Package
 Title: Echoverse Module: Fine-Mapping Functions
-Version: 1.99.7
+Version: 1.0.0
 Date: 2026-03-08
 Authors@R: 
     c(person(given = "Brian",
