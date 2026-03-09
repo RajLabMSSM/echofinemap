@@ -44,3 +44,5 @@ vignettes/*.R
 # R Environment Variables
 .Renviron 
 packrat/lib*/
+*.tbi
+Rplots.pdf

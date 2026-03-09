@@ -21,4 +21,6 @@ package\.json$
 ^\.Rprofile$
 echofinemap/inst/tools
 inst/tools/
+^inst/tools/polyfun$
+^inst/tools/PAINTOR_V3\.0$
 ^tools/
