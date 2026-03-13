@@ -25,9 +25,9 @@ If you use `echofinemap`, please cite:
 ## Installation
 
 ``` r
-if(!require("remotes")) install.packages("remotes")
+if(!require("BiocManager")) install.packages("BiocManager")
 
-remotes::install_github("RajLabMSSM/echofinemap")
+BiocManager::install("RajLabMSSM/echofinemap")
 library(echofinemap)
 ```
 
