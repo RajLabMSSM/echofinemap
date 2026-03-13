@@ -2,6 +2,10 @@ test_that("COJO works", {
 
     testthat::skip_if_not_installed("genetics.binaRies")
     testthat::skip_if_not_installed("echoLD")
+    testthat::skip_if(
+        !nzchar(Sys.which("gcta64")) && !nzchar(Sys.which("gcta")),
+        message = "GCTA not available"
+    )
 
     vcf <- system.file("extdata", "BST1.1KGphase3.vcf.bgz",
         package = "echodata")
@@ -23,7 +27,7 @@ test_that("COJO works", {
     #### All 3 modes at once: BEFORE running other functions ####
     ## The flag
     testthat::expect_warning(
-        cojo_DT <- COJO(dat = dat,
+        cojo_DT <- echofinemap::COJO(dat = dat,
                         locus_dir = locus_dir,
                         fullSS_path = fullSS_path,
                         bfile = bfile, 
@@ -36,7 +40,7 @@ test_that("COJO works", {
         all(step_cols %in% names(cojo_DT))
     )
     #### mode: stepwise: locus-specific ####
-    cojo_DT <- COJO(dat = dat,
+    cojo_DT <- echofinemap::COJO(dat = dat,
                     locus_dir = locus_dir,
                     fullSS_path = fullSS_path,
                     bfile = bfile, 
@@ -47,7 +51,7 @@ test_that("COJO works", {
        all(step_cols %in% names(cojo_DT))
     )
     #### mode: stepwise: genome-wide ####
-    cojo_DT <- COJO(dat = dat,
+    cojo_DT <- echofinemap::COJO(dat = dat,
                     locus_dir = locus_dir,
                     fullSS_path = fullSS_path,
                     bfile = bfile, 
@@ -59,7 +63,7 @@ test_that("COJO works", {
         all(step_cols %in% names(cojo_DT))
     )
     #### mode: conditional ####
-    cojo_DT <- COJO(dat = dat,
+    cojo_DT <- echofinemap::COJO(dat = dat,
                     locus_dir = locus_dir,
                     fullSS_path = fullSS_path,
                     bfile = bfile, 
