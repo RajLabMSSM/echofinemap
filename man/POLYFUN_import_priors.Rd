@@ -20,10 +20,10 @@ POLYFUN_import_priors(
 }
 \description{
 Import SNP-wise prior probabilities pre-computed from many UK Biobank traits.
-This function handles finding the intersection of SNPS that exist in the 
-input GWAS summary stats \code{dat} and the pre-computed priors that come 
+This function handles finding the intersection of SNPS that exist in the
+input GWAS summary stats \code{dat} and the pre-computed priors that come
 shipped with PolyFun. Then, it saves this subset as a new file for PolyFun
-(or other fine-mapping tools) to use as input. 
+(or other fine-mapping tools) to use as input.
 Uses the \code{extract_snpvar.py} script from PolyFun.
 }
 \seealso{

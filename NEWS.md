@@ -1,3 +1,50 @@
+# echofinemap 1.0.0
+
+## New features
+
+* `FINEMAP`: Added early runnability check via `FINEMAP_check_runnable()` —
+  validates the binary can execute before preparing data, with platform-specific
+  error messages for Apple Silicon dylib issues.
+* `FINEMAP`: Added automatic x86_64 dynamic library setup on Apple Silicon
+  via `FINEMAP_setup_dylibs()`. Builds/downloads x86_64 libzstd, libomp,
+  and gcc runtime libraries, then rewrites binary paths with `install_name_tool`.
+* `FINEMAP`: System PATH detection — checks for conda-installed FINEMAP
+  before downloading from GitHub releases.
+* `PAINTOR`: Wired functional annotation pipeline end-to-end.
+  `PAINTOR_prepare_annotations()` is a pure-R reimplementation of the
+  original Python 2.7 `AnnotateLocus.py`, converting BED files to binary
+  annotation matrices and passing annotation names to the PAINTOR executable.
+* `PAINTOR`: New `annot_paintor` parameter for downloading the comprehensive
+  PAINTOR functional annotation library (~7GB, 10,000+ annotations) from BOX.
+  Annotations are cached locally after first download.
+* `PAINTOR`: New `PAINTOR_fetch_annotations()` and
+  `PAINTOR_list_annotations()` functions for managing the annotation library.
+* `POLYFUN`: Fixed parametric mode filename pattern — parametric output
+  has no chromosome in the filename, so the import now matches correctly.
+
+## Bug fixes
+
+* `FINEMAP`: Fixed sparse matrix (`dsCMatrix`) handling in
+  `FINEMAP_construct_data()` by converting to dense matrix before `fwrite()`.
+* `POLYFUN`: Fixed silent error swallowing in `POLYFUN_import_priors()` —
+  replaced `try({})` with proper exit code checking and output file verification.
+* `POLYFUN`: Fixed `requireNamespace("Ckmeans.1d.dp")` to properly error
+  with an informative message instead of silently continuing.
+* `POLYFUN`: Fixed `POLYFUN_install()` blocking non-interactive sessions
+  by gating `readline()` behind `interactive()` check.
+* `POLYFUN`: Removed hardcoded path override in `POLYFUN_compute_priors()`
+  that was overwriting the properly resolved polyfun path.
+* `PAINTOR`: Removed `setup_gcc(version="clang")` call from
+  `PAINTOR_install()` that required sudo for symlink creation.
+* `setup_gcc()`: Rewritten for Apple Silicon support — checks both
+  `/opt/homebrew` (ARM) and `/usr/local` (Intel) Homebrew paths,
+  handles multiple gcc installation formats.
+* Tests: Split monolithic `test-multifinemap.R` into focused subtests
+  (BST1, LRRK2 with network skip, POLYFUN_SUSIE with dependency checks).
+* Tests: Added proper skip guards for FINEMAP, PAINTOR, and POLYFUN tests
+  with direct function checks instead of tryCatch wrappers.
+* Local R CMD check fixes and compatibility updates.
+
 # echofinemap 0.99.7
 
 ## Bug fixes

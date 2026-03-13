@@ -5,14 +5,36 @@
 \title{Prepare PAINTOR annotations}
 \usage{
 PAINTOR_prepare_annotations(
-  paintor_path = NULL,
   BED_paths,
+  dat_merged,
   PT_results_path,
-  locus_name,
-  remove_BED = FALSE
+  locus_dir,
+  verbose = TRUE
 )
 }
+\arguments{
+\item{BED_paths}{Character vector of paths to BED files
+(can be gzipped). Each BED file becomes one annotation column.}
+
+\item{dat_merged}{data.table with at least \code{CHR} and \code{POS} columns
+containing the SNPs to annotate.}
+
+\item{PT_results_path}{Directory where the annotation matrix will be written.}
+
+\item{locus_dir}{Locus directory (used for naming the output file).}
+
+\item{verbose}{Print messages.}
+}
+\value{
+Path to the annotation matrix file.
+}
 \description{
-Prepare PAINTOR annotations
+Convert BED annotation files into a PAINTOR-format annotation matrix.
+For each SNP in the locus file, checks whether its position falls within
+any interval in each BED file, producing a binary (0/1) matrix.
+}
+\details{
+This is a pure-R reimplementation of the original
+\code{AnnotateLocus.py} Python 2.7 utility bundled with PAINTOR.
 }
 \keyword{internal}

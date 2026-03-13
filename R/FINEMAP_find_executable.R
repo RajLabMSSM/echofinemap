@@ -1,6 +1,11 @@
-#' Find FINEMAP executable 
-#' 
+#' Find FINEMAP executable
+#'
 #' Retrieve location of \code{FINEMAP} executable.
+#' First checks if \code{finemap} is already available on the system PATH
+#' (e.g. installed via \code{conda install -c bioconda finemap}),
+#' then falls back to downloading the binary from GitHub releases.
+#' On Apple Silicon Macs, automatically sets up x86_64 dynamic libraries
+#' via \code{\link{FINEMAP_setup_dylibs}}.
 #' @family FINEMAP
 #' @importFrom tools R_user_dir
 #' @importFrom utils untar
@@ -23,27 +28,43 @@ FINEMAP_find_executable <- function(FINEMAP_path=NULL,
                                     ),
                                     version=package_version("1.4.1"),
                                     verbose=TRUE){
-    
-    # echoverseTemplate:::args2vars(FINEMAP_find_executable)
-    # echoverseTemplate:::source_all()
-    
+
     if(is.null(OS)) OS <- echodata::get_os()
-    # messager("+ Using FINEMAP",paste0("v",version),v=verbose)
+
+    #### Check for user-supplied path ####
+    if(!is.null(FINEMAP_path) && file.exists(FINEMAP_path)){
+        Sys.chmod(FINEMAP_path, "0755")
+        return(FINEMAP_path)
+    }
+
+    #### Check system PATH first ####
+    ## e.g. conda install -c bioconda finemap
+    system_finemap <- Sys.which("finemap")
+    if(nchar(system_finemap) > 0){
+        messager("Found FINEMAP on system PATH:",
+                 system_finemap, v = verbose)
+        return(unname(system_finemap))
+    }
+
+    #### Download from GitHub releases ####
     if(OS=="osx"){
         exec <- paste0("finemap_v",version,"_MacOSX")
-        gcc_df <- setup_gcc(verbose = verbose)
     } else{
         exec <- paste0("finemap_v",version,"_x86_64")
-    }   
-    #### (Download and) test executable ###
+    }
     if(is.null(FINEMAP_path)) {
-        FINEMAP_path <- file.path(save_dir,exec,exec) 
+        FINEMAP_path <- file.path(save_dir,exec,exec)
     }
-    if(!file.exists(FINEMAP_path)){ 
-        tgz <- get_data(fname = paste0(exec,".tgz"), 
-                        save_dir = save_dir) 
+    if(!file.exists(FINEMAP_path)){
+        messager("Downloading FINEMAP v", version, "...", v = verbose)
+        tgz <- get_data(fname = paste0(exec,".tgz"),
+                        save_dir = save_dir)
         utils::untar(tarfile = tgz,
-                     exdir = dirname(tgz)) 
+                     exdir = dirname(tgz))
     }
+    Sys.chmod(FINEMAP_path, "0755")
+    #### Setup dylibs on Apple Silicon ####
+    FINEMAP_setup_dylibs(FINEMAP_path = FINEMAP_path,
+                         verbose = verbose)
     return(FINEMAP_path)
 }

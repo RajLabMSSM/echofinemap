@@ -8,6 +8,7 @@ PAINTOR_download_annotations(
   dat_merged,
   locus_dir,
   PT_results_path,
+  annot_paintor = NULL,
   annot_sample = FALSE,
   annot_xgr = NULL,
   annot_roadmap = NULL,
@@ -21,10 +22,15 @@ PAINTOR_download_annotations(
 \arguments{
 \item{locus_dir}{Locus-specific directory to store results in.}
 
+\item{annot_paintor}{Character vector of PAINTOR annotation category
+keywords to include (e.g., \code{"FANTOM5"}, \code{"ChromHMM"},
+\code{"DHS"}, \code{"TFBS"}). Set to \code{"all"} to use all annotations,
+or \code{NULL} to skip (default).}
+
 \item{annot_xgr}{Use annotations from \pkg{XGR}
 via \link[echoannot]{XGR_query}.}
 
-\item{annot_roadmap}{Use annotations from \pkg{Roadmap} 
+\item{annot_roadmap}{Use annotations from \pkg{Roadmap}
 via \link[echoannot]{ROADMAP_query}.}
 
 \item{chrom_states}{Filter results by chromatin states.}
@@ -41,5 +47,13 @@ or simply perform statistical fine-mapping without any annotations.}
 }
 \description{
 Download annotations to perform functional fine-mapping with PAINTOR.
+Supports three annotation sources:
+\describe{
+  \item{annot_paintor}{The comprehensive PAINTOR functional annotation
+    library (~7GB, 10,000+ annotations). Downloaded once and cached.}
+  \item{annot_xgr}{Annotations from XGR via \link[echoannot]{XGR_query}.}
+  \item{annot_roadmap}{Annotations from Roadmap Epigenomics via
+    \link[echoannot]{ROADMAP_query}.}
+}
 }
 \keyword{internal}

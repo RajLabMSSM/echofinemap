@@ -15,9 +15,13 @@
 #' specified annotations (\code{TRUE}) 
 #' or simply perform statistical fine-mapping without any annotations.
 #' @param annot Custom annotations to use for functional fine-mapping.
+#' @param annot_paintor Character vector of PAINTOR annotation category
+#' keywords (e.g., \code{"FANTOM5"}, \code{"ChromHMM"}, \code{"DHS"},
+#' \code{"TFBS"}). Set to \code{"all"} to use all 10,000+ annotations.
+#' Downloads the ~7GB annotation library on first use and caches it.
 #' @param annot_xgr Use annotations from \pkg{XGR}
 #' via \link[echoannot]{XGR_query}.
-#' @param annot_roadmap Use annotations from \pkg{Roadmap} 
+#' @param annot_roadmap Use annotations from \pkg{Roadmap}
 #' via \link[echoannot]{ROADMAP_query}.
 #' @param force_reinstall Force reinstallation of PAINTOR.
 #' @param superpopulation The ancestry of each population in \code{dat}. 
@@ -35,32 +39,33 @@
 #' 
 #' @export
 #' @importFrom methods is
-#' @examples  
+#' @examples
 #' \dontrun{
 #' dat <- echodata::BST1
-#' ## For example only; 
-#' ## normally you need to compute ZSCORE using the 
+#' ## For example only;
+#' ## normally you need to compute ZSCORE using the
 #' ## full genome-wide summary stats.
 #' dat[,ZSCORE:=(-log10(P))]
-#' LD_matrix <- echodata::BST1_LD_matrix  
+#' LD_matrix <- echodata::BST1_LD_matrix
 #' locus_dir <- file.path(tempdir(),echodata::locus_dir)
 #' dat2 <- PAINTOR(dat = dat,
 #'                 locus_dir = locus_dir,
 #'                 LD_matrix = LD_matrix,
 #'                 max_causal = 2,
-#'                 method = "enumerate") 
+#'                 method = "enumerate")
 #' }
 PAINTOR <- function(dat,
                     LD_matrix,
-                    locus_dir, 
+                    locus_dir,
                     annot = NULL,
                     zscore_col = "ZSCORE",
-                    tstat_col = "tstat", 
+                    tstat_col = "tstat",
                     max_causal = 1,
                     use_annotations = FALSE,
+                    annot_paintor = NULL,
                     annot_xgr = NULL,
                     annot_roadmap = NULL,
-                    chrom_states = NULL, 
+                    chrom_states = NULL,
                     credset_thresh = .95, 
                     superpopulation = "EUR",
                     LD_reference = "1KGphase3",
@@ -129,31 +134,70 @@ PAINTOR <- function(dat,
         PT_results_path = PT_results_path,
         verbose = verbose)
     #### 3. Annotation Matrix File ####
-    ANname <- PAINTOR_download_annotations(dat_merged = dat_merged, 
-                                           locus_dir = locus_dir,
-                                           PT_results_path = PT_results_path, 
-                                           use_annotations = use_annotations,
-                                           annot_xgr = annot_xgr,
-                                           annot_roadmap = annot_roadmap,
-                                           chrom_states = chrom_states,
-                                           conda_env = conda_env,
-                                           nThread = nThread,
-                                           verbose = verbose)
+    annot_result <- PAINTOR_download_annotations(
+        dat_merged = dat_merged,
+        locus_dir = locus_dir,
+        PT_results_path = PT_results_path,
+        use_annotations = use_annotations,
+        annot_paintor = annot_paintor,
+        annot_xgr = annot_xgr,
+        annot_roadmap = annot_roadmap,
+        chrom_states = chrom_states,
+        conda_env = conda_env,
+        nThread = nThread,
+        verbose = verbose)
+    ## When use_annotations=TRUE and BED paths were returned,
+    ## convert them to a PAINTOR annotation matrix.
+    if(isTRUE(use_annotations) && is.list(annot_result)){
+        BED_paths <- unlist(annot_result)
+        if(length(BED_paths) > 0){
+            ANname <- PAINTOR_prepare_annotations(
+                BED_paths = BED_paths,
+                dat_merged = dat_merged,
+                PT_results_path = PT_results_path,
+                locus_dir = locus_dir,
+                verbose = verbose)
+        } else {
+            messager("++ PAINTOR:: No annotation BED files found.",
+                     "Running without annotations.", v = verbose)
+            ANname <- PAINTOR_download_annotations(
+                dat_merged = dat_merged,
+                locus_dir = locus_dir,
+                PT_results_path = PT_results_path,
+                use_annotations = FALSE,
+                verbose = verbose)
+        }
+    } else {
+        ## use_annotations=FALSE: annot_result is already
+        ## the path to the dummy annotations file
+        ANname <- annot_result
+    }
     #### 4. Input File ####
     inputFile_path <- PAINTOR_input_file(locus_dir = locus_dir, 
                                          PT_results_path = PT_results_path, 
                                          verbose = verbose)
     #### 5. Run PAINTOR! ####
     zscore_cols <- grep(colnames(dat_merged), pattern = "^ZSCORE",
-                        value = TRUE) 
+                        value = TRUE)
+    ## Extract annotation column names from the annotation matrix
+    annotation_names <- NULL
+    if(isTRUE(use_annotations) && file.exists(ANname)){
+        annot_header <- names(data.table::fread(ANname, nrows = 0))
+        ## Exclude dummy "V1" column name (from use_annotations=FALSE)
+        if(length(annot_header) > 0 &&
+           !all(grepl("^V[0-9]+$", annot_header))){
+            annotation_names <- annot_header
+        }
+    }
     res_paths <- PAINTOR_run(paintor_path = paintor_path,
                              PT_results_path = PT_results_path,
-                             inputFile_path = inputFile_path, 
-                             zscore_cols = zscore_cols, 
-                             method = method, 
+                             inputFile_path = inputFile_path,
+                             zscore_cols = zscore_cols,
+                             method = method,
                              max_causal = max_causal,
                              seed = seed,
                              ld_paths = ld_paths,
+                             annotation_names = annotation_names,
                              verbose = verbose) 
     res_paths[["locusFile"]] <- locusFile_path
     #### 6. Gather results ####

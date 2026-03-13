@@ -7,17 +7,19 @@
 setup_gcc(version = "latest", verbose = TRUE)
 }
 \arguments{
-\item{version}{gcc version to use (e.g. 7,8,9,10).
-If \code{"latest"}, the latest version of gcc 
+\item{version}{gcc version to use (e.g. 7,8,9,10,14).
+If \code{"latest"}, the latest version of gcc
 currently installed on your machine will be used.}
 
 \item{verbose}{Print messages.}
 }
 \value{
-A data.frame listing all gcc versions, their paths, 
+A data.frame listing all gcc versions, their paths,
 and which one is currently active.
 }
 \description{
 Set up a symlink to override xcode's clang with a valid version of gcc.
+On Apple Silicon Macs, this checks both \code{/opt/homebrew} and
+\code{/usr/local} Homebrew prefixes.
 }
 \keyword{internal}

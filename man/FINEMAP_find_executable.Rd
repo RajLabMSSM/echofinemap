@@ -19,6 +19,11 @@ FINEMAP_find_executable(
 }
 \description{
 Retrieve location of \code{FINEMAP} executable.
+First checks if \code{finemap} is already available on the system PATH
+(e.g. installed via \code{conda install -c bioconda finemap}),
+then falls back to downloading the binary from GitHub releases.
+On Apple Silicon Macs, automatically sets up x86_64 dynamic libraries
+via \code{\link{FINEMAP_setup_dylibs}}.
 }
 \examples{
 \dontrun{

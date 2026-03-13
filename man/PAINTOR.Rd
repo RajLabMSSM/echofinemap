@@ -18,6 +18,7 @@ PAINTOR(
   tstat_col = "tstat",
   max_causal = 1,
   use_annotations = FALSE,
+  annot_paintor = NULL,
   annot_xgr = NULL,
   annot_roadmap = NULL,
   chrom_states = NULL,
@@ -53,10 +54,15 @@ PAINTOR(
 specified annotations (\code{TRUE}) 
 or simply perform statistical fine-mapping without any annotations.}
 
+\item{annot_paintor}{Character vector of PAINTOR annotation category
+keywords (e.g., \code{"FANTOM5"}, \code{"ChromHMM"}, \code{"DHS"},
+\code{"TFBS"}). Set to \code{"all"} to use all 10,000+ annotations.
+Downloads the ~7GB annotation library on first use and caches it.}
+
 \item{annot_xgr}{Use annotations from \pkg{XGR}
 via \link[echoannot]{XGR_query}.}
 
-\item{annot_roadmap}{Use annotations from \pkg{Roadmap} 
+\item{annot_roadmap}{Use annotations from \pkg{Roadmap}
 via \link[echoannot]{ROADMAP_query}.}
 
 \item{chrom_states}{Filter results by chromatin states.}
@@ -97,19 +103,18 @@ Will be automatically installed if set to \code{NULL} (default).}
 Run the full PAINTOR fine-mapping pipeline.
 }
 \examples{
- 
 \dontrun{
 dat <- echodata::BST1
-## For example only; 
-## normally you need to compute ZSCORE using the 
+## For example only;
+## normally you need to compute ZSCORE using the
 ## full genome-wide summary stats.
 dat[,ZSCORE:=(-log10(P))]
-LD_matrix <- echodata::BST1_LD_matrix  
+LD_matrix <- echodata::BST1_LD_matrix
 locus_dir <- file.path(tempdir(),echodata::locus_dir)
 dat2 <- PAINTOR(dat = dat,
                 locus_dir = locus_dir,
                 LD_matrix = LD_matrix,
                 max_causal = 2,
-                method = "enumerate") 
+                method = "enumerate")
 }
 }

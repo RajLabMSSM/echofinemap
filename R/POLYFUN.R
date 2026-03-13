@@ -109,11 +109,20 @@ POLYFUN <- function(dat,
     
     # echoverseTemplate:::source_all(packages = "dplyr")
     # echoverseTemplate:::args2vars(POLYFUN)
-    requireNamespace("Ckmeans.1d.dp")
-    
+    if(!requireNamespace("Ckmeans.1d.dp", quietly = TRUE)){
+        stop("Package 'Ckmeans.1d.dp' is required for POLYFUN. ",
+             "Install it with: install.packages('Ckmeans.1d.dp')")
+    }
+
     SNP <- NULL;
-    #### Install PolyFun ####
-    POLYFUN_install()
+    #### Check PolyFun is installed ####
+    polyfun_dir <- POLYFUN_find_folder(polyfun_path = polyfun_path)
+    if(!dir.exists(polyfun_dir) ||
+       !file.exists(file.path(polyfun_dir, "extract_snpvar.py"))){
+        stop("PolyFun submodule is not installed. ",
+             "Reinstall echofinemap with: ",
+             "remotes::install_github('RajLabMSSM/echofinemap')")
+    }
     mode <- POLYFUN_check_mode(mode=mode,
                                verbose=verbose)
     method <- POLYFUN_check_method(method=method,

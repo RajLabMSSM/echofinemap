@@ -14,6 +14,7 @@ PAINTOR_run(
   Gname = "Enrichment.Estimates.txt",
   RESname = "results.txt",
   ANname = "annotations.txt",
+  annotation_names = NULL,
   method = c("mcmc", "enumerate"),
   seed = 2022,
   auto_restart = FALSE,

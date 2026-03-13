@@ -14,6 +14,7 @@ PAINTOR_run <- function(paintor_path=NULL,
                         Gname = "Enrichment.Estimates.txt",
                         RESname = "results.txt",
                         ANname = "annotations.txt",
+                        annotation_names = NULL,
                         method=c("mcmc","enumerate"),
                         seed = 2022,
                         auto_restart = FALSE,
@@ -56,7 +57,8 @@ PAINTOR_run <- function(paintor_path=NULL,
         #### OPTIONAL ####
         # The names of the annotations to include in model (comma separated)
         ## [default: N/A]
-        # "-annotations",paste(basename(bed),collapse=","),
+        if(!is.null(annotation_names))
+            paste("-annotations", paste(annotation_names, collapse=",")),
         
         # Input directory with all run files [default: ./ ]
         "-in",PT_results_path,
@@ -89,10 +91,11 @@ PAINTOR_run <- function(paintor_path=NULL,
                                        PT_results_path = PT_results_path,
                                        inputFile_path = inputFile_path,
                                        ld_paths = ld_paths,
-                                       zscore_cols = zscore_cols, 
+                                       zscore_cols = zscore_cols,
                                        Gname = Gname,
                                        RESname = RESname,
                                        ANname = ANname,
+                                       annotation_names = annotation_names,
                                        method = method,
                                        max_causal = max_causal,
                                        seed = seed,

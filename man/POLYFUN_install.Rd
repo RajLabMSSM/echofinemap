@@ -7,14 +7,16 @@
 POLYFUN_install(force_new = FALSE, verbose = TRUE)
 }
 \arguments{
-\item{force_new}{Force a new installation 
+\item{force_new}{Force a new installation
 even when PolyFun is already installed.}
 
 \item{verbose}{Print messages.}
 }
 \value{
-Null.
+Logical indicating whether PolyFun is installed.
 }
 \description{
-Install PolyFun (if not already installed) from the GitHub submodule.
+Check if PolyFun is installed from the GitHub submodule.
+If not installed, provides instructions rather than using
+interactive prompts that block non-interactive sessions.
 }

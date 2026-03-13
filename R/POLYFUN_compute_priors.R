@@ -116,7 +116,6 @@ POLYFUN_compute_priors <- function(fullSS_path,
     ## you need to load R first `ml R`.
     messager("PolyFun:: [2] Run PolyFun with L2-regularized S-LDSC.",
              v=verbose) 
-    polyfun_path <- "inst/tools/polyfun"
     cmd2 <- paste(python,
                   file.path(polyfun_path,"polyfun.py"),
                   "--compute-h2-L2",

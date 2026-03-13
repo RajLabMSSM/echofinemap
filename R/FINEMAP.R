@@ -85,8 +85,7 @@
 #' @importFrom echodata get_sample_size
 #' @importFrom data.table :=
 #' @importFrom methods is
-#' @examples
-#' \dontrun{
+#' @examples 
 #' locus_dir <- file.path(tempdir(),echodata::locus_dir)
 #' dat <- echodata::BST1;
 #' LD_matrix <- echofinemap::drop_finemap_cols(echodata::BST1_LD_matrix)
@@ -96,8 +95,7 @@
 #'
 #' dat2 <- echofinemap::FINEMAP(dat=dat,
 #'                              locus_dir=locus_dir,
-#'                              LD_matrix=LD_matrix)
-#' }
+#'                              LD_matrix=LD_matrix) 
 FINEMAP <- function(dat,
                     locus_dir=tempdir(),
                     LD_matrix,
@@ -114,15 +112,36 @@ FINEMAP <- function(dat,
                     args_list=list(),
                     fillNA=0,
                     nThread=1,
-                    verbose=TRUE){
-  # echoverseTemplate:::source_all(packages = "dplyr")
-  # echoverseTemplate:::args2vars(FINEMAP)
-  
+                    verbose=TRUE){  
   PP <- NULL;
   
   if(!methods::is(finemap_version,"package_version")){
       finemap_version <- package_version(finemap_version)
-  } 
+  }
+  #### Early check: ensure FINEMAP binary is available and runnable ####
+  if(is.null(FINEMAP_path)){
+      FINEMAP_path <- FINEMAP_find_executable(version = finemap_version,
+                                              verbose = verbose)
+  }
+  messager("FINEMAP path:", FINEMAP_path, v = verbose)
+  FINEMAP_check_runnable(FINEMAP_path = FINEMAP_path, verbose = verbose)
+  finemap_version <- FINEMAP_check_version(FINEMAP_path = FINEMAP_path,
+                                           verbose = verbose)
+  if(length(finemap_version)==0){
+      warning(paste(
+          "Could not determine FINEMAP version.",
+          "If you are using Mac OS, please make sure you have the",
+          "following software installed using brew:",
+          "e.g. `brew install zstd libomp gcc`"
+      ))
+      finemap_version <- package_version("1.3.1")
+      FINEMAP_path <- FINEMAP_find_executable(version = "1.3.1",
+                                              verbose = verbose)
+      FINEMAP_check_runnable(FINEMAP_path = FINEMAP_path, verbose = verbose)
+  }
+  if(finemap_version < "1.4") {
+      nThread <- 1
+  }
   #### Remove rows with NAs ####
   dat <- remove_na_rows(dat=dat, 
                         cols = c("Effect","StdErr","SNP","MAF",
@@ -169,35 +188,6 @@ FINEMAP <- function(dat,
                                       dat = dat,
                                       LD_matrix = LD_matrix,
                                       verbose = verbose)   
-  #### Check FINEMAP exec ####
-  if(is.null(FINEMAP_path)){
-    FINEMAP_path <- FINEMAP_find_executable(version = finemap_version,
-                                            verbose = verbose)
-  }  
-  messager("FINEMAP path:",FINEMAP_path, v=verbose)
-  finemap_version <- FINEMAP_check_version(FINEMAP_path = FINEMAP_path,
-                                           verbose = verbose) 
-  dylib_msg <- paste(
-      "\n*********\n",
-      "System dependency error detected:",
-      "If you are using Mac OS, please make sure you have the",
-      "following software installed using brew:", 
-      "e.g. `brew install zstd libomp gcc`",
-      
-      "If this error persists,\n",
-      "please see the main FINEMAP website for additional support\n",
-      "(http://www.christianbenner.com).",
-      "\n*********\n\n"
-  )
-  if(length(finemap_version)==0){
-      warning(dylib_msg)
-      finemap_version <- package_version("1.3.1")
-      FINEMAP_path <- FINEMAP_find_executable(version = "1.3.1",
-                                              verbose  = verbose)
-  }
-  if(finemap_version<"1.4") {
-      nThread <- 1
-  }
   #### Run FINEMAP ####
   # NOTE: Must cd into the directory first,
   # or else FINEMAP won't be able to find the input files.
@@ -210,33 +200,7 @@ FINEMAP <- function(dat,
                      args_list=args_list,
                      nThread=nThread,
                      verbose=verbose)
-  ## Check if FINEMAP is giving an error due to `zstd` 
-  ## not being installed.
-  if(any(attr(msg,"status")==134)){ 
-    warning(dylib_msg)
-    #### Rerun if preferred version of FINEMAP fails ####
-    FINEMAP_path <- FINEMAP_find_executable(version = "1.3.1",
-                                            verbose  = FALSE)
-    finemap_version <- package_version("1.3.1")
-    messager("Rerunning with FINEMAP v1.3.1.",v=verbose)
-    msg <- FINEMAP_run(locus_dir=locus_dir,
-                       FINEMAP_path=FINEMAP_path,
-                       model=model,
-                       master_path=master_path,
-                       n_causal=n_causal,
-                       prior_k=prior_k,
-                       ## May not have the args that the user
-                       ## was expecting due to version differences.
-                       args_list=args_list,
-                       ### Must be 1 for older versions of FINEMAP
-                       nThread=1,
-                       verbose=verbose)
-    ## Note!: concatenating this output in rmarkdown
-    ## can accidentally print many many lines.
-    if(verbose) try({cat(paste(msg, collapse = "\n"))})
-  } else {
-    if(verbose) try({cat(paste(msg, collapse = "\n"))})
-  }
+  if(verbose) try({cat(paste(msg, collapse = "\n"))})
   #### Process results #### 
   dat <- FINEMAP_process_results(locus_dir = locus_dir,
                                  dat = dat,

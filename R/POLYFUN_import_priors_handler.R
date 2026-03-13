@@ -22,11 +22,13 @@ POLYFUN_import_priors_handler <- function(dat,
                                         conda_env=conda_env) 
     #### ~~~~~~~~ Approach 2 ~~~~~~~~ #####
     } else if (mode=="parametric"){
-        ldsc.files <- list.files(out.path, 
-                                 pattern = "*.snpvar_ridge_constrained.gz",
-                                 full.names = TRUE) |>
-            grep(pattern = paste0(".",chrom,"."),
-                 value = TRUE, fixed=TRUE)
+        ## Parametric mode (--no-partitions) produces a single file
+        ## named {prefix}.snpvar_ridge_constrained.gz without chromosome
+        ## in the filename, so do NOT filter by chromosome pattern.
+        ldsc.files <- list.files(out.path,
+                                 pattern = "snpvar_ridge_constrained\\.gz$",
+                                 full.names = TRUE,
+                                 recursive = TRUE)
         priors <- rbind_filelist(ldsc.files)
     #### ~~~~~~~~ Approach 3 ~~~~~~~~ ####
     } else if (mode=="non-parametric"){
