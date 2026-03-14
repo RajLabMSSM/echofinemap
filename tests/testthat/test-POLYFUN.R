@@ -2,10 +2,12 @@ test_that("POLYFUN_SUSIE works", {
 
     testthat::skip_if_not_installed("echoconda")
     testthat::skip_if_not_installed("Ckmeans.1d.dp")
-    testthat::skip_if_not(
+    conda_available <- tryCatch(
         echoconda::env_exists(conda_env = "echoR_mini"),
-        message = "echoR_mini conda env not available"
+        error = function(e) FALSE
     )
+    testthat::skip_if_not(conda_available,
+                          message = "echoR_mini conda env not available")
     ## PolyFun submodule must be installed
     testthat::skip_if_not(
         dir.exists(system.file("tools", "polyfun", package = "echofinemap")),
@@ -44,10 +46,12 @@ test_that("POLYFUN_FINEMAP works", {
 
     testthat::skip_if_not_installed("echoconda")
     testthat::skip_if_not_installed("Ckmeans.1d.dp")
-    testthat::skip_if_not(
+    conda_available <- tryCatch(
         echoconda::env_exists(conda_env = "echoR_mini"),
-        message = "echoR_mini conda env not available"
+        error = function(e) FALSE
     )
+    testthat::skip_if_not(conda_available,
+                          message = "echoR_mini conda env not available")
     testthat::skip_if_not(
         dir.exists(system.file("tools", "polyfun", package = "echofinemap")),
         message = "PolyFun submodule not installed"

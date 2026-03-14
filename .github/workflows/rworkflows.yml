@@ -54,3 +54,5 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run_docker: ${{ true }}
         docker_registry: ghcr.io
+        miniforge_variant: Miniforge3
+        miniforge_version: latest
