@@ -85,7 +85,8 @@
 #' @importFrom echodata get_sample_size
 #' @importFrom data.table :=
 #' @importFrom methods is
-#' @examples 
+#' @examples
+#' \dontrun{
 #' locus_dir <- file.path(tempdir(),echodata::locus_dir)
 #' dat <- echodata::BST1;
 #' LD_matrix <- echofinemap::drop_finemap_cols(echodata::BST1_LD_matrix)
@@ -95,7 +96,8 @@
 #'
 #' dat2 <- echofinemap::FINEMAP(dat=dat,
 #'                              locus_dir=locus_dir,
-#'                              LD_matrix=LD_matrix) 
+#'                              LD_matrix=LD_matrix)
+#' }
 FINEMAP <- function(dat,
                     locus_dir=tempdir(),
                     LD_matrix,

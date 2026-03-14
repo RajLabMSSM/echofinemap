@@ -2,12 +2,18 @@ test_that("multifinemap works with BST1", {
 
     testthat::skip_if_not_installed("echoLD")
     ## FINEMAP binary must be runnable
-    FINEMAP_path <- echofinemap:::FINEMAP_find_executable(verbose = FALSE)
-    testthat::skip_if_not(
-        isTRUE(echofinemap:::FINEMAP_check_runnable(FINEMAP_path,
-                                                     verbose = FALSE)),
-        "FINEMAP binary cannot run on this system"
+    FINEMAP_path <- tryCatch(
+        echofinemap:::FINEMAP_find_executable(verbose = FALSE),
+        error = function(e) NULL
     )
+    testthat::skip_if(is.null(FINEMAP_path),
+                      "FINEMAP binary not available")
+    finemap_ok <- tryCatch(
+        echofinemap:::FINEMAP_check_runnable(FINEMAP_path, verbose = FALSE),
+        error = function(e) FALSE
+    )
+    testthat::skip_if_not(isTRUE(finemap_ok),
+                          "FINEMAP binary cannot run on this system")
 
     dat <- echofinemap::drop_finemap_cols(echodata::BST1)
     LD_matrix <- echodata::BST1_LD_matrix

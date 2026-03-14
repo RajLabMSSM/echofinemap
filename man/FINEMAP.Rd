@@ -137,6 +137,7 @@ but "PP" and "CS" will always be present regardless of version.
 }
 }
 \examples{
+\dontrun{
 locus_dir <- file.path(tempdir(),echodata::locus_dir)
 dat <- echodata::BST1;
 LD_matrix <- echofinemap::drop_finemap_cols(echodata::BST1_LD_matrix)
@@ -146,7 +147,8 @@ dat <- out$DT
 
 dat2 <- echofinemap::FINEMAP(dat=dat,
                              locus_dir=locus_dir,
-                             LD_matrix=LD_matrix) 
+                             LD_matrix=LD_matrix)
+}
 }
 \seealso{
 Other FINEMAP: 
