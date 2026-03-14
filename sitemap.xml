@@ -1,24 +1,75 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>/404.html</loc>
-  </url>
-  <url>
-    <loc>/articles/echoverseTemplate.html</loc>
-  </url>
-  <url>
-    <loc>/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>/authors.html</loc>
-  </url>
-  <url>
-    <loc>/index.html</loc>
-  </url>
-  <url>
-    <loc>/news/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/index.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>/404.html</loc></url>
+<url><loc>/articles/echofinemap.html</loc></url>
+<url><loc>/articles/index.html</loc></url>
+<url><loc>/authors.html</loc></url>
+<url><loc>/index.html</loc></url>
+<url><loc>/news/index.html</loc></url>
+<url><loc>/reference/ABF.html</loc></url>
+<url><loc>/reference/COJO.html</loc></url>
+<url><loc>/reference/COJO_args.html</loc></url>
+<url><loc>/reference/COJO_find_executable.html</loc></url>
+<url><loc>/reference/COJO_get_stepwise_results.html</loc></url>
+<url><loc>/reference/COJO_locus_subdir.html</loc></url>
+<url><loc>/reference/COJO_process_results.html</loc></url>
+<url><loc>/reference/COJO_run.html</loc></url>
+<url><loc>/reference/FINEMAP.html</loc></url>
+<url><loc>/reference/FINEMAP_check_runnable.html</loc></url>
+<url><loc>/reference/FINEMAP_construct_data.html</loc></url>
+<url><loc>/reference/FINEMAP_construct_master.html</loc></url>
+<url><loc>/reference/FINEMAP_find_executable.html</loc></url>
+<url><loc>/reference/FINEMAP_import_log.html</loc></url>
+<url><loc>/reference/FINEMAP_process_results.html</loc></url>
+<url><loc>/reference/FINEMAP_setup_dylibs.html</loc></url>
+<url><loc>/reference/PAINTOR.html</loc></url>
+<url><loc>/reference/PAINTOR_create_locus_file.html</loc></url>
+<url><loc>/reference/PAINTOR_datatype_handler.html</loc></url>
+<url><loc>/reference/PAINTOR_download_annotations.html</loc></url>
+<url><loc>/reference/PAINTOR_fetch_annotations.html</loc></url>
+<url><loc>/reference/PAINTOR_install.html</loc></url>
+<url><loc>/reference/PAINTOR_list_annotations.html</loc></url>
+<url><loc>/reference/PAINTOR_prepare_annotations.html</loc></url>
+<url><loc>/reference/PAINTOR_prepare_ld_multiancestry.html</loc></url>
+<url><loc>/reference/PAINTOR_process_results.html</loc></url>
+<url><loc>/reference/PAINTOR_run.html</loc></url>
+<url><loc>/reference/PAINTOR_sample_data.html</loc></url>
+<url><loc>/reference/POLYFUN.html</loc></url>
+<url><loc>/reference/POLYFUN_check_version.html</loc></url>
+<url><loc>/reference/POLYFUN_compute_priors.html</loc></url>
+<url><loc>/reference/POLYFUN_download_ref_files.html</loc></url>
+<url><loc>/reference/POLYFUN_find_folder.html</loc></url>
+<url><loc>/reference/POLYFUN_finemapper.html</loc></url>
+<url><loc>/reference/POLYFUN_gather_annotations.html</loc></url>
+<url><loc>/reference/POLYFUN_gather_ldscores.html</loc></url>
+<url><loc>/reference/POLYFUN_help.html</loc></url>
+<url><loc>/reference/POLYFUN_import_priors.html</loc></url>
+<url><loc>/reference/POLYFUN_initialize.html</loc></url>
+<url><loc>/reference/POLYFUN_install.html</loc></url>
+<url><loc>/reference/POLYFUN_munge_summ_stats.html</loc></url>
+<url><loc>/reference/POLYFUN_prepare_snp_input.html</loc></url>
+<url><loc>/reference/POLYFUN_read_priors.html</loc></url>
+<url><loc>/reference/POLYFUN_run_ldsc.html</loc></url>
+<url><loc>/reference/SUSIE.html</loc></url>
+<url><loc>/reference/SUSIE_get_func.html</loc></url>
+<url><loc>/reference/SUSIE_run.html</loc></url>
+<url><loc>/reference/check_args.html</loc></url>
+<url><loc>/reference/check_required_cols.html</loc></url>
+<url><loc>/reference/create_method_path.html</loc></url>
+<url><loc>/reference/drop_finemap_cols.html</loc></url>
+<url><loc>/reference/get_data.html</loc></url>
+<url><loc>/reference/get_pheno_variance.html</loc></url>
+<url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/install_submodule_git.html</loc></url>
+<url><loc>/reference/is_32bit.html</loc></url>
+<url><loc>/reference/lfm.html</loc></url>
+<url><loc>/reference/multifinemap.html</loc></url>
+<url><loc>/reference/multifinemap_handler.html</loc></url>
+<url><loc>/reference/multifinemap_handler_method.html</loc></url>
+<url><loc>/reference/prepare_priors.html</loc></url>
+<url><loc>/reference/rbind_filelist.html</loc></url>
+<url><loc>/reference/remove_dup_snps.html</loc></url>
+<url><loc>/reference/remove_na_rows.html</loc></url>
+<url><loc>/reference/required_cols.html</loc></url>
+<url><loc>/reference/setup_gcc.html</loc></url>
 </urlset>
+
