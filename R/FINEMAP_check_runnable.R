@@ -22,6 +22,12 @@ FINEMAP_check_runnable <- function(FINEMAP_path,
     }, error = function(e) e,
        warning = function(w) w)
 
+    ## tryCatch returned an error/warning condition = binary can't run
+    if(inherits(out, "condition")){
+        stop("FINEMAP binary cannot execute on this system: ",
+             conditionMessage(out))
+    }
+
     exit_code <- attr(out, "status")
 
     ## Success
