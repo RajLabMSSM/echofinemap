@@ -1,15 +1,19 @@
-<img src='https://github.com/RajLabMSSM/echofinemap/raw/master/inst/hex/hex.png' height='300'><br><br>
-[![](https://img.shields.io/badge/devel%20version-0.99.5-black.svg)](https://github.com/RajLabMSSM/echofinemap)
-[![R build
-status](https://github.com/RajLabMSSM/echofinemap/workflows/rworkflows/badge.svg)](https://github.com/RajLabMSSM/echofinemap/actions)
-[![](https://img.shields.io/github/last-commit/RajLabMSSM/echofinemap.svg)](https://github.com/RajLabMSSM/echofinemap/commits/master)
-[![](https://app.codecov.io/gh/RajLabMSSM/echofinemap/branch/master/graph/badge.svg)](https://app.codecov.io/gh/RajLabMSSM/echofinemap)
+<img src='https://github.com/RajLabMSSM/echofinemap/raw/master/inst/hex/hex.png' title='Hex sticker for echofinemap' height='300'><br>
 [![License:
 GPL-3](https://img.shields.io/badge/license-GPL--3-blue.svg)](https://cran.r-project.org/web/licenses/GPL-3)
-¶ <h5> ¶ Author: <i>Brian M. Schilder</i> ¶ </h5>
-<h5> ¶ README updated: <i>Dec-22-2022</i> ¶ </h5>
+[![](https://img.shields.io/badge/devel%20version-1.0.0-black.svg)](https://github.com/RajLabMSSM/echofinemap)
+[![](https://img.shields.io/github/languages/code-size/RajLabMSSM/echofinemap.svg)](https://github.com/RajLabMSSM/echofinemap)
+[![](https://img.shields.io/github/last-commit/RajLabMSSM/echofinemap.svg)](https://github.com/RajLabMSSM/echofinemap/commits/master)
+<br> [![R build
+status](https://github.com/RajLabMSSM/echofinemap/workflows/rworkflows/badge.svg)](https://github.com/RajLabMSSM/echofinemap/actions)
+[![](https://codecov.io/gh/RajLabMSSM/echofinemap/branch/master/graph/badge.svg)](https://app.codecov.io/gh/RajLabMSSM/echofinemap)
+<br>
+<a href='https://app.codecov.io/gh/RajLabMSSM/echofinemap/tree/master' target='_blank'><img src='https://codecov.io/gh/RajLabMSSM/echofinemap/branch/master/graphs/icicle.svg' title='Codecov icicle graph' width='200' height='50' style='vertical-align: top;'></a>  
+<h4>  
+Authors: <i>Brian Schilder, Jack Humphrey, Towfique Raj</i>  
+</h4>
 
-## `echofinemap`: Statistical and functional fine-mapping functions.
+## `echofinemap`: Echoverse module: Statistical and functional fine-mapping functions.
 
 This R package is part of the *echoverse* suite that supports
 [`echolocatoR`](https://github.com/RajLabMSSM/echolocatoR): an automated
@@ -17,10 +21,7 @@ genomic fine-mapping pipeline.
 
 If you use `echofinemap`, please cite:
 
-> Brian M Schilder, Jack Humphrey, Towfique Raj (2021) echolocatoR: an
-> automated end-to-end statistical and functional genomic fine-mapping
-> pipeline, *Bioinformatics*; btab658,
-> <https://doi.org/10.1093/bioinformatics/btab658>
+> 
 
 ## Installation
 
