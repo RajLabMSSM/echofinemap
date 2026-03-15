@@ -40,6 +40,6 @@ test_that("lfm returns empty when all methods unrecognized", {
 test_that("list_finemap_methods is an alias for lfm", {
 
     m1 <- echofinemap::lfm(verbose = FALSE)
-    m2 <- echofinemap::list_finemap_methods(verbose = FALSE)
+    m2 <- echofinemap:::list_finemap_methods(verbose = FALSE)
     testthat::expect_equal(m1, m2)
 })
