@@ -1,46 +1,83 @@
 ---
-title: "``r read.dcf('../DESCRIPTION', fields = 'Package')[1]``: Getting Started" 
-author: "<h4>Author: <i>Brian M. Schilder</i></h4>" 
+title: "echofinemap: Getting Started"
+author: "<h4>Author: <i>Brian M. Schilder</i></h4>"
 date: "<h4>Updated: <i>`r format( Sys.Date(), '%b-%d-%Y')`</i></h4>"
 output:
   BiocStyle::html_document
 vignette: >
-    %\VignetteIndexEntry{echodata} 
+    %\VignetteIndexEntry{echofinemap}
     %\usepackage[utf8]{inputenc}
     %\VignetteEngine{knitr::rmarkdown}
 ---
 
-
-```{r, echo=FALSE, include=FALSE}
+```{r setup, echo=FALSE, include=FALSE}
 pkg <- read.dcf("../DESCRIPTION", fields = "Package")[1]
 library(pkg, character.only = TRUE)
 ```
 
-
 ```R
-library(`r pkg`)
+library(echofinemap)
 ```
 
-# Examples
+# Quick start: ABF (Approximate Bayes Factor)
 
-```{r, eval=FALSE}
-dat <- echofinemap::drop_finemap_cols(dat = echodata::BST1)
+ABF is the fastest fine-mapping method because it requires no LD matrix and
+no external software. It is a good first pass for identifying credible sets.
+
+```{r abf-example}
+## Load bundled example data
+dat <- echodata::BST1
 LD_matrix <- echodata::BST1_LD_matrix
-locus_dir <- file.path(tempdir(),echodata::locus_dir) 
 
-dat2 <- echofinemap::multifinemap(dat = dat, 
-                                  locus_dir = locus_dir,
-                                  LD_matrix = LD_matrix)
+## Strip any previous fine-mapping columns so we start fresh
+dat_clean <- echofinemap::drop_finemap_cols(dat = dat)
+
+## Run ABF
+dat_abf <- echofinemap::ABF(dat = dat_clean, verbose = TRUE)
 ```
 
+Inspect the results -- ABF adds posterior probability columns and a
+credible set indicator:
 
-# Session Info 
+```{r abf-results}
+## Key fine-mapping columns added by ABF
+abf_cols <- grep("ABF|PP|CS", names(dat_abf), value = TRUE)
+print(abf_cols)
 
-<details> 
+## Top SNPs by ABF posterior probability
+topsnps <- head(dat_abf[order(-dat_abf$PP),
+                         c("SNP","CHR","POS","P","PP","CS")], 10)
+print(topsnps)
+```
+
+# Full pipeline: `multifinemap()`
+
+`multifinemap()` runs one or more fine-mapping methods in a single call.
+The example below runs ABF, SUSIE, and FINEMAP together.
+
+> **Note:** This chunk is set to `eval=FALSE` because SUSIE and FINEMAP
+> can be slow and FINEMAP requires an external binary. See the individual
+> method help pages for installation instructions.
+
+```{r multifinemap-example, eval=FALSE}
+dat_clean <- echofinemap::drop_finemap_cols(dat = echodata::BST1)
+LD_matrix <- echodata::BST1_LD_matrix
+locus_dir <- file.path(tempdir(), echodata::locus_dir)
+
+dat2 <- echofinemap::multifinemap(
+    dat = dat_clean,
+    locus_dir = locus_dir,
+    LD_matrix = LD_matrix,
+    finemap_methods = c("ABF", "SUSIE", "FINEMAP")
+)
+```
+
+# Session Info
+
+<details>
 
 ```{r Session Info}
 utils::sessionInfo()
 ```
 
-</details>  
-
+</details>
